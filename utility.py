@@ -36,7 +36,7 @@ class Utility:
             except on_error:
                 print("Error")
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def help(self, ctx):
         author = ctx.message.author
         channel = ctx.message.channel

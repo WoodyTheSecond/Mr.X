@@ -92,8 +92,8 @@ async def on_member_unban(server, member):
 
 # @client.event
 # async def on_message(message):
-#     message.content = message.content.lower().replace(' ', '')
-#     await client.process_commands(message)
+#      message.content = message.content.lower().replace(' ', '')
+#      await client.process_commands(message)
 
 @client.command()
 async def botinfo():
