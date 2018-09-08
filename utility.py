@@ -3,7 +3,6 @@ import asyncio
 import time
 import json
 import random
-import boto3
 from discord.ext.commands import Bot
 from discord.ext import commands
 from random import randint
