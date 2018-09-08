@@ -300,7 +300,7 @@ async def modrole(ctx, *, role):
 @client.command(pass_context=True)
 async def adminrole(ctx, *, role):
     author = ctx.message.author
-    server = ctx.message.server
+    server = author.server
     if author.server_permissions.administrator:
         try:
             rolename = discord.utils.get(server.roles, name=role)

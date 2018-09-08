@@ -3,6 +3,7 @@ import asyncio
 import time
 import json
 import random
+import boto3
 from discord.ext.commands import Bot
 from discord.ext import commands
 from random import randint
@@ -36,7 +37,7 @@ class Utility:
             except on_error:
                 print("Error")
 
-    @commands.command()
+    @commands.command(pass_context=True)
     async def help(self, ctx):
         author = ctx.message.author
         channel = ctx.message.channel
