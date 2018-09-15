@@ -182,7 +182,7 @@ class Swarm:
                 embed = discord.Embed(
                     title = '',
                     description = '',
-                    colour = discord.Colour.blue()
+                    color = discord.Color.blue()
                 )
                 embed.set_footer(text='For The Swarm!')
                 embed.set_thumbnail(url=broodimage)

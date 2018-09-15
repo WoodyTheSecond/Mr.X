@@ -18,7 +18,7 @@ class Utility:
 
         if user == None:
             embed = discord.Embed(
-                colour = discord.Colour.green()
+                color = discord.Color.green()
             )
 
             embed.set_image(url=self_image)
@@ -26,7 +26,7 @@ class Utility:
         else:
             try:
                 embed = discord.Embed(
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                 )
 
                 embed.set_image(url=user.avatar_url)
@@ -42,7 +42,7 @@ class Utility:
         channel = ctx.message.channel
         await self.client.say('What module do you want help with?')
         embed = discord.Embed(
-            colour = discord.Colour.blue()
+            color = discord.Color.blue()
         )
         embed.add_field(name='Primary Modules', value='Core, Admin, Utility')
         embed.add_field(name='Secondary Modules', value='Fun, Music, Swarm, Level, Creator')
@@ -51,7 +51,7 @@ class Utility:
         if user_response.clean_content == 'Core' or user_response.clean_content == 'core':
             self.client.say("Core Module Command List")
             embed = discord.Embed(
-                colour = discord.Colour.blue()
+                color = discord.Color.blue()
             )
             embed.set_author(name='Core Module')
             embed.add_field(name='dmwarn', value='Enable/Disable Direct Message On Warning', inline=False)
@@ -70,7 +70,7 @@ class Utility:
         elif user_response.clean_content == 'Admin' or user_response.clean_content == 'admin':
             self.client.say("Admin Module Command List")
             embed = discord.Embed(
-                colour = discord.Colour.blue()
+                color = discord.Color.blue()
             )
             embed.set_author(name='Admin Module')
             embed.add_field(name='kick @user', value='Kicks the user', inline=False)
@@ -92,7 +92,7 @@ class Utility:
         elif user_response.clean_content == 'Fun' or user_response.clean_content == 'fun':
             self.client.say("Fun Module Command List")
             embed = discord.Embed(
-                colour = discord.Colour.blue()
+                color = discord.Color.blue()
             )
             embed.set_author(name='Fun Module')
             embed.add_field(name='W.I.P', value='This module is still in progress but is accessible', inline=False)
@@ -101,7 +101,7 @@ class Utility:
         elif user_response.clean_content == 'Level' or user_response.clean_content == 'level':
             self.client.say("Level Module Command List")
             embed = discord.Embed(
-                colour = discord.Colour.blue()
+                color = discord.Color.blue()
             )
             embed.set_author(name='Level Module')
             embed.add_field(name='mylevel', value='Displays your level', inline=False)
@@ -111,7 +111,7 @@ class Utility:
         elif user_response.clean_content == 'creator' or user_response.clean_content == 'Creator':
             self.client.say("Creator Module Command List")
             embed = discord.Embed(
-                colour = discord.Colour.blue()
+                color = discord.Color.blue()
             )
             embed.set_author(name='Creator Module')
             embed.add_field(name='whitelist Server_ID', value='Whitelists the server so the bot can join', inline=False)
@@ -123,7 +123,7 @@ class Utility:
         elif user_response.clean_content == 'Music' or user_response.clean_content == 'music':
             self.client.say("Music Module Command List")
             embed = discord.Embed(
-                colour = discord.Colour.blue()
+                color = discord.Color.blue()
             )
             embed.set_author(name='Music Module')
             embed.add_field(name='W.I.P', value='This module is still in progress', inline=False)
@@ -132,7 +132,7 @@ class Utility:
         elif user_response.clean_content == 'Swarm' or user_response.clean_content == 'swarm':
             self.client.say("Swarm Module Command List")
             embed = discord.Embed(
-                colour = discord.Colour.blue()
+                color = discord.Color.blue()
             )
             embed.set_author(name='Swarm Module')
             embed.add_field(name='swarm', value='Shows brood information, or starts the creation process if you have none', inline=False)
@@ -143,7 +143,7 @@ class Utility:
         elif user_response.clean_content == 'Utility' or user_response.clean_content == 'utility':
             self.client.say("Utility Module Command List")
             embed = discord.Embed(
-                colour = discord.Colour.blue()
+                color = discord.Color.blue()
             )
             embed.set_author(name='Utility Module')
             embed.add_field(name='help', value='Shows list of modules and command list', inline=False)
@@ -168,14 +168,14 @@ class Utility:
             embed = discord.Embed(
                 title = 'Coin Flip',
                 description = 'You flipped a coin and it landed on **Tails**',
-                colour = discord.Colour.green()
+                color = discord.Color.green()
             )
             await self.client.say(embed=embed)
         elif r_int == 2:
             embed = discord.Embed(
                 title = 'Coin Flip',
                 description = 'You flipped a coin and it landed on **Heads**',
-                colour = discord.Colour.green()
+                color = discord.Color.green()
             )
             await self.client.say(embed=embed)
 
@@ -186,7 +186,7 @@ class Utility:
         embed = discord.Embed(
             title = 'Roll Dice',
             description = 'You throw a dice and it lands on **{}**'.format(str(r_int)),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
         )
         await self.client.say(embed=embed)
 
@@ -201,14 +201,14 @@ class Utility:
                 embed = discord.Embed(
                     title = 'Clear',
                     description = 'The amount cannot be less than 2',
-                    colour = discord.Colour.red()
+                    color = discord.Color.red()
                 )
                 await self.client.say(embed=embed)
             elif amount > 100:
                 embed = discord.Embed(
                     title = 'Clear',
                     description = 'You cannot clear more than 100 messages.',
-                    colour = discord.Colour.red()
+                    color = discord.Color.red()
                 )
                 await self.client.say(embed=embed)
             else:
@@ -226,7 +226,7 @@ class Utility:
             channel = ctx.message.channel
             embed = discord.Embed(
                 title = 'Servers',
-                colour = discord.Colour.green()
+                color = discord.Color.green()
             )
             await self.client.say('Do you want the list **Inline** ? (Yes/No)')
             user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
@@ -245,7 +245,7 @@ class Utility:
         else:
             embed = discord.Embed(
                 description = 'You do not have permission to use this command.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -258,12 +258,12 @@ class Utility:
                     await self.client.leave_server(srv)
                     embed = discord.Embed(
                         description = 'I have successfully left the server `{}`'.format(srv),
-                        colour = discord.Colour.green()
+                        color = discord.Color.green()
                     )
         else:
             embed = discord.Embed(
                 description = 'You do not have permission to use this command.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -276,21 +276,21 @@ class Utility:
             embed = discord.Embed(
                 title = "Invite link",
                 description = invitelink,
-                colour = discord.Colour.purple()
+                color = discord.Color.purple()
             )
 
             await self.client.send_message(author, embed=embed)
 
             embed = discord.Embed(
                 description = "I have sent you a direct message with the invite link",
-                colour = discord.Colour.green()
+                color = discord.Color.green()
             )
 
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description = 'You do not have permission to use this command.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 

@@ -63,7 +63,7 @@ class Admin:
                         embed = discord.Embed(
                         title = '',
                         description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
-                        colour = discord.Colour.green()
+                        color = discord.Color.green()
                         )
                         await self.client.say(embed=embed)
 
@@ -80,7 +80,7 @@ class Admin:
                         embed = discord.Embed(
                         title = '',
                         description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
-                        colour = discord.Colour.green()
+                        color = discord.Color.green()
                         )
                         await self.client.say(embed=embed)
                 else:
@@ -96,7 +96,7 @@ class Admin:
                         embed = discord.Embed(
                         title = '',
                         description = '{} has been warned with the reason **{}**'.format(user.mention, str(reason)),
-                        colour = discord.Colour.green()
+                        color = discord.Color.green()
                         )
                         await self.client.say(embed=embed)
                         #------------------------------------------------------------------
@@ -168,7 +168,7 @@ class Admin:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -184,7 +184,7 @@ class Admin:
             embed = discord.Embed(
             title = "{} Warnings".format(user),
             description = 'This user has no warnings.',
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await self.client.say(embed=embed)
             return
@@ -193,7 +193,7 @@ class Admin:
                 embed = discord.Embed(
                 title = "{} Warnings".format(user),
                 description = 'This user has no warnings.',
-                colour = discord.Colour.green()
+                color = discord.Color.green()
                 )
                 await self.client.say(embed=embed)
                 return
@@ -206,7 +206,7 @@ class Admin:
                 embed = discord.Embed(
                     title = "{} Warnings".format(user),
                     description = '',
-                    colour = discord.Colour.blue()
+                    color = discord.Color.blue()
                 )
                 await self.client.say('Do you want the list **Inline** ? (Yes/No)')
                 user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
@@ -233,14 +233,14 @@ class Admin:
             embed = discord.Embed(
             title = '',
             description = "{} Warnings has been removed.".format(user.mention),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -259,14 +259,14 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = '{} has been verified'.format(user.mention),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                 else:
                     embed = discord.Embed(
                     title = '',
                     description = 'There is no Verify Role set, please use -verifyrole ROLE_NAME',
-                    colour = discord.Colour.red()
+                    color = discord.Color.red()
                     )
                     await self.client.say(embed=embed)
             else:
@@ -279,14 +279,14 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = '{} has been verified and given the role **{}**'.format(user.mention, role_name),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                 else:
                     embed = discord.Embed(
                     title = '',
                     description = '**{}** role was not found'.format(role_name),
-                    colour = discord.Colour.red()
+                    color = discord.Color.red()
                     )
                     await self.client.say(embed=embed)
 
@@ -296,7 +296,7 @@ class Admin:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -325,14 +325,14 @@ class Admin:
             embed = discord.Embed(
             title = '',
             description = 'The punishment for warn number **{}** has been set to **{}**'.format(str(warn_number), t_punish),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -346,7 +346,7 @@ class Admin:
                 embed = discord.Embed(
                 title = '',
                 description = "Changed {}'s nickname to **{}**".format(user.mention, nick),
-                colour = discord.Colour.green()
+                color = discord.Color.green()
                 )
                 await self.client.say(embed=embed)
             except ValueError:
@@ -355,7 +355,7 @@ class Admin:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -368,14 +368,14 @@ class Admin:
             embed = discord.Embed(
             title = '',
             description = "Removed {}'s nickname.".format(user.mention),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -395,7 +395,7 @@ class Admin:
                 embed = discord.Embed(
                 title = '',
                 description = 'Who do you wish to tag? [everyone / here / None]',
-                colour = discord.Colour.orange()
+                color = discord.Color.orange()
                 )
                 await self.client.send_message(channel, embed=embed)
                 user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
@@ -403,7 +403,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = 'Do you want your message to be inside an embed? (Yes/No)',
-                    colour = discord.Colour.orange()
+                    color = discord.Color.orange()
                     )
                     await self.client.send_message(channel, embed=embed)
                     user_response2 = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
@@ -411,7 +411,7 @@ class Admin:
                         embed = discord.Embed(
                         title = '',
                         description = '{}'.format(str(message)),
-                        colour = discord.Colour.orange()
+                        color = discord.Color.orange()
                         )
                         embed.set_author(name=author.name, icon_url=author.avatar_url)
                         await self.client.send_message(u_channel, "@everyone")
@@ -426,7 +426,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = 'Do you want your message to be inside an embed? (Yes/No)',
-                    colour = discord.Colour.orange()
+                    color = discord.Color.orange()
                     )
                     await self.client.send_message(channel, embed=embed)
                     user_response2 = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
@@ -434,7 +434,7 @@ class Admin:
                         embed = discord.Embed(
                         title = '',
                         description = '{}'.format(str(message)),
-                        colour = discord.Colour.orange()
+                        color = discord.Color.orange()
                         )
                         embed.set_author(name=author.name, icon_url=author.avatar_url)
                         await self.client.send_message(u_channel, "@here")
@@ -449,7 +449,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = 'Do you want your message to be inside an embed? (Yes/No)',
-                    colour = discord.Colour.orange()
+                    color = discord.Color.orange()
                     )
                     await self.client.send_message(channel, embed=embed)
                     user_response2 = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
@@ -457,7 +457,7 @@ class Admin:
                         embed = discord.Embed(
                         title = '',
                         description = '{}'.format(str(message)),
-                        colour = discord.Colour.orange()
+                        color = discord.Color.orange()
                         )
                         embed.set_author(name=author.name, icon_url=author.avatar_url)
                         await self.client.send_message(u_channel, embed=embed)
@@ -474,7 +474,7 @@ class Admin:
                 embed = discord.Embed(
                 title = 'Permission Denied',
                 description = 'You do not have permission to use this command {}'.format(ctx.message.author.mention),
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
 
                 await client.send_message(channel, embed=embed)
@@ -494,7 +494,7 @@ class Admin:
                 embed = discord.Embed(
                 title = 'Kick',
                 description = 'You cannot kick youself.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await self.client.say(embed=embed)
                 return
@@ -504,7 +504,7 @@ class Admin:
 
                 title = 'Kick',
                 description = 'You cannot kick somebody higher than youself.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await self.client.say(embed=embed)
                 return
@@ -514,7 +514,7 @@ class Admin:
                     embed = discord.Embed(
                         title = 'User Kicked',
                         description = '',
-                        colour = discord.Colour.blue()
+                        color = discord.Color.blue()
                     )
                     embed.set_author(name='Mr. X', icon_url='https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128')
                     embed.add_field(name='User', value=user, inline=False)
@@ -524,7 +524,7 @@ class Admin:
                     embed = discord.Embed(
                         title = 'User Kicked',
                         description = '',
-                        colour = discord.Colour.blue()
+                        color = discord.Color.blue()
                     )
                     embed.set_author(name='Mr. X', icon_url='https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128')
                     embed.add_field(name='User', value=user, inline=False)
@@ -535,7 +535,7 @@ class Admin:
                 embed = discord.Embed(
                 title = 'Kick',
                 description = 'I do not have permissions to kick that user.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await self.client.say(embed=embed)
             except Exception as e:
@@ -544,7 +544,7 @@ class Admin:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
     @commands.command(pass_context=True)
@@ -556,7 +556,7 @@ class Admin:
                 embed = discord.Embed(
                 title = 'ban',
                 description = 'You cannot ban youself.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await self.client.say(embed=embed)
                 return
@@ -565,7 +565,7 @@ class Admin:
                 embed = discord.Embed(
                 title = 'Ban',
                 description = 'You cannot ban somebody higher than youself.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await self.client.say(embed=embed)
                 return
@@ -576,7 +576,7 @@ class Admin:
                     embed = discord.Embed(
                         title = 'User Banned',
                         description = '',
-                        colour = discord.Colour.blue()
+                        color = discord.Color.blue()
                     )
                     embed.set_author(name='Mr. X', icon_url='https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128')
                     embed.add_field(name='User', value=user, inline=False)
@@ -586,7 +586,7 @@ class Admin:
                     embed = discord.Embed(
                         title = 'User Banned',
                         description = '',
-                        colour = discord.Colour.blue()
+                        color = discord.Color.blue()
                     )
                     embed.set_author(name='Mr. X', icon_url='https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128')
                     embed.add_field(name='User', value=user, inline=False)
@@ -598,7 +598,7 @@ class Admin:
                 embed = discord.Embed(
                 title = 'Ban',
                 description = 'I do not have permissions to ban that user.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await self.client.say(embed=embed)
             except Exception as e:
@@ -607,7 +607,7 @@ class Admin:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
     @commands.command(pass_context=True)
@@ -628,28 +628,28 @@ class Admin:
                     embed = discord.Embed(
                     title = 'banid',
                     description = 'The user with the id {} has been banned'.format(id),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                 else:
                     embed = discord.Embed(
                     title = 'banid',
                     description = 'You do not have the required permissions.',
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
             else:
                 embed = discord.Embed(
                 title = 'banid',
                 description = 'Please enter a userID.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -708,7 +708,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = '{} Has been muted for {} minute(s)'.format(user.mention, str(t_time)),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                     await asyncio.sleep(time)
@@ -725,7 +725,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = '{} Has been unmuted.'.format(user.mention),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                     os.remove(path)
@@ -733,7 +733,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = '{} Has been muted for {} hour(s)'.format(user.mention, str(t_time)),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                     await asyncio.sleep(time)
@@ -750,7 +750,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = '{} Has been unmuted.'.format(user.mention),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                     os.remove(path)
@@ -759,14 +759,14 @@ class Admin:
                 embed = discord.Embed(
                 title = '',
                 description = '{} Has been muted.'.format(user.mention),
-                colour = discord.Colour.green()
+                color = discord.Color.green()
                 )
                 await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -820,7 +820,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = '{} Has been muted for {} minute(s)'.format(user.mention, str(t_time)),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                     await asyncio.sleep(time)
@@ -837,7 +837,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = '{} Has been unmuted.'.format(user.mention),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                     os.remove(path)
@@ -845,7 +845,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = '{} Has been muted for {} hour(s)'.format(user.mention, str(t_time)),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                     await asyncio.sleep(time)
@@ -862,7 +862,7 @@ class Admin:
                     embed = discord.Embed(
                     title = '',
                     description = '{} Has been unmuted.'.format(user.mention),
-                    colour = discord.Colour.green()
+                    color = discord.Color.green()
                     )
                     await self.client.say(embed=embed)
                     os.remove(path)
@@ -871,14 +871,14 @@ class Admin:
                 embed = discord.Embed(
                 title = '',
                 description = '{} Has been muted.'.format(user.mention),
-                colour = discord.Colour.green()
+                color = discord.Color.green()
                 )
                 await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -910,7 +910,7 @@ class Admin:
                         embed = discord.Embed(
                         title = '',
                         description = '{} Has been unmuted.'.format(user.mention),
-                        colour = discord.Colour.green()
+                        color = discord.Color.green()
                         )
                         await self.client.say(embed=embed)
                         os.remove(path)
@@ -920,7 +920,7 @@ class Admin:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
     @commands.command(pass_context=True)
@@ -952,7 +952,7 @@ class Admin:
                         embed = discord.Embed(
                         title = '',
                         description = '{} Has been unmuted.'.format(user.mention),
-                        colour = discord.Colour.green()
+                        color = discord.Color.green()
                         )
                         await self.client.say(embed=embed)
                         os.remove(path)
@@ -962,7 +962,7 @@ class Admin:
             embed = discord.Embed(
             title = '',
             description = 'You do not have permission to use this command.',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await self.client.say(embed=embed)
 

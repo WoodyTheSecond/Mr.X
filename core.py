@@ -100,7 +100,7 @@ async def botinfo():
     embed = discord.Embed(
         title = '',
         description = '',
-        colour = discord.Colour.blue()
+        color = discord.Color.blue()
     )
     embed.set_footer(text='Coded in Python - Multi-Purpose Bot')
     embed.set_image(url='https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128')
@@ -145,7 +145,7 @@ async def settings(ctx):
     embed = discord.Embed(
         title = '',
         description = '',
-        colour = discord.Colour.blue()
+        color = discord.Color.blue()
     )
 
     if server.icon_url != "":
@@ -174,7 +174,7 @@ async def mylevel(ctx):
     embed = discord.Embed(
     title = '',
     description = '{} you are level {}'.format(user.mention, my_level),
-    colour = discord.Colour.green()
+    color = discord.Color.green()
     )
     await client.say(embed=embed)
 
@@ -190,7 +190,7 @@ async def whitelist(ctx):
         embed = discord.Embed(
         title = '',
         description = 'You do know have permission to use this command',
-        colour = discord.Colour.red()
+        color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -206,7 +206,7 @@ async def togglelevel(ctx):
             embed = discord.Embed(
             title = 'Global Level System',
             description = 'You have **disabled** the Level System on this server.',
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
         elif toggle == False:
@@ -214,7 +214,7 @@ async def togglelevel(ctx):
             embed = discord.Embed(
             title = 'Global Level System',
             description = 'You have **enabled** the Level System on this server.',
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
         else:
@@ -223,7 +223,7 @@ async def togglelevel(ctx):
         embed = discord.Embed(
         title = '',
         description = 'You do know have permission to use this command',
-        colour = discord.Colour.red()
+        color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -254,14 +254,14 @@ async def dmwarn(ctx):
             embed = discord.Embed(
             title = 'DMWarn Setting',
             description = 'Direct Message on warning has been set to **False**',
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
         else:
             embed = discord.Embed(
             title = 'DMWarn Setting',
             description = 'Direct Message on warning has been set to **True**',
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
             await update_settings(server, "DMWarn", True)
@@ -269,7 +269,7 @@ async def dmwarn(ctx):
         embed = discord.Embed(
         title = '',
         description = 'You do know have permission to use this command',
-        colour = discord.Colour.red()
+        color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -285,7 +285,7 @@ async def modrole(ctx, *, role):
             embed = discord.Embed(
             title = 'Moderator Role',
             description = 'The Moderator Role has been set to **{}**'.format(rolename),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
         except ValueError as error:
@@ -294,7 +294,7 @@ async def modrole(ctx, *, role):
         embed = discord.Embed(
         title = 'Moderator Role',
         description = 'You do know have permission to use this command',
-        colour = discord.Colour.red()
+        color = discord.Color.red()
         )
         await client.say(embed=embed)
 @client.command(pass_context=True)
@@ -309,7 +309,7 @@ async def adminrole(ctx, *, role):
             embed = discord.Embed(
             title = 'Administrator Role',
             description = 'The Administrator Role has been set to **{}**'.format(rolename),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
         except ValueError as error:
@@ -318,7 +318,7 @@ async def adminrole(ctx, *, role):
         embed = discord.Embed(
         title = 'Administrator Role',
         description = 'You do know have permission to use this command',
-        colour = discord.Colour.red()
+        color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -334,7 +334,7 @@ async def muterole(ctx, *, role):
             embed = discord.Embed(
             title = 'Muted Role',
             description = 'The Muted Role has been set to **{}**'.format(rolename),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
         except ValueError as error:
@@ -343,7 +343,7 @@ async def muterole(ctx, *, role):
         embed = discord.Embed(
         title = 'Muted Role',
         description = 'You do know have permission to use this command',
-        colour = discord.Colour.red()
+        color = discord.Color.red()
         )
         await client.say(embed=embed)
 @client.command(pass_context=True)
@@ -358,7 +358,7 @@ async def joinrole(ctx, *, role):
                 embed = discord.Embed(
                 title = 'Join Role',
                 description = 'Role not found.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await client.say(embed=embed)
             else:
@@ -366,7 +366,7 @@ async def joinrole(ctx, *, role):
                 embed = discord.Embed(
                 title = 'Join Role',
                 description = 'The Join Role has been set to **{}**'.format(rolename),
-                colour = discord.Colour.green()
+                color = discord.Color.green()
                 )
                 await client.say(embed=embed)
         except ValueError as error:
@@ -375,7 +375,7 @@ async def joinrole(ctx, *, role):
         embed = discord.Embed(
         title = 'Join Role',
         description = 'You do know have permission to use this command',
-        colour = discord.Colour.red()
+        color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -391,7 +391,7 @@ async def verifyrole(ctx, *, role):
                 embed = discord.Embed(
                 title = 'Verify Role',
                 description = 'Role not found.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await client.say(embed=embed)
             else:
@@ -399,7 +399,7 @@ async def verifyrole(ctx, *, role):
                 embed = discord.Embed(
                 title = 'Verify Role',
                 description = 'The Verify Role has been set to **{}**'.format(rolename),
-                colour = discord.Colour.green()
+                color = discord.Color.green()
                 )
                 await client.say(embed=embed)
         except ValueError as error:
@@ -408,7 +408,7 @@ async def verifyrole(ctx, *, role):
         embed = discord.Embed(
         title = 'Verify Role',
         description = 'You do know have permission to use this command',
-        colour = discord.Colour.red()
+        color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -422,7 +422,7 @@ async def mutetime(ctx, lenght):
             embed = discord.Embed(
             title = '',
             description = 'Punish Mute has been set to {} minute(s)'.format(t_time),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
         elif "h" in lenght:
@@ -431,7 +431,7 @@ async def mutetime(ctx, lenght):
             embed = discord.Embed(
             title = '',
             description = 'Punish Mute has been set to {} hour(s)'.format(t_time),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
         else:
@@ -440,7 +440,7 @@ async def mutetime(ctx, lenght):
     else:
         embed = discord.Embed(
             description = 'You do know have permission to use this command',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -456,7 +456,7 @@ async def jointoggle(ctx):
                 embed = discord.Embed(
                 title = 'Join Toggle',
                 description = 'Please set a join role before trying to turn on auto role.',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await client.say(embed=embed)
             else:
@@ -464,7 +464,7 @@ async def jointoggle(ctx):
                 embed = discord.Embed(
                 title = 'Join Toggle',
                 description = 'Auto role on join has been set to **True**',
-                colour = discord.Colour.green()
+                color = discord.Color.green()
                 )
                 await client.say(embed=embed)
         elif current_toggle == True:
@@ -472,14 +472,14 @@ async def jointoggle(ctx):
             embed = discord.Embed(
             title = 'Join Toggle',
             description = 'Auto role on join has been set to **False**',
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
         else:
             embed = discord.Embed(
             title = 'Join Toggle',
             description = 'Error',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await client.say(embed=embed)
 
@@ -487,7 +487,7 @@ async def jointoggle(ctx):
         embed = discord.Embed(
         title = 'Join Role',
         description = 'You do know have permission to use this command',
-        colour = discord.Colour.red()
+        color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -504,7 +504,7 @@ async def mod(ctx, user: discord.Member):
                 embed = discord.Embed(
                 title = 'Moderator',
                 description = 'Moderator role was removed from {}'.format(user.mention),
-                colour = discord.Colour.green()
+                color = discord.Color.green()
                 )
                 await client.say(embed=embed)
                 return
@@ -513,7 +513,7 @@ async def mod(ctx, user: discord.Member):
                 embed = discord.Embed(
                 title = 'Moderator',
                 description = 'The Moderator role has not been set, please use >modrole ROLE',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
                 )
                 await client.say(embed=embed)
             else:
@@ -522,7 +522,7 @@ async def mod(ctx, user: discord.Member):
                 embed = discord.Embed(
                 title = 'Moderator',
                 description = '{} has been given the Moderator role.'.format(user.mention),
-                colour = discord.Colour.green()
+                color = discord.Color.green()
                 )
                 await client.say(embed=embed)
 
@@ -538,7 +538,7 @@ async def admin(ctx, user: discord.Member):
             embed = discord.Embed(
             title = 'Administrator',
             description = 'Administrator role was removed from {}'.format(user.mention),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
             return
@@ -547,7 +547,7 @@ async def admin(ctx, user: discord.Member):
             embed = discord.Embed(
             title = 'Administrator',
             description = 'The Administrator role has not been set, please use >adminrole ROLE',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await client.say(embed=embed)
         else:
@@ -556,7 +556,7 @@ async def admin(ctx, user: discord.Member):
             embed = discord.Embed(
             title = 'Administrator',
             description = '{} has been given the Administrator role.'.format(user.mention),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
 
@@ -567,7 +567,7 @@ async def userid(ctx, user: discord.Member):
     embed = discord.Embed(
     title = '',
     description = "{}'s ID is `{}`".format(user.mention, user_id),
-    colour = discord.Colour.green()
+    color = discord.Color.green()
     )
     await client.say(embed=embed)
 
@@ -577,7 +577,7 @@ async def members(ctx):
     embed = discord.Embed(
     title = '',
     description = "There are `{}` members in this server.". format(len(server.members)),
-    colour = discord.Colour.green()
+    color = discord.Color.green()
     )
     await client.say(embed=embed)
 
@@ -594,7 +594,7 @@ async def mywarns(ctx):
         embed = discord.Embed(
         title = "Your Warnings".format(user),
         description = 'You have no warnings.',
-        colour = discord.Colour.green()
+        color = discord.Color.green()
         )
         await client.say(embed=embed)
         return
@@ -603,7 +603,7 @@ async def mywarns(ctx):
             embed = discord.Embed(
             title = "Your Warnings".format(user),
             description = 'You have no warnings.',
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
             return
@@ -616,7 +616,7 @@ async def mywarns(ctx):
             embed = discord.Embed(
                 title = "Your Warnings".format(user),
                 description = '',
-                colour = discord.Colour.blue()
+                color = discord.Color.blue()
             )
             await client.say('Do you want the list **Inline** ? (Yes/No)')
             user_response = await client.wait_for_message(timeout=30, channel=channel, author=author)
@@ -648,7 +648,7 @@ async def autoban(ctx, user: discord.Member):
         if isbanned == True:
             embed = discord.Embed(
                 description = "The user {} is already auto banned".format(user.mention),
-                colour = discord.Colour.red()
+                color = discord.Color.red()
             )
             await client.say(embed=embed)
         else:
@@ -660,13 +660,13 @@ async def autoban(ctx, user: discord.Member):
             await client.ban(user)
             embed = discord.Embed(
                 description = "The user {} has been auto banned".format(user.mention),
-                colour = discord.Colour.green()
+                color = discord.Color.green()
             )
             await client.say(embed=embed)
     else:
         embed = discord.Embed(
             description = "You don't have permission to use this command",
-            colour = discord.Colour.red()
+            color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -689,19 +689,19 @@ async def unautoban(ctx, id):
             json.dump(autobans, f)
             embed = discord.Embed(
                 description = "The user with the id `{}` has been removed from the autoban list".format(id),
-                colour = discord.Colour.green()
+                color = discord.Color.green()
             )
             await client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description = "The user with the id {} isn't auto banned".format(id),
-                colour = discord.Colour.red()
+                color = discord.Color.red()
             )
             await client.say(embed=embed)
     else:
         embed = discord.Embed(
             description = 'You do know have permission to use this command',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -716,19 +716,19 @@ async def resetsetting(ctx, setting = None):
             else:
                 embed = discord.Embed(
                     description = 'Invalid setting. Enter one of the following [setwarn]',
-                    colour = discord.Colour.red()
+                    color = discord.Color.red()
                 )
                 await client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description = 'You have not entered a setting. Enter one of the following [setwarn]',
-                colour = discord.Colour.red()
+                color = discord.Color.red()
             )
             await client.say(embed=embed)
     else:
         embed = discord.Embed(
             description = 'You do not have permission to use this command',
-            colour = discord.Colour.red()
+            color = discord.Color.red()
         )
         await client.say(embed=embed)
 
@@ -741,7 +741,7 @@ async def load(ctx, extension):
             embed = discord.Embed(
             title = 'Module Loaded',
             description = 'The module {} has been successfully loaded.'.format(extension),
-            colour = discord.Colour.green()
+            color = discord.Color.green()
             )
             await client.say(embed=embed)
         except Exception as error:
@@ -749,14 +749,14 @@ async def load(ctx, extension):
             embed = discord.Embed(
             title = 'Module Error',
             description = '{} cannot be loaded. [{}]'.format(extension, error),
-            colour = discord.Colour.red()
+            color = discord.Color.red()
             )
             await client.say(embed=embed)
     else:
         embed = discord.Embed(
         title = '',
         description = 'You do not have permission to use this command',
-        colour = discord.Colour.red()
+        color = discord.Color.red()
         )
         await client.say(embed=embed)
 
