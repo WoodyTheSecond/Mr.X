@@ -22,7 +22,7 @@ class Utility:
             )
 
             embed.set_image(url=self_image)
-            embed.set_author(name='Your Avatar', icon_url='https://i.imgur.com/qT9B2iy.png')
+            embed.set_author(name='Your Avatar')
         else:
             try:
                 embed = discord.Embed(
@@ -30,7 +30,7 @@ class Utility:
                 )
 
                 embed.set_image(url=user.avatar_url)
-                embed.set_author(name="{}'s Avatar".format(user), icon_url='https://i.imgur.com/qT9B2iy.png')
+                embed.set_author(name="{}'s Avatar".format(user))
 
                 await self.client.say(embed=embed)
             except on_error:
