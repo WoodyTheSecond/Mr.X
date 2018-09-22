@@ -328,7 +328,7 @@ class Utility:
             embed.add_field(name="Status", value="{}".format(status), inline=True)
             embed.add_field(name="Joined", value="{}".format(joindate), inline=True)
             embed.add_field(name="Registered", value="{}".format(registerdate), inline=True)
-            embed.add_field(name="Roles [{}]".format(rolecount), value="{}".format(roles), inline=True)
+            embed.add_field(name="Roles [{}]".format(rolecount), value="{}".format(roles), inline=False)
             embed.set_footer(text="ID: {} • {}".format(author.id, currentdate))
 
             await self.client.say(embed=embed)
@@ -363,7 +363,7 @@ class Utility:
             embed.add_field(name="Status", value="{}".format(status), inline=True)
             embed.add_field(name="Joined", value="{}".format(joindate), inline=True)
             embed.add_field(name="Registered", value="{}".format(registerdate), inline=True)
-            embed.add_field(name="Roles [{}]".format(rolecount), value="{}".format(roles), inline=True)
+            embed.add_field(name="Roles [{}]".format(rolecount), value="{}".format(roles), inline=False)
             embed.set_footer(text="ID: {} • {}".format(user.id, currentdate))
 
             await self.client.say(embed=embed)
