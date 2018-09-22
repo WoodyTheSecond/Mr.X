@@ -6,6 +6,7 @@ import random
 from discord.ext.commands import Bot
 from discord.ext import commands
 from random import randint
+import datetime
 class Utility:
     def __init__(self, client):
         self.client = client
@@ -292,6 +293,79 @@ class Utility:
                 description = 'You do not have permission to use this command.',
                 color = discord.Color.red()
             )
+            await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def userinfo(self, ctx, user: discord.Member = None):
+        author = ctx.message.author
+        if user == None:
+            status = None
+            rolecount = 0
+            roles = None
+            joindate = author.joined_at.strftime("%b %e, %Y %I:%M %p")
+            registerdate = author.created_at.strftime("%b %e, %Y %I:%M %p")
+            currentdate = datetime.datetime.now().strftime("%b %e, %Y %I:%M %p")
+            if str(author.status) == "online":
+                status = "Online"
+            elif str(author.status) == "offline":
+                status = "Offline"
+
+            for role in author.roles:
+                if role.name != "@everyone":
+                    rolecount += 1
+                    if roles == None:
+                        roles = "{}".format(role.mention)
+                    else:
+                        roles += " {}".format(role.mention)
+
+            embed = discord.Embed(
+                description = "{}".format(author.mention),
+                color = discord.Color.green()
+            )
+
+            embed.set_author(name="{}".format(str(author)), icon_url=author.avatar_url)
+            embed.set_thumbnail(url=author.avatar_url)
+            embed.add_field(name="Status", value="{}".format(status), inline=True)
+            embed.add_field(name="Joined", value="{}".format(joindate), inline=True)
+            embed.add_field(name="Registered", value="{}".format(registerdate), inline=True)
+            embed.add_field(name="Roles [{}]".format(rolecount), value="{}".format(roles), inline=True)
+            embed.set_footer(text="ID: {} • {}".format(author.id, currentdate))
+
+            await self.client.say(embed=embed)
+        else:
+            status = None
+            if str(user.status) == "online":
+                status = "Online"
+            elif str(user.status) == "offline":
+                status = "Offline"
+
+            rolecount = 0
+            roles = None
+            joindate = user.joined_at.strftime("%b %e, %Y %I:%M %p")
+            registerdate = user.created_at.strftime("%b %e, %Y %I:%M %p")
+            currentdate = datetime.datetime.now().strftime("%b %e, %Y %I:%M %p")
+            for role in user.roles:
+                if role.name != "@everyone":
+                    rolecount += 1
+                    if roles == None:
+                        roles = "{}".format(role.mention)
+                    else:
+                        roles += " {}".format(role.mention)
+
+
+            embed = discord.Embed(
+                description = "{}".format(user.mention),
+                color = discord.Color.green()
+            )
+
+            embed.set_author(name="{}".format(str(user)), icon_url=user.avatar_url)
+            embed.set_thumbnail(url=user.avatar_url)
+            embed.add_field(name="Status", value="{}".format(status), inline=True)
+            embed.add_field(name="Joined", value="{}".format(joindate), inline=True)
+            embed.add_field(name="Registered", value="{}".format(registerdate), inline=True)
+            embed.add_field(name="Roles [{}]".format(rolecount), value="{}".format(roles), inline=True)
+            embed.set_footer(text="ID: {} • {}".format(user.id, currentdate))
+
             await self.client.say(embed=embed)
 
 def setup(client):
