@@ -1,5 +1,6 @@
 from discord.ext import commands
 import discord.utils
+import pymysql
 
 def is_owner_check(ctx):
     _id = ctx.message.author.id

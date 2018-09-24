@@ -7,10 +7,70 @@ from discord.ext.commands import Bot
 from discord.ext import commands
 from random import randint
 import datetime
+import pymysql
+
 class Utility:
     def __init__(self, client):
         self.client = client
 
+    def check_database_multiple(self, conn, server, setting):
+        c = conn.cursor()
+        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
+        c.execute(sql)
+        conn.commit()
+        data = c.fetchone()
+        for row in data:
+            if row == 1:
+                return True
+            elif row == 0:
+                return False
+            else:
+                return row
+
+    def check_database(self, server, setting):
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        c = conn.cursor()
+        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
+        c.execute(sql)
+        conn.commit()
+        data = c.fetchone()
+        conn.close()
+        for row in data:
+            if row == 1:
+                return True
+            elif row == 0:
+                return False
+            else:
+                return row
+
+    def is_allowed_by_hierarchy(self, server, mod, user):
+        setting = self.check_database(server, "Ignore_Hierarchy")
+        toggle = setting
+        special = mod == server.owner or mod.id == self.client.settings.owner
+        if toggle == False:
+            if mod.top_role.position > user.top_role.position:
+                return False
+            else:
+                return True
+        else:
+            return True
+
+    def is_mod_or_perms(self, server, mod):
+        conn = pymysql.connect(host='sql7.freesqldatabase.com', user='sql7257339', password='yakm4fsd4T', db='sql7257339')
+        t_modrole = self.check_database_multiple(conn, server, "Mod_Role")
+        t_adminrole = self.check_database_multiple(conn, server, "Admin_Role")
+        conn.close()
+        if discord.utils.get(mod.roles, name=t_modrole) or mod.server_permissions.administrator or mod.id == '164068466129633280' or mod.id == '142002197998206976' or discord.utils.get(mod.roles, name=t_modrole):
+            return True
+        else:
+            return False
+
+    def is_admin_or_perms(self, server, mod):
+        t_adminrole = self.check_database(server, "Admin_Role")
+        if discord.utils.get(mod.roles, name=t_adminrole) or mod.server_permissions.administrator or mod.id == '164068466129633280' or mod.id == '142002197998206976':
+            return True
+        else:
+            return False
 
     @commands.command(pass_context=True)
     async def avatar(self, ctx, user: discord.Member = None):
@@ -25,17 +85,15 @@ class Utility:
             embed.set_image(url=self_image)
             embed.set_author(name='Your Avatar')
         else:
-            try:
-                embed = discord.Embed(
-                    color = discord.Color.green()
-                )
+            embed = discord.Embed(
+                color = discord.Color.green()
+            )
 
-                embed.set_image(url=user.avatar_url)
-                embed.set_author(name="{}'s Avatar".format(user))
+            embed.set_image(url=user.avatar_url)
+            embed.set_author(name="{}'s Avatar".format(user))
 
-                await self.client.say(embed=embed)
-            except on_error:
-                print("Error")
+            await self.client.say(embed=embed)
+
 
     @commands.command(pass_context=True)
     async def help(self, ctx):
@@ -80,6 +138,7 @@ class Utility:
             embed.add_field(name='unban USER_ID', value='Unbans the user with ID', inline=False)
             embed.add_field(name='mute user M/H', value='Mutes the user for the given time', inline=False)
             embed.add_field(name='unmute user', value='Unmutes the user', inline=False)
+            embed.add_field(name='clear AMOUNT', value='Clears the amount of messages given, if no amount is given it clears 100', inline=False)
             embed.add_field(name='nickname user NAME', value='Nicknames the user with the given name', inline=False)
             embed.add_field(name='removenick user', value='Removes the users nickname', inline=False)
             embed.add_field(name='clearwarns user', value='Clears the users warnings', inline=False)
@@ -149,7 +208,6 @@ class Utility:
             embed.set_author(name='Utility Module')
             embed.add_field(name='help', value='Shows list of modules and command list', inline=False)
             embed.add_field(name='avatar [user]', value='Shows your own avatar or the given users avatar', inline=False)
-            embed.add_field(name='clear AMOUNT', value='Clears the amount of messages given, if no amount is given it clears 100', inline=False)
             embed.add_field(name='mywarns', value='Displays your warnings', inline=False)
             embed.add_field(name='flipcoin', value='Flips a coin and will either land on Heads or Tails', inline=False)
             embed.add_field(name='rolldice', value='Rolls a dice and will land on a number between 1 - 6', inline=False)
@@ -192,34 +250,6 @@ class Utility:
         )
         await self.client.say(embed=embed)
 
-    @commands.command(pass_context=True)
-    async def clear(self, ctx, amount=100):
-        channel = ctx.message.channel
-        messages = []
-        try:
-            i = int(amount)
-            print(i)
-            if amount < 2:
-                embed = discord.Embed(
-                    title = 'Clear',
-                    description = 'The amount cannot be less than 2',
-                    color = discord.Color.red()
-                )
-                await self.client.say(embed=embed)
-            elif amount > 100:
-                embed = discord.Embed(
-                    title = 'Clear',
-                    description = 'You cannot clear more than 100 messages.',
-                    color = discord.Color.red()
-                )
-                await self.client.say(embed=embed)
-            else:
-
-                async for message in self.client.logs_from(channel, limit=int(amount)):
-                    messages.append(message)
-                await self.client.delete_messages(messages)
-        except ValueError:
-            print("Error")
 
     @commands.command(pass_context=True)
     async def getservers(self, ctx):

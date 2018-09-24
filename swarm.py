@@ -7,6 +7,7 @@ import random
 from discord.ext.commands import Bot
 from discord.ext import commands
 from random import randint
+import pymysql
 
 class Swarm:
     def __init__(self, client):

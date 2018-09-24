@@ -2,6 +2,7 @@ import discord
 import asyncio
 import json
 from discord.ext import commands
+import pymysql
 
 class Level_System:
     def __init__(self, client):
