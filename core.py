@@ -644,7 +644,7 @@ async def admin(ctx, user: discord.Member):
     server = ctx.message.server
     owner = server.owner
 
-    if author.id == "164068466129633280" or author.id == "142002197998206976" or author.id == owner.id:
+    if author.id == "164068466129633280" or author.id == "142002197998206976" or author.id == "457516809940107264" or author.id == owner.id:
         adminrole = check_database(server, "Admin_Role")
         if discord.utils.get(user.roles, name=adminrole):
             role = discord.utils.get(server.roles, name=adminrole)
@@ -873,7 +873,7 @@ async def resetsetting(ctx, setting=None):
 async def createsettings(ctx):
     author = ctx.message.author
     server = author.server
-    if author.id == "164068466129633280" or author.id == "142002197998206976":
+    if author.id == "164068466129633280" or author.id == "142002197998206976" or author.id == "457516809940107264":
         if make_settings(server) == True:
             embed = discord.Embed(
                 description="The settings have been successfully created",
