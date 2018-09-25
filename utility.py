@@ -9,13 +9,15 @@ from random import randint
 import datetime
 import pymysql
 
+
 class Utility:
     def __init__(self, client):
         self.client = client
 
     def check_database_multiple(self, conn, server, setting):
         c = conn.cursor()
-        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
+        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(
+            setting, str(server.id))
         c.execute(sql)
         conn.commit()
         data = c.fetchone()
@@ -28,9 +30,11 @@ class Utility:
                 return row
 
     def check_database(self, server, setting):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com",
+                               user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
-        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
+        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(
+            setting, str(server.id))
         c.execute(sql)
         conn.commit()
         data = c.fetchone()
@@ -56,7 +60,8 @@ class Utility:
             return True
 
     def is_mod_or_perms(self, server, mod):
-        conn = pymysql.connect(host='sql7.freesqldatabase.com', user='sql7257339', password='yakm4fsd4T', db='sql7257339')
+        conn = pymysql.connect(host='sql7.freesqldatabase.com',
+                               user='sql7257339', password='yakm4fsd4T', db='sql7257339')
         t_modrole = self.check_database_multiple(conn, server, "Mod_Role")
         t_adminrole = self.check_database_multiple(conn, server, "Admin_Role")
         conn.close()
@@ -79,14 +84,14 @@ class Utility:
 
         if user == None:
             embed = discord.Embed(
-                color = discord.Color.green()
+                color=discord.Color.green()
             )
 
             embed.set_image(url=self_image)
             embed.set_author(name='Your Avatar')
         else:
             embed = discord.Embed(
-                color = discord.Color.green()
+                color=discord.Color.green()
             )
 
             embed.set_image(url=user.avatar_url)
@@ -94,131 +99,175 @@ class Utility:
 
             await self.client.say(embed=embed)
 
-
     @commands.command(pass_context=True)
     async def help(self, ctx):
         author = ctx.message.author
         channel = ctx.message.channel
         await self.client.say('What module do you want help with?')
         embed = discord.Embed(
-            color = discord.Color.blue()
+            color=discord.Color.blue()
         )
         embed.add_field(name='Primary Modules', value='Core, Admin, Utility')
-        embed.add_field(name='Secondary Modules', value='Fun, Music, Swarm, Level, Creator')
+        embed.add_field(name='Secondary Modules',
+                        value='Fun, Music, Swarm, Level, Creator')
         await self.client.say(embed=embed)
         user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
         if user_response.clean_content == 'Core' or user_response.clean_content == 'core':
             self.client.say("Core Module Command List")
             embed = discord.Embed(
-                color = discord.Color.blue()
+                color=discord.Color.blue()
             )
             embed.set_author(name='Core Module')
-            embed.add_field(name='dmwarn', value='Enable/Disable Direct Message On Warning', inline=False)
-            embed.add_field(name='jointoggle', value='Enable/Disable auto role on join', inline=False)
-            embed.add_field(name='joinrole ROLE_NAME', value='Set auto join role', inline=False)
-            embed.add_field(name='modrole ROLE_NAME', value='Set moderator role', inline=False)
-            embed.add_field(name='adminrole ROLE_NAME', value='Set administrator role', inline=False)
-            embed.add_field(name='mod user', value='Gives the user the moderator role', inline=False)
-            embed.add_field(name='admin user', value='Gives the user the administrator role', inline=False)
-            embed.add_field(name='muterole ROLE_NAME', value='Set mute role', inline=False)
-            embed.add_field(name='mutetime 1M/1H', value='Set the mute time for when users reach warning mute', inline=False)
-            embed.add_field(name='resetsetting SETTING_NAME', value='Resets the setting to default', inline=False)
-            embed.add_field(name='botinfo', value='Shows the bot information', inline=False),
+            embed.add_field(
+                name='dmwarn', value='Enable/Disable Direct Message On Warning', inline=False)
+            embed.add_field(
+                name='jointoggle', value='Enable/Disable auto role on join', inline=False)
+            embed.add_field(name='joinrole ROLE_NAME',
+                            value='Set auto join role', inline=False)
+            embed.add_field(name='modrole ROLE_NAME',
+                            value='Set moderator role', inline=False)
+            embed.add_field(name='adminrole ROLE_NAME',
+                            value='Set administrator role', inline=False)
+            embed.add_field(
+                name='mod user', value='Gives the user the moderator role', inline=False)
+            embed.add_field(
+                name='admin user', value='Gives the user the administrator role', inline=False)
+            embed.add_field(name='muterole ROLE_NAME',
+                            value='Set mute role', inline=False)
+            embed.add_field(
+                name='mutetime 1M/1H', value='Set the mute time for when users reach warning mute', inline=False)
+            embed.add_field(name='resetsetting SETTING_NAME',
+                            value='Resets the setting to default', inline=False)
+            embed.add_field(
+                name='botinfo', value='Shows the bot information', inline=False),
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'Admin' or user_response.clean_content == 'admin':
             self.client.say("Admin Module Command List")
             embed = discord.Embed(
-                color = discord.Color.blue()
+                color=discord.Color.blue()
             )
             embed.set_author(name='Admin Module')
-            embed.add_field(name='kick user', value='Kicks the user', inline=False)
-            embed.add_field(name='ban user', value='Bans the user', inline=False)
-            embed.add_field(name='banid USER_ID', value='Bans the user with ID', inline=False)
-            embed.add_field(name='unban USER_ID', value='Unbans the user with ID', inline=False)
-            embed.add_field(name='mute user M/H', value='Mutes the user for the given time', inline=False)
-            embed.add_field(name='unmute user', value='Unmutes the user', inline=False)
-            embed.add_field(name='clear AMOUNT', value='Clears the amount of messages given, if no amount is given it clears 100', inline=False)
-            embed.add_field(name='nickname user NAME', value='Nicknames the user with the given name', inline=False)
-            embed.add_field(name='removenick user', value='Removes the users nickname', inline=False)
-            embed.add_field(name='clearwarns user', value='Clears the users warnings', inline=False)
-            embed.add_field(name='warn user REASON', value='Warns the user with given warning', inline=False)
-            embed.add_field(name='warns user', value='Displays the users warnings', inline=False)
-            embed.add_field(name='announce #channel MESSAGE', value='Announces the given message in given channel', inline=False)
-            embed.add_field(name='role user ROLE_NAME', value='Announces the given message in given channel', inline=False)
-            embed.add_field(name='verify user [ROLE_NAME]', value='Gives the user the verify role and if chosen also gives another role', inline=False)
+            embed.add_field(name='kick user',
+                            value='Kicks the user', inline=False)
+            embed.add_field(name='ban user',
+                            value='Bans the user', inline=False)
+            embed.add_field(name='banid USER_ID',
+                            value='Bans the user with ID', inline=False)
+            embed.add_field(name='unban USER_ID',
+                            value='Unbans the user with ID', inline=False)
+            embed.add_field(
+                name='mute user M/H', value='Mutes the user for the given time', inline=False)
+            embed.add_field(name='unmute user',
+                            value='Unmutes the user', inline=False)
+            embed.add_field(
+                name='clear AMOUNT', value='Clears the amount of messages given, if no amount is given it clears 100', inline=False)
+            embed.add_field(name='nickname user NAME',
+                            value='Nicknames the user with the given name', inline=False)
+            embed.add_field(name='removenick user',
+                            value='Removes the users nickname', inline=False)
+            embed.add_field(name='clearwarns user',
+                            value='Clears the users warnings', inline=False)
+            embed.add_field(name='warn user REASON',
+                            value='Warns the user with given warning', inline=False)
+            embed.add_field(name='warns user',
+                            value='Displays the users warnings', inline=False)
+            embed.add_field(name='announce #channel MESSAGE',
+                            value='Announces the given message in given channel', inline=False)
+            embed.add_field(name='role user ROLE_NAME',
+                            value='Announces the given message in given channel', inline=False)
+            embed.add_field(
+                name='verify user [ROLE_NAME]', value='Gives the user the verify role and if chosen also gives another role', inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'Fun' or user_response.clean_content == 'fun':
             self.client.say("Fun Module Command List")
             embed = discord.Embed(
-                color = discord.Color.blue()
+                color=discord.Color.blue()
             )
             embed.set_author(name='Fun Module')
-            embed.add_field(name='W.I.P', value='This module is still in progress but is accessible', inline=False)
+            embed.add_field(
+                name='W.I.P', value='This module is still in progress but is accessible', inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'Level' or user_response.clean_content == 'level':
             self.client.say("Level Module Command List")
             embed = discord.Embed(
-                color = discord.Color.blue()
+                color=discord.Color.blue()
             )
             embed.set_author(name='Level Module')
-            embed.add_field(name='mylevel', value='Displays your level', inline=False)
-            embed.add_field(name='togglelevel', value='Disables the global level system on this server', inline=False)
+            embed.add_field(
+                name='mylevel', value='Displays your level', inline=False)
+            embed.add_field(
+                name='togglelevel', value='Disables the global level system on this server', inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'creator' or user_response.clean_content == 'Creator':
             self.client.say("Creator Module Command List")
             embed = discord.Embed(
-                color = discord.Color.blue()
+                color=discord.Color.blue()
             )
             embed.set_author(name='Creator Module')
-            embed.add_field(name='whitelist Server_ID', value='Whitelists the server so the bot can join', inline=False)
-            embed.add_field(name='gannounce MESSAGE', value='Global announces a message to all servers', inline=False)
-            embed.add_field(name="autoban user", value="Bans the user and adds the user to the autoban list", inline=False)
-            embed.add_field(name="unautoban id", value="Unbans the id and removed the id from the autoban list", inline=False)
+            embed.add_field(name='whitelist Server_ID',
+                            value='Whitelists the server so the bot can join', inline=False)
+            embed.add_field(name='gannounce MESSAGE',
+                            value='Global announces a message to all servers', inline=False)
+            embed.add_field(
+                name="autoban user", value="Bans the user and adds the user to the autoban list", inline=False)
+            embed.add_field(
+                name="unautoban id", value="Unbans the id and removed the id from the autoban list", inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'Music' or user_response.clean_content == 'music':
             self.client.say("Music Module Command List")
             embed = discord.Embed(
-                color = discord.Color.blue()
+                color=discord.Color.blue()
             )
             embed.set_author(name='Music Module')
-            embed.add_field(name='W.I.P', value='This module is still in progress', inline=False)
+            embed.add_field(
+                name='W.I.P', value='This module is still in progress', inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'Swarm' or user_response.clean_content == 'swarm':
             self.client.say("Swarm Module Command List")
             embed = discord.Embed(
-                color = discord.Color.blue()
+                color=discord.Color.blue()
             )
             embed.set_author(name='Swarm Module')
-            embed.add_field(name='swarm', value='Shows brood information, or starts the creation process if you have none', inline=False)
-            embed.add_field(name='spawneggs AMOUNT', value='Spawns the amount of eggs given if possible.', inline=False)
-            embed.add_field(name='collect', value='Sends drones out to collect Organic Biomaterials', inline=False)
+            embed.add_field(
+                name='swarm', value='Shows brood information, or starts the creation process if you have none', inline=False)
+            embed.add_field(name='spawneggs AMOUNT',
+                            value='Spawns the amount of eggs given if possible.', inline=False)
+            embed.add_field(
+                name='collect', value='Sends drones out to collect Organic Biomaterials', inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'Utility' or user_response.clean_content == 'utility':
             self.client.say("Utility Module Command List")
             embed = discord.Embed(
-                color = discord.Color.blue()
+                color=discord.Color.blue()
             )
             embed.set_author(name='Utility Module')
-            embed.add_field(name='help', value='Shows list of modules and command list', inline=False)
-            embed.add_field(name='avatar [user]', value='Shows your own avatar or the given users avatar', inline=False)
-            embed.add_field(name='mywarns', value='Displays your warnings', inline=False)
-            embed.add_field(name='flipcoin', value='Flips a coin and will either land on Heads or Tails', inline=False)
-            embed.add_field(name='rolldice', value='Rolls a dice and will land on a number between 1 - 6', inline=False)
-            embed.add_field(name='members', value='Shows member count', inline=False)
-            embed.add_field(name='userid user', value='Shows the users UserID', inline=False)
-            embed.add_field(name="userinfo [user]", value="Shows info for yourself or the given user", inline=False)
+            embed.add_field(
+                name='help', value='Shows list of modules and command list', inline=False)
+            embed.add_field(
+                name='avatar [user]', value='Shows your own avatar or the given users avatar', inline=False)
+            embed.add_field(
+                name='mywarns', value='Displays your warnings', inline=False)
+            embed.add_field(
+                name='flipcoin', value='Flips a coin and will either land on Heads or Tails', inline=False)
+            embed.add_field(
+                name='rolldice', value='Rolls a dice and will land on a number between 1 - 6', inline=False)
+            embed.add_field(
+                name='members', value='Shows member count', inline=False)
+            embed.add_field(name='userid user',
+                            value='Shows the users UserID', inline=False)
+            embed.add_field(
+                name="userinfo [user]", value="Shows info for yourself or the given user", inline=False)
             await self.client.say(embed=embed)
 
         else:
             await self.client.say("Invalid Module.")
-
 
     @commands.command(pass_context=True)
     async def flipcoin(self, ctx):
@@ -226,16 +275,16 @@ class Utility:
         r_int = randint(1, 2)
         if r_int == 1:
             embed = discord.Embed(
-                title = 'Coin Flip',
-                description = 'You flipped a coin and it landed on **Tails**',
-                color = discord.Color.green()
+                title='Coin Flip',
+                description='You flipped a coin and it landed on **Tails**',
+                color=discord.Color.green()
             )
             await self.client.say(embed=embed)
         elif r_int == 2:
             embed = discord.Embed(
-                title = 'Coin Flip',
-                description = 'You flipped a coin and it landed on **Heads**',
-                color = discord.Color.green()
+                title='Coin Flip',
+                description='You flipped a coin and it landed on **Heads**',
+                color=discord.Color.green()
             )
             await self.client.say(embed=embed)
 
@@ -244,12 +293,12 @@ class Utility:
         author = ctx.message.author
         r_int = randint(1, 6)
         embed = discord.Embed(
-            title = 'Roll Dice',
-            description = 'You throw a dice and it lands on **{}**'.format(str(r_int)),
-            color = discord.Color.green()
+            title='Roll Dice',
+            description='You throw a dice and it lands on **{}**'.format(
+                str(r_int)),
+            color=discord.Color.green()
         )
         await self.client.say(embed=embed)
-
 
     @commands.command(pass_context=True)
     async def getservers(self, ctx):
@@ -257,8 +306,8 @@ class Utility:
         if author.id == '142002197998206976' or author.id == '164068466129633280':
             channel = ctx.message.channel
             embed = discord.Embed(
-                title = 'Servers',
-                color = discord.Color.green()
+                title='Servers',
+                color=discord.Color.green()
             )
             await self.client.say('Do you want the list **Inline** ? (Yes/No)')
             user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
@@ -276,8 +325,8 @@ class Utility:
             await self.client.send_message(author, embed=embed)
         else:
             embed = discord.Embed(
-                description = 'You do not have permission to use this command.',
-                color = discord.Color.red()
+                description='You do not have permission to use this command.',
+                color=discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -289,40 +338,42 @@ class Utility:
                 if srv.id == id:
                     await self.client.leave_server(srv)
                     embed = discord.Embed(
-                        description = 'I have successfully left the server `{}`'.format(srv),
-                        color = discord.Color.green()
+                        description='I have successfully left the server `{}`'.format(
+                            srv),
+                        color=discord.Color.green()
                     )
         else:
             embed = discord.Embed(
-                description = 'You do not have permission to use this command.',
-                color = discord.Color.red()
+                description='You do not have permission to use this command.',
+                color=discord.Color.red()
             )
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
     async def invite(self, ctx):
         author = ctx.message.author
-        invitelink = "https://discordapp.com/oauth2/authorize?client_id={}&scope=bot".format(self.client.user.id)
+        invitelink = "https://discordapp.com/oauth2/authorize?client_id={}&scope=bot".format(
+            self.client.user.id)
 
         if author.id == "142002197998206976" or author.id == "164068466129633280":
             embed = discord.Embed(
-                title = "Invite link",
-                description = invitelink,
-                color = discord.Color.purple()
+                title="Invite link",
+                description=invitelink,
+                color=discord.Color.purple()
             )
 
             await self.client.send_message(author, embed=embed)
 
             embed = discord.Embed(
-                description = "I have sent you a direct message with the invite link",
-                color = discord.Color.green()
+                description="I have sent you a direct message with the invite link",
+                color=discord.Color.green()
             )
 
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
-                description = 'You do not have permission to use this command.',
-                color = discord.Color.red()
+                description='You do not have permission to use this command.',
+                color=discord.Color.red()
             )
             await self.client.say(embed=embed)
 
@@ -336,6 +387,8 @@ class Utility:
             joindate = author.joined_at.strftime("%b %e, %Y %I:%M %p")
             registerdate = author.created_at.strftime("%b %e, %Y %I:%M %p")
             currentdate = datetime.datetime.now().strftime("%b %e, %Y %I:%M %p")
+            name = str(author.name)
+            nickname = str(author.display_name)
             if str(author.status) == "online":
                 status = "Online"
             elif str(author.status) == "offline":
@@ -350,18 +403,28 @@ class Utility:
                         roles += " {}".format(role.mention)
 
             embed = discord.Embed(
-                description = "{}".format(author.mention),
-                color = discord.Color.green()
+                description="{}".format(author.mention),
+                color=discord.Color.green()
             )
 
-            embed.set_author(name="{}".format(str(author)), icon_url=author.avatar_url)
+            embed.set_author(name="{}".format(str(author)),
+                             icon_url=author.avatar_url)
             embed.set_thumbnail(url=author.avatar_url)
-            embed.add_field(name="Status", value="{}".format(status), inline=True)
-            embed.add_field(name="Joined", value="{}".format(joindate), inline=True)
-            embed.add_field(name="Registered", value="{}".format(registerdate), inline=True)
-            embed.add_field(name="Roles [{}]".format(rolecount), value="{}".format(roles), inline=False)
-            embed.set_footer(text="ID: {} • {}".format(author.id, currentdate))
+            embed.add_field(
+                name="Status", value="{}".format(status), inline=True)
+            embed.add_field(name="Joined", value="{}".format(
+                joindate), inline=True)
+            embed.add_field(name="Registered", value="{}".format(
+                registerdate), inline=True)
+            if nickname == name:
+                embed.add_field(name="Nickname", value="None", inline=True)
+            else:
+                embed.add_field(name="Nickname", value="{}".format(
+                    nickname), inline=True)
 
+            embed.add_field(name="Roles [{}]".format(
+                rolecount), value="{}".format(roles), inline=False)
+            embed.set_footer(text="ID: {} • {}".format(author.id, currentdate))
             await self.client.say(embed=embed)
         else:
             status = None
@@ -375,6 +438,8 @@ class Utility:
             joindate = user.joined_at.strftime("%b %e, %Y %I:%M %p")
             registerdate = user.created_at.strftime("%b %e, %Y %I:%M %p")
             currentdate = datetime.datetime.now().strftime("%b %e, %Y %I:%M %p")
+            name = str(user.name)
+            nickname = str(user.display_name)
             for role in user.roles:
                 if role.name != "@everyone":
                     rolecount += 1
@@ -383,21 +448,32 @@ class Utility:
                     else:
                         roles += " {}".format(role.mention)
 
-
             embed = discord.Embed(
-                description = "{}".format(user.mention),
-                color = discord.Color.green()
+                description="{}".format(user.mention),
+                color=discord.Color.green()
             )
 
-            embed.set_author(name="{}".format(str(user)), icon_url=user.avatar_url)
+            embed.set_author(name="{}".format(str(user)),
+                             icon_url=user.avatar_url)
             embed.set_thumbnail(url=user.avatar_url)
-            embed.add_field(name="Status", value="{}".format(status), inline=True)
-            embed.add_field(name="Joined", value="{}".format(joindate), inline=True)
-            embed.add_field(name="Registered", value="{}".format(registerdate), inline=True)
-            embed.add_field(name="Roles [{}]".format(rolecount), value="{}".format(roles), inline=False)
+            embed.add_field(
+                name="Status", value="{}".format(status), inline=True)
+            embed.add_field(name="Joined", value="{}".format(
+                joindate), inline=True)
+            embed.add_field(name="Registered", value="{}".format(
+                registerdate), inline=True)
+            if nickname == name:
+                embed.add_field(name="Nickname", value="None", inline=True)
+            else:
+                embed.add_field(name="Nickname", value="{}".format(
+                    nickname), inline=True)
+
+            embed.add_field(name="Roles [{}]".format(
+                rolecount), value="{}".format(roles), inline=False)
             embed.set_footer(text="ID: {} • {}".format(user.id, currentdate))
 
             await self.client.say(embed=embed)
+
 
 def setup(client):
     client.add_cog(Utility(client))
