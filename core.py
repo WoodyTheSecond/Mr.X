@@ -897,7 +897,8 @@ async def createsettings(ctx):
 
 @client.command(pass_context=True)
 async def load(ctx, extension):
-    if ctx.message.author.id == 164068466129633280 or ctx.message.author.id == 142002197998206976:
+    author = ctx.message.author
+    if author.id == "164068466129633280" or author.id == "142002197998206976" or author.id == "457516809940107264":
         try:
             client.load_extension(extension)
             embed = discord.Embed(
@@ -926,7 +927,8 @@ async def load(ctx, extension):
 
 @client.command(pass_context=True)
 async def unload(ctx, extension):
-    if ctx.message.author.id == 164068466129633280 or ctx.message.author.id == 142002197998206976:
+    author = ctx.message.author
+    if author.id == "164068466129633280" or author.id == "142002197998206976" or author.id == "457516809940107264":
         try:
             client.unload_extension(extension)
             print("Unloaded {}".format(extension))
