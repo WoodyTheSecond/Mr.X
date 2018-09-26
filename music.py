@@ -10,7 +10,7 @@ class Music:
     def __init__(self, client):
         self.client = client
 
-    def check_queue(id):
+    def check_queue(self, id):
         if queues[id] != []:
             player = queues[id].pop(0)
             players[id] = player
@@ -25,7 +25,7 @@ class Music:
     async def play(self, ctx, url):
         server = ctx.message.server
         voice_client = self.client.voice_client_in(server)
-        player = await voice_client.create_ytdl_player(url, after=lambda: check_queue(server.id))
+        player = await voice_client.create_ytdl_player(url, after=lambda: self.check_queue(server.id))
         players[server.id] = player
         player.start()
 

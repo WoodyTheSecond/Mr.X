@@ -687,7 +687,6 @@ async def admin(ctx, user: discord.Member):
 
 @client.command(pass_context=True)
 async def userid(ctx, user: discord.Member):
-    author = ctx.message.author
     user_id = user.id
     embed = discord.Embed(
         title='',
@@ -843,7 +842,6 @@ async def unautoban(ctx, id):
 @client.command(pass_context=True)
 async def resetsetting(ctx, setting=None):
     author = ctx.message.author
-    server = author.server
     if author.server_permissions.administrator:
         if setting != None:
             if setting == "setwarn":

@@ -14,7 +14,7 @@ class Swarm:
         self.client = client
 
 
-    def update_brood(user, setting, set):
+    def update_brood(self, user, setting, set):
             with open('brood_list.json', 'r') as f:
                 brood_list = json.load(f)
                 brood_list[user.id][setting] = set
@@ -117,7 +117,6 @@ class Swarm:
     @commands.command(pass_context=True)
     async def swarm(self, ctx):
         author = ctx.message.author
-        server = ctx.message.server
         channel = ctx.message.channel
         with open('brood_list.json') as json_file:
             brood_list = json.load(json_file)
