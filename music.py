@@ -24,7 +24,7 @@ class Music:
     @commands.command(pass_context=True)
     async def play(self, ctx, url):
         server = ctx.message.server
-        voice_client = self.client.voice_client_in(server)
+        voice_client = self.client.voice_client_in(server.id)
         player = await voice_client.create_ytdl_player(url, after=lambda: self.check_queue(server.id))
         players[server.id] = player
         player.start()
@@ -32,7 +32,7 @@ class Music:
     @commands.command(pass_context=True)
     async def leave(self, ctx):
         server = ctx.message.server
-        voice_client = self.client.voice_client_in(server)
+        voice_client = self.client.voice_client_in(server.id)
         await voice_client.disconnect()
 
     @commands.command(pass_context=True)
@@ -54,7 +54,7 @@ class Music:
     @commands.command(pass_context=True)
     async def queue(self, ctx, url):
         server = ctx.message.server
-        voice_client = self.client.voice_client_in(server)
+        voice_client = self.client.voice_client_in(server.id)
         player = await voice_client.create_ytdl_player(url)
 
         if server.id in queues:
