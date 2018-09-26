@@ -9,7 +9,6 @@ from random import randint
 import datetime
 import pymysql
 
-
 class Utility:
     def __init__(self, client):
         self.client = client
@@ -59,15 +58,7 @@ class Utility:
             return True
 
     def is_mod_or_perms(self, server, mod):
-<<<<<<< HEAD
         t_modrole = self.check_database(server, "Mod_Role")
-=======
-        conn = pymysql.connect(host='sql7.freesqldatabase.com',
-                               user='sql7257339', password='yakm4fsd4T', db='sql7257339')
-        t_modrole = self.check_database_multiple(conn, server, "Mod_Role")
-        t_adminrole = self.check_database_multiple(conn, server, "Admin_Role")
-        conn.close()
->>>>>>> 0294ec8d1715eac287354e3b471d84c9b55b51c6
         if discord.utils.get(mod.roles, name=t_modrole) or mod.server_permissions.administrator or mod.id == '164068466129633280' or mod.id == '142002197998206976' or discord.utils.get(mod.roles, name=t_modrole):
             return True
         else:
