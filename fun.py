@@ -157,7 +157,7 @@ class Fun:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def anal(self, ctx):
+    async def hanal(self, ctx):
         if await self.is_nsfw(ctx.message.channel):
             req = urllib.request.Request("https://nekobot.xyz/api/image?type=hentai_anal", headers={"User-Agent": "Mozilla/5.0"})
             fp = urllib.request.urlopen(req)

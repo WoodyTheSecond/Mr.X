@@ -180,8 +180,16 @@ class Utility:
                 color=discord.Color.blue()
             )
             embed.set_author(name='Fun Module')
-            embed.add_field(
-                name='W.I.P', value='This module is still in progress but is accessible', inline=False)
+            embed.add_field(name="pgif", value="Displays a porn gif", inline=False)
+            embed.add_field(name="fourk", value="Displays a 4k porn image", inline=False)
+            embed.add_field(name="gonewild", value="Displays a porn image", inline=False)
+            embed.add_field(name="pussy", value="Displays a pussy image", inline=False)
+            embed.add_field(name="hentai", value="Displays a hentai image/gif", inline=False)
+            embed.add_field(name="lewdneko", value="Displays a lewd neko image", inline=False)
+            embed.add_field(name="hanal", value="Displays a hentai anal image/gif", inline=False)
+            embed.add_field(name="holo", value="Displays a holo image", inline=False)
+            embed.add_field(name="gasm", value="Displays a gasm image", inline=False)
+            embed.add_field(name="lewdkitsune", value="Displays a lewd kitsune image", inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'Level' or user_response.clean_content == 'level':
