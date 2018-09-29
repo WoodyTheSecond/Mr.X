@@ -103,7 +103,7 @@ class Utility:
         )
         embed.add_field(name='Primary Modules', value='Core, Admin, Utility')
         embed.add_field(name='Secondary Modules',
-                        value='Fun, Music, Swarm, Level, Creator')
+                        value='Fun, Music, Swarm, Level, Creator, NSFW')
         await self.client.say(embed=embed)
         user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
         if user_response.clean_content == 'Core' or user_response.clean_content == 'core':
@@ -180,16 +180,26 @@ class Utility:
                 color=0x0000FF
             )
             embed.set_author(name='Fun Module')
-            embed.add_field(name="pgif", value="Displays a porn gif", inline=False)
-            embed.add_field(name="fourk", value="Displays a 4k porn image", inline=False)
-            embed.add_field(name="gonewild", value="Displays a porn image", inline=False)
-            embed.add_field(name="pussy", value="Displays a pussy image", inline=False)
-            embed.add_field(name="hentai", value="Displays a hentai image/gif", inline=False)
-            embed.add_field(name="lewdneko", value="Displays a lewd neko image", inline=False)
-            embed.add_field(name="hanal", value="Displays a hentai anal image/gif", inline=False)
-            embed.add_field(name="holo", value="Displays a holo image", inline=False)
-            embed.add_field(name="gasm", value="Displays a gasm image", inline=False)
-            embed.add_field(name="lewdkitsune", value="Displays a lewd kitsune image", inline=False)
+            embed.add_field(name="meme", value="Posts a random meme from reddit", inline=False)
+            embed.add_field(name="loli", value="Posts a loli image", inline=False)
+            await self.client.say(embed=embed)
+
+        elif user_response.clean_content == 'Nsfw' or user_response.clean_content == 'nsfw':
+            self.client.say("NSFW Module Command List")
+            embed = discord.Embed(
+                color=0x0000FF
+            )
+            embed.set_author(name='NSFW Module')
+            embed.add_field(name="pgif", value="Posts a porn gif", inline=False)
+            embed.add_field(name="fourk", value="Posts a 4k porn image", inline=False)
+            embed.add_field(name="gonewild", value="Posts a gone wild porn image", inline=False)
+            embed.add_field(name="pussy", value="Posts a pussy image", inline=False)
+            embed.add_field(name="hentai", value="Posts a hentai image/gif", inline=False)
+            embed.add_field(name="lewdneko", value="Posts a lewd neko NSFW image", inline=False)
+            embed.add_field(name="hanal", value="Posts a image/gif with hentai anal", inline=False)
+            embed.add_field(name="holo", value="Posts NSFW content of the anime character Holo", inline=False)
+            embed.add_field(name="gasm", value="Posts a image with someone having an orgasm", inline=False)
+            embed.add_field(name="lewdkitsune", value="Posts neko NSFW content", inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content == 'Level' or user_response.clean_content == 'level':

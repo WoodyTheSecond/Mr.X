@@ -9,6 +9,8 @@ from itertools import cycle
 import sys
 import checks
 import pymysql
+import random
+from random import randint
 
 TOKEN = os.getenv('TOKEN')
 client = commands.Bot(command_prefix='-')
@@ -16,7 +18,7 @@ client.remove_command('help')
 status = ['Commands: -help', 'Watching you']
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
-extensions = ['fun', 'admin', 'utility', 'swarm']
+extensions = ['admin', 'utility', 'swarm', 'nsfw', 'fun']
 
 
 async def change_status():
@@ -33,7 +35,7 @@ def create_database(server):
     conn = pymysql.connect(host="sql7.freesqldatabase.com",
                            user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
-    sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0')".format(
+    sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0')".format(
         str(server.id))
     c.execute(sql)
     conn.commit()
@@ -68,6 +70,12 @@ def update_database(server, setting, value):
         sql = "UPDATE `Server_Settings` SET Chat_Filter = %s where serverid = %s"
     elif setting == "Ignore_Hierarchy":
         sql = "UPDATE `Server_Settings` SET Ignore_Hierarchy = %s where serverid = %s"
+    elif setting == "FunToggle":
+        sql = "UPDATE `Server_Settings` SET FunToggle = %s where serverid = %s"
+    elif setting == "NSFW_role":
+        sql = "UPDATE `Server_Settings` SET NSFW_role = %s where serverid = %s"
+    elif setting == "NSFW_toggle":
+        sql = "UPDATE `Server_Settings` SET NSFW_toggle = %s where serverid = %s"
     else:
         print("No such setting found")
         return
@@ -165,25 +173,41 @@ async def on_member_unban(server, member):
         for userid in ban_array:
             if userid == member.id:
                 await client.ban(member)
+    
+@client.event
+async def on_message(message):
+    channel = message.channel
+    help_check = extensions
+    for check in help_check:
+        if message.content.startswith("-help " + check):
+            await client.send_message(channel, "Do not use -help {}, you just write the module | Example: -help | {}".format(check, check))
+            return
+
+    await client.process_commands(message)
 
 
 @client.command()
 async def botinfo():
     embed = discord.Embed(
-        color=0x0000FF
+        colour=0x00d2ff
     )
-    embed.set_footer(text="Coded in Python - Multi-Purpose Bot")
-    embed.set_image(
-        url="https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128")
-    embed.set_author(name="Bot Information",
-                     icon_url="https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128")
-    embed.add_field(name="Bot Name", value="Mr. X", inline=False)
-    embed.add_field(name="Creator", value="Mr. Zer0#8366", inline=False)
-    embed.add_field(name="Creator", value="Woody#3599", inline=False)
-    embed.add_field(name="Artist", value="SirNeeco#0221", inline=False)
-    embed.add_field(name="Version", value="0.5", inline=False)
-    embed.add_field(name="Python Version", value=sys.version, inline=False)
+    embed.set_footer(text="Guess who?")
+    r_int = randint(1, 4)
+    if r_int == 1:
+        embed.set_image(url='https://i.imgur.com/rfnR6nb.jpg')
+    elif r_int == 2:
+        embed.set_image(url='https://2static.fjcdn.com/pictures/Cute_38958d_6114906.jpg')
+    elif r_int == 3:
+        embed.set_image(url='https://2static.fjcdn.com/large/pictures/9a/8e/9a8e9f_6114906.jpg')
+    else:
+        embed.set_image(url='https://johnjohns1.fjcdn.com/large/pictures/de/e0/dee0cc_6114906.jpg')
+
+    embed.set_author(name='Information')
+    embed.add_field(name='Creator', value='Woody#3599 | C0mpl3X#8366', inline=False)
+    embed.add_field(name='Artist', value='CSLucaris | https://www.deviantart.com/cslucaris', inline=False)
+    embed.add_field(name='Version', value='0.5', inline=False)
     await client.say(embed=embed)
+
 
 
 @client.command(pass_context=True)
@@ -356,10 +380,18 @@ async def dmwarn(ctx):
 
 
 @client.command(pass_context=True)
-async def modrole(ctx, *, role):
+async def modrole(ctx, *, role = None):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
+        if role == None:
+            embed = discord.Embed(
+                description="You have not entered a role name",
+                color=0xFF0000
+            )
+
+            await client.say(embed=embed)
+            return
         try:
             rolename = discord.utils.get(server.roles, name=role)
             newrole = str(rolename)
@@ -383,10 +415,17 @@ async def modrole(ctx, *, role):
 
 
 @client.command(pass_context=True)
-async def adminrole(ctx, *, role):
+async def adminrole(ctx, *, role = None):
     author = ctx.message.author
     server = author.server
     if author.server_permissions.administrator:
+        if role == None:
+            embed = discord.Embed(
+                description="You have not entered a role name",
+                color=0xFF0000
+            )
+            await client.say(embed=embed)
+            return
         try:
             rolename = discord.utils.get(server.roles, name=role)
             newrole = str(rolename)
@@ -409,10 +448,17 @@ async def adminrole(ctx, *, role):
 
 
 @client.command(pass_context=True)
-async def muterole(ctx, *, role):
+async def muterole(ctx, *, role = None):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
+        if role == None:
+                embed = discord.Embed(
+                    description="You have not entered a role name",
+                    color=0xFF0000
+                )
+                await client.say(embed=embed)
+                return
         try:
             rolename = discord.utils.get(server.roles, name=role)
             newrole = str(rolename)
@@ -436,10 +482,17 @@ async def muterole(ctx, *, role):
 
 
 @client.command(pass_context=True)
-async def joinrole(ctx, *, role):
+async def joinrole(ctx, *, role = None):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
+        if role == None:
+                embed = discord.Embed(
+                    description="You have not entered a role name",
+                    color=0xFF0000
+                )
+                await client.say(embed=embed)
+                return
         try:
             rolename = discord.utils.get(server.roles, name=role)
             newrole = str(rolename)
@@ -469,12 +522,58 @@ async def joinrole(ctx, *, role):
         )
         await client.say(embed=embed)
 
-
 @client.command(pass_context=True)
-async def verifyrole(ctx, *, role):
+async def nsfwrole(ctx, *, role = None):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
+        if role == None:
+                embed = discord.Embed(
+                    description="You have not entered a role name",
+                    color=0xFF0000
+                )
+                await client.say(embed=embed)
+                return
+        try:
+            rolename = discord.utils.get(server.roles, name=role)
+            newrole = str(rolename)
+            if newrole == "None":
+                embed = discord.Embed(
+                    description="Role not found",
+                    color=0xFF0000
+                )
+                await client.say(embed=embed)
+            else:
+                update_database(server, "NSFW_role", newrole)
+                embed = discord.Embed(
+                    description="The NSFW Role has been set to **{}**".format(
+                        rolename),
+                    color=0x00FF00
+                )
+                await client.say(embed=embed)
+        except ValueError as error:
+            print("{}".format(error))
+    else:
+        embed = discord.Embed(
+            title="Join Role",
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+        await client.say(embed=embed)
+
+
+@client.command(pass_context=True)
+async def verifyrole(ctx, *, role = None):
+    author = ctx.message.author
+    server = ctx.message.server
+    if author.server_permissions.administrator:
+        if role == None:
+                embed = discord.Embed(
+                    description="You have not entered a role name",
+                    color=0xFF0000
+                )
+                await client.say(embed=embed)
+                return
         try:
             rolename = discord.utils.get(server.roles, name=role)
             newrole = str(rolename)
@@ -506,10 +605,18 @@ async def verifyrole(ctx, *, role):
 
 
 @client.command(pass_context=True)
-async def mutetime(ctx, lenght):
+async def mutetime(ctx, lenght = None):
     author = ctx.message.author
     server = author.server
     if author.server_permissions.administrator:
+        if lenght == None:
+            embed = discord.Embed(
+            description="You have not entered a lenght",
+            color=0xFF0000
+            )
+            await client.say(embed=embed)
+            return
+
         if "m" in lenght:
             t_time = lenght.replace("m", "")
             update_database(server, "WarnMute", str(lenght))
@@ -592,12 +699,99 @@ async def jointoggle(ctx):
         )
         await client.say(embed=embed)
 
+@client.command(pass_context=True)
+async def nsfwtoggle(ctx):
+    author = ctx.message.author
+    server = ctx.message.server
+    conn = pymysql.connect(host='sql7.freesqldatabase.com',
+                           user='sql7257339', password='yakm4fsd4T', db='sql7257339')
+    current_toggle = check_database_multiple(conn, server, "NSFW_toggle")
+    nsfw_role = check_database_multiple(conn, server, "NSFW_role")
+    conn.close()
+    if author.server_permissions.administrator:
+        if current_toggle == False:
+            if nsfw_role == "None":
+                embed = discord.Embed(
+                    description="Please set a nsfw role before trying to turn on nsfw command",
+                    color=0xFF0000
+                )
+                await client.say(embed=embed)
+            else:
+                update_database(server, "NSFW_toggle", True)
+                embed = discord.Embed(
+                    description="NSFW has been set to **True**",
+                    color=0x00FF00
+                )
+                await client.say(embed=embed)
+        elif current_toggle == True:
+            update_database(server, "NSFW_toggle", False)
+            embed = discord.Embed(
+                description="NSFW has been set to **False**",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="Error",
+                color=0xFF0000
+            )
+            await client.say(embed=embed)
+
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+        await client.say(embed=embed)
+    
+@client.command(pass_context=True)
+async def funtoggle(ctx):
+    author = ctx.message.author
+    server = ctx.message.server
+    current_toggle = check_database(server, "FunToggle")
+    if author.server_permissions.administrator:
+        if current_toggle == False:
+            update_database(server, "FunToggle", True)
+            embed = discord.Embed(
+                description="Fun commands has been **Enabled**",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+        elif current_toggle == True:
+            update_database(server, "FunToggle", False)
+            embed = discord.Embed(
+                description="Fun commands has been **Disabled**",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="Error",
+                color=0xFF0000
+            )
+            await client.say(embed=embed)
+
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+        await client.say(embed=embed)
+
 
 @client.command(pass_context=True)
-async def mod(ctx, user: discord.Member):
+async def mod(ctx, user: discord.Member = None):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
+        if user == None:
+            embed = discord.Embed(
+            description="You have not tagged any user",
+            color=0xFF0000
+            )
+            await client.say(embed=embed)
+            return
+
         modrole = check_database(server, "Mod_Role")
         if discord.utils.get(user.roles, name=modrole):
             role = discord.utils.get(server.roles, name=modrole)
@@ -637,14 +831,51 @@ async def mod(ctx, user: discord.Member):
 
         await client.say(embed=embed)
 
+@client.command(pass_context=True)
+async def nsfw(ctx):
+    author = ctx.message.author
+    server = ctx.message.server
+    nsfw_toggle = check_database(server, "NSFW_toggle")
+    nsfw_role = check_database(server, "NSFW_role")
+    if nsfw_toggle == False:
+        embed = discord.Embed(
+            description="NSFW Command is currently disabled",
+            color=0xFF0000
+        )
+        await client.say(embed=embed)
+        return
+    else:
+        if discord.utils.get(author.roles, name=nsfw_role):
+            role = discord.utils.get(server.roles, name=nsfw_role)
+            await client.remove_roles(author, role)
+            embed = discord.Embed(
+                description="Your NSFW role has been removed",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+        else:
+            role = discord.utils.get(server.roles, name=nsfw_role)
+            await client.add_roles(author, role)
+            embed = discord.Embed(
+                description="You have been given the designated NSFW role",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+
 
 @client.command(pass_context=True)
-async def admin(ctx, user: discord.Member):
+async def admin(ctx, user: discord.Member = None):
     author = ctx.message.author
     server = ctx.message.server
     owner = server.owner
-
     if author.id == "164068466129633280" or author.id == "142002197998206976" or author.id == "457516809940107264" or author.id == owner.id:
+        if user == None:
+            embed = discord.Embed(
+            description="You have not tagged any user",
+            color=0xFF0000
+            )
+            await client.say(embed=embed)
+            return
         adminrole = check_database(server, "Admin_Role")
         if discord.utils.get(user.roles, name=adminrole):
             role = discord.utils.get(server.roles, name=adminrole)
@@ -686,10 +917,14 @@ async def admin(ctx, user: discord.Member):
 
 
 @client.command(pass_context=True)
-async def userid(ctx, user: discord.Member):
-    user_id = user.id
+async def userid(ctx, user: discord.Member = None):
+    author = ctx.message.author
+    if user == None:
+        user_id = author.id
+    else:
+        user_id = user.id
+
     embed = discord.Embed(
-        title='',
         description="{}'s ID is `{}`".format(user.mention, user_id),
         color=0x00FF00
     )
@@ -700,7 +935,6 @@ async def userid(ctx, user: discord.Member):
 async def members(ctx):
     server = ctx.message.author.server
     embed = discord.Embed(
-        title='',
         description="There are `{}` members in this server.". format(
             len(server.members)),
         color=0x00FF00
