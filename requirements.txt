@@ -2,3 +2,4 @@ discord.py
 pymysql
 youtube_dl
 PyNaCl
+praw
