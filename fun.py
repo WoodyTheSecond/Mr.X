@@ -28,7 +28,7 @@ class Fun:
             fp.close()
             res = json.loads(message)
             embed = discord.Embed(
-                color=discord.Color.purple()
+                color=0x800080
             )
             embed.set_image(url=res["message"])
 
@@ -36,7 +36,7 @@ class Fun:
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
-                color=discord.Color.red()
+                color=0xFF0000
             )
 
             await self.client.say(embed=embed)
@@ -51,7 +51,7 @@ class Fun:
             fp.close()
             res = json.loads(message)
             embed = discord.Embed(
-                color=discord.Color.purple()
+                color=0x800080
             )
             embed.set_image(url=res["message"])
 
@@ -59,7 +59,7 @@ class Fun:
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
-                color=discord.Color.red()
+                color=0xFF0000
             )
 
             await self.client.say(embed=embed)
@@ -74,7 +74,7 @@ class Fun:
             fp.close()
             res = json.loads(message)
             embed = discord.Embed(
-                color=discord.Color.purple()
+                color=0x800080
             )
             embed.set_image(url=res["message"])
 
@@ -82,7 +82,7 @@ class Fun:
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
-                color=discord.Color.red()
+                color=0xFF0000
             )
 
             await self.client.say(embed=embed)
@@ -97,7 +97,7 @@ class Fun:
             fp.close()
             res = json.loads(message)
             embed = discord.Embed(
-                color=discord.Color.purple()
+                color=0x800080
             )
             embed.set_image(url=res["message"])
 
@@ -105,7 +105,7 @@ class Fun:
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
-                color=discord.Color.red()
+                color=0xFF0000
             )
 
             await self.client.say(embed=embed)
@@ -120,7 +120,7 @@ class Fun:
             fp.close()
             res = json.loads(message)
             embed = discord.Embed(
-                color=discord.Color.purple()
+                color=0x800080
             )
             embed.set_image(url=res["message"])
 
@@ -128,7 +128,7 @@ class Fun:
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
-                color=discord.Color.red()
+                color=0xFF0000
             )
 
             await self.client.say(embed=embed)
@@ -143,7 +143,7 @@ class Fun:
             fp.close()
             res = json.loads(message)
             embed = discord.Embed(
-                color=discord.Color.purple()
+                color=0x800080
             )
             embed.set_image(url=res["message"])
 
@@ -151,7 +151,7 @@ class Fun:
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
-                color=discord.Color.red()
+                color=0xFF0000
             )
 
             await self.client.say(embed=embed)
@@ -166,7 +166,7 @@ class Fun:
             fp.close()
             res = json.loads(message)
             embed = discord.Embed(
-                color=discord.Color.purple()
+                color=0x800080
             )
             embed.set_image(url=res["message"])
 
@@ -174,7 +174,7 @@ class Fun:
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
-                color=discord.Color.red()
+                color=0xFF0000
             )
 
             await self.client.say(embed=embed)
@@ -189,7 +189,7 @@ class Fun:
             fp.close()
             res = json.loads(message)
             embed = discord.Embed(
-                color=discord.Color.purple()
+                color=0x800080
             )
             embed.set_image(url=res["url"])
 
@@ -197,7 +197,7 @@ class Fun:
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
-                color=discord.Color.red()
+                color=0xFF0000
             )
 
             await self.client.say(embed=embed)
@@ -212,7 +212,7 @@ class Fun:
             fp.close()
             res = json.loads(message)
             embed = discord.Embed(
-                color=discord.Color.purple()
+                color=0x800080
             )
             embed.set_image(url=res["url"])
 
@@ -220,7 +220,7 @@ class Fun:
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
-                color=discord.Color.red()
+                color=0xFF0000
             )
 
             await self.client.say(embed=embed)
@@ -235,7 +235,7 @@ class Fun:
             fp.close()
             res = json.loads(message)
             embed = discord.Embed(
-                color=discord.Color.purple()
+                color=0x800080
             )
             embed.set_image(url=res["message"])
 
@@ -243,7 +243,7 @@ class Fun:
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
-                color=discord.Color.red()
+                color=0xFF0000
             )
 
             await self.client.say(embed=embed)
@@ -258,7 +258,7 @@ class Fun:
     #         fp.close()
     #         res = json.loads(message)
     #         embed = discord.Embed(
-    #             color=discord.Color.purple()
+    #             color=0x800080
     #         )
     #         embed.set_image(url=res["url"])
 
@@ -266,7 +266,7 @@ class Fun:
     #     else:
     #         embed = discord.Embed(
     #             description="This is not an NSFW channel",
-    #             color=discord.Color.red()
+    #             color=0xFF0000
     #         )
 
     #         await self.client.say(embed=embed)
