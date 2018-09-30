@@ -109,6 +109,12 @@ class Admin:
         else:
             return False
 
+    def is_owner(self, user):
+        if user.id == "164068466129633280" or user.id == "142002197998206976" or user.id == "457516809940107264":
+            return True
+        else:
+            return False
+
     @commands.command(pass_context=True)
     async def warn(self, ctx, user: discord.Member = None, *, reason="No Reason Given"):
         author = ctx.message.author
@@ -876,34 +882,60 @@ class Admin:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def clear(self, ctx, amount=100):
+    async def clear(self, ctx, amount=100, user: discord.Member = None):
         author = ctx.message.author
         server = author.server
         if self.is_admin_or_perms(server, author):
             channel = ctx.message.channel
-            messages = []
+            # messages = []
             try:
                 if amount < 2:
                     embed = discord.Embed(
-                        title='Clear',
-                        description='The amount cannot be less than 2',
+                        title="Clear",
+                        description="The amount can't be less than 2",
                         color=0xFF0000
                     )
                     await self.client.say(embed=embed)
                 elif amount > 100:
                     embed = discord.Embed(
-                        title='Clear',
-                        description='You cannot clear more than 100 messages.',
+                        title="Clear",
+                        description="You can't clear more than 100 messages.",
                         color=0xFF0000
                     )
                     await self.client.say(embed=embed)
                 else:
+                    if user == None:
+                        await self.client.purge_from(channel, limit=int(amount))
+                    else:
+                        def is_user(m):
+                            return m.author == user
 
-                    async for message in self.client.logs_from(channel, limit=int(amount)):
-                        messages.append(message)
-                    await self.client.delete_messages(messages)
+                        await self.client.purge_from(channel, limit=int(amount), check=is_user)
             except ValueError:
                 print("Error")
+        else:
+            embed = discord.Embed(
+                description="You don't have permission to use this command",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def dinvites(self, ctx):
+        author = ctx.message.author
+        server = author.server
+        if author.server_permissions.administrator:
+            invites = await self.client.invites_from(server)
+            for inv in invites:
+                await self.client.delete_invite(inv)
+
+            embed = discord.Embed(
+                description = "All of the invites has been deleted",
+                color = 0x00FF00
+            )
+
+            await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",

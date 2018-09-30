@@ -32,19 +32,16 @@ async def change_status():
 
 
 def create_database(server):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com",
-                           user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
-    sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0')".format(
-        str(server.id))
+    sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0')".format(str(server.id))
     c.execute(sql)
     conn.commit()
     conn.close()
 
 
 def update_database(server, setting, value):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com",
-                           user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     if setting == "Join_Role":
         sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
@@ -88,8 +85,7 @@ def update_database(server, setting, value):
 
 def check_database_multiple(conn, server, setting):
     c = conn.cursor()
-    sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(
-        setting, str(server.id))
+    sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
     c.execute(sql)
     conn.commit()
     data = c.fetchone()
@@ -103,11 +99,9 @@ def check_database_multiple(conn, server, setting):
 
 
 def check_database(server, setting):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com",
-                           user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
-    sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(
-        setting, str(server.id))
+    sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
     c.execute(sql)
     conn.commit()
     data = c.fetchone()
@@ -122,17 +116,22 @@ def check_database(server, setting):
 
 
 def make_settings(server):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com",
-                           user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
-    sql = "SELECT * FROM `Server_Settings` WHERE serverid = {}".format(
-        str(server.id))
+    sql = "SELECT * FROM `Server_Settings` WHERE serverid = {}".format(str(server.id))
     c.execute(sql)
     conn.commit()
     data = c.fetchone()
     conn.close()
     if data == None:
         create_database(server)
+        return True
+    else:
+        return False
+
+
+def is_owner(user):
+    if user.id == "164068466129633280" or user.id == "142002197998206976" or user.id == "457516809940107264":
         return True
     else:
         return False
@@ -154,8 +153,7 @@ async def on_ready():
 @client.event
 async def on_member_join(member):
     server = member.server
-    conn = pymysql.connect(host='sql7.freesqldatabase.com',
-                           user='sql7257339', password='yakm4fsd4T', db='sql7257339')
+    conn = pymysql.connect(host='sql7.freesqldatabase.com', user='sql7257339', password='yakm4fsd4T', db='sql7257339')
     join_toggle = check_database_multiple(conn, server, "JoinToggle")
     join_role = check_database_multiple(conn, server, "Join_Role")
     conn.close()
@@ -173,6 +171,7 @@ async def on_member_unban(server, member):
         for userid in ban_array:
             if userid == member.id:
                 await client.ban(member)
+
     
 @client.event
 async def on_message(message):
@@ -184,7 +183,7 @@ async def on_message(message):
             return
 
     await client.process_commands(message)
-
+    
 
 @client.command()
 async def botinfo():
@@ -207,7 +206,6 @@ async def botinfo():
     embed.add_field(name='Artist', value='CSLucaris | https://www.deviantart.com/cslucaris', inline=False)
     embed.add_field(name='Version', value='0.5', inline=False)
     await client.say(embed=embed)
-
 
 
 @client.command(pass_context=True)
@@ -703,12 +701,11 @@ async def jointoggle(ctx):
 async def nsfwtoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    conn = pymysql.connect(host='sql7.freesqldatabase.com',
-                           user='sql7257339', password='yakm4fsd4T', db='sql7257339')
-    current_toggle = check_database_multiple(conn, server, "NSFW_toggle")
-    nsfw_role = check_database_multiple(conn, server, "NSFW_role")
-    conn.close()
     if author.server_permissions.administrator:
+        conn = pymysql.connect(host='sql7.freesqldatabase.com', user='sql7257339', password='yakm4fsd4T', db='sql7257339')
+        current_toggle = check_database_multiple(conn, server, "NSFW_toggle")
+        nsfw_role = check_database_multiple(conn, server, "NSFW_role")
+        conn.close()
         if current_toggle == False:
             if nsfw_role == "None":
                 embed = discord.Embed(
@@ -748,8 +745,8 @@ async def nsfwtoggle(ctx):
 async def funtoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    current_toggle = check_database(server, "FunToggle")
     if author.server_permissions.administrator:
+        current_toggle = check_database(server, "FunToggle")
         if current_toggle == False:
             update_database(server, "FunToggle", True)
             embed = discord.Embed(
@@ -830,38 +827,6 @@ async def mod(ctx, user: discord.Member = None):
         )
 
         await client.say(embed=embed)
-
-@client.command(pass_context=True)
-async def nsfw(ctx):
-    author = ctx.message.author
-    server = ctx.message.server
-    nsfw_toggle = check_database(server, "NSFW_toggle")
-    nsfw_role = check_database(server, "NSFW_role")
-    if nsfw_toggle == False:
-        embed = discord.Embed(
-            description="NSFW Command is currently disabled",
-            color=0xFF0000
-        )
-        await client.say(embed=embed)
-        return
-    else:
-        if discord.utils.get(author.roles, name=nsfw_role):
-            role = discord.utils.get(server.roles, name=nsfw_role)
-            await client.remove_roles(author, role)
-            embed = discord.Embed(
-                description="Your NSFW role has been removed",
-                color=0x00FF00
-            )
-            await client.say(embed=embed)
-        else:
-            role = discord.utils.get(server.roles, name=nsfw_role)
-            await client.add_roles(author, role)
-            embed = discord.Embed(
-                description="You have been given the designated NSFW role",
-                color=0x00FF00
-            )
-            await client.say(embed=embed)
-
 
 @client.command(pass_context=True)
 async def admin(ctx, user: discord.Member = None):
@@ -996,8 +961,9 @@ async def mywarns(ctx):
 
 @client.command(pass_context=True)
 async def autoban(ctx, user: discord.Member):
-    server = ctx.message.author.server
-    if ctx.message.author.id == "164068466129633280" or ctx.message.author.id == "142002197998206976":
+    author = ctx.message.author
+    server = author.server
+    if is_owner(author) == True:
         isbanned = False
         with open("autobans.json", "r") as f:
             if "banlist" in f:
@@ -1037,8 +1003,9 @@ async def autoban(ctx, user: discord.Member):
 
 @client.command(pass_context=True)
 async def unautoban(ctx, id):
-    server = ctx.message.author.server
-    if ctx.message.author.id == "164068466129633280" or ctx.message.author.id == "142002197998206976":
+    author = ctx.message.author
+    server = author.server
+    if is_owner(author) == True:
         isbanned = False
         with open("autobans.json", "r") as f:
             autobans = json.load(f)
@@ -1105,7 +1072,7 @@ async def resetsetting(ctx, setting=None):
 async def createsettings(ctx):
     author = ctx.message.author
     server = author.server
-    if author.id == "164068466129633280" or author.id == "142002197998206976" or author.id == "457516809940107264":
+    if is_owner(author) == True:
         if make_settings(server) == True:
             embed = discord.Embed(
                 description="The settings have been successfully created",
@@ -1132,7 +1099,7 @@ async def createsettings(ctx):
 @client.command(pass_context=True)
 async def load(ctx, extension):
     author = ctx.message.author
-    if author.id == "164068466129633280" or author.id == "142002197998206976" or author.id == "457516809940107264":
+    if is_owner(author) == True:
         try:
             client.load_extension(extension)
             embed = discord.Embed(
@@ -1162,7 +1129,7 @@ async def load(ctx, extension):
 @client.command(pass_context=True)
 async def unload(ctx, extension):
     author = ctx.message.author
-    if author.id == "164068466129633280" or author.id == "142002197998206976" or author.id == "457516809940107264":
+    if is_owner(author) == True:
         try:
             client.unload_extension(extension)
             print("Unloaded {}".format(extension))

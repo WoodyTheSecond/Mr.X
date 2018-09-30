@@ -64,6 +64,5 @@ class Music:
         await self.client.say('Video queued.')
 
 
-
 def setup(client):
     client.add_cog(Music(client))
