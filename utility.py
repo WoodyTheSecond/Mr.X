@@ -380,9 +380,9 @@ class Utility:
             status = None
             rolecount = 0
             roles = None
-            joindate = author.joined_at.strftime("%b %e, %Y %I:%M %p")
-            registerdate = author.created_at.strftime("%b %e, %Y %I:%M %p")
-            currentdate = datetime.datetime.now().strftime("%b %e, %Y %I:%M %p")
+            joindate = author.joined_at.strftime("%b %e, %Y %-I:%M %p")
+            registerdate = author.created_at.strftime("%b %e, %Y %-I:%M %p")
+            currentdate = datetime.datetime.now().strftime("%b %e, %Y %-I:%M %p")
             name = str(author.name)
             nickname = str(author.display_name)
             if str(author.status) == "online":
@@ -431,9 +431,9 @@ class Utility:
 
             rolecount = 0
             roles = None
-            joindate = user.joined_at.strftime("%b %e, %Y %I:%M %p")
-            registerdate = user.created_at.strftime("%b %e, %Y %I:%M %p")
-            currentdate = datetime.datetime.now().strftime("%b %e, %Y %I:%M %p")
+            joindate = user.joined_at.strftime("%b %e, %Y %-I:%M %p")
+            registerdate = user.created_at.strftime("%b %e, %Y %-I:%M %p")
+            currentdate = datetime.datetime.now().strftime("%b %e, %Y %-I:%M %p")
             name = str(user.name)
             nickname = str(user.display_name)
             for role in user.roles:
