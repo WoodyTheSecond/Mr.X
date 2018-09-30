@@ -1,4 +1,5 @@
 discord.py
+discord.py[voice]
 pymysql
 youtube_dl
 PyNaCl
