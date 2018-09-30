@@ -349,10 +349,9 @@ class Utility:
     @commands.command(pass_context=True)
     async def invite(self, ctx):
         author = ctx.message.author
-        invitelink = "https://discordapp.com/oauth2/authorize?client_id={}&scope=bot".format(
-            self.client.user.id)
+        invitelink = "https://discordapp.com/oauth2/authorize?client_id={}&scope=bot".format(self.client.user.id)
 
-        if author.id == "142002197998206976" or author.id == "164068466129633280":
+        if self.is_owner(author) == True:
             embed = discord.Embed(
                 title="Invite link",
                 description=invitelink,
@@ -369,7 +368,7 @@ class Utility:
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
-                description='You do not have permission to use this command.',
+                description="You don't have permission to use this command.",
                 color=0xFF0000
             )
             await self.client.say(embed=embed)
