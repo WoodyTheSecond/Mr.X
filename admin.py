@@ -887,7 +887,6 @@ class Admin:
         server = author.server
         if self.is_admin_or_perms(server, author):
             channel = ctx.message.channel
-            # messages = []
             try:
                 if amount < 2:
                     embed = discord.Embed(
@@ -911,8 +910,13 @@ class Admin:
                             return m.author == user
 
                         await self.client.purge_from(channel, limit=int(amount), check=is_user)
-            except ValueError:
-                print("Error")
+            except:
+                embed = discord.Embed(
+                    title="Clear",
+                    description="You can't clear messages that's older then 14 days",
+                    color=0xFF0000
+                )
+                await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",
