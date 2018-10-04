@@ -36,7 +36,6 @@ async def change_status():
 
 
 def create_database(server):
-    # conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     conn = pymysql.connect(host="{}".format(MYSQLHOST), user="{}".format(MYSQLUSER), password="{}".format(MYSQLPASS), db="{}".format(MYSQLDB))
     c = conn.cursor()
     sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle, earn_cooldown) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0', '0')".format(str(server.id))
