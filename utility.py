@@ -8,27 +8,19 @@ from discord.ext import commands
 from random import randint
 import datetime
 import pymysql
+import os
 
 class Utility:
     def __init__(self, client):
         self.client = client
 
-    def check_database_multiple(self, conn, server, setting):
-        c = conn.cursor()
-        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
-        c.execute(sql)
-        conn.commit()
-        data = c.fetchone()
-        for row in data:
-            if row == 1:
-                return True
-            elif row == 0:
-                return False
-            else:
-                return row
+    MYSQLHOST = os.getenv("MYSQLHOST")
+    MYSQLUSER = os.getenv("MYSQLUSER")
+    MYSQLPASS = os.getenv("MYSQLPASS")
+    MYSQLDB = os.getenv("MYSQLDB")
 
     def check_database(self, server, setting):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        conn = pymysql.connect(host="{}".format(self.MYSQLHOST), user="{}".format(self.MYSQLUSER), password="{}".format(self.MYSQLPASS), db="{}".format(self.MYSQLDB))
         c = conn.cursor()
         sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
         c.execute(sql)
