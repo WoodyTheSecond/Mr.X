@@ -26,7 +26,7 @@ class Economy:
         if str(author.id) in cooldown_array:
             embed = discord.Embed(
             title = '',
-            description = 'Coomand is on cooldown, please wait',
+            description = 'Command is on cooldown, please wait',
             colour = discord.Colour.red()
             )
             await self.client.say(embed=embed)
