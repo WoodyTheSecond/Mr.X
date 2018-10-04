@@ -12,11 +12,6 @@ class NSFW:
     def __init__(self, client):
         self.client = client
 
-    MYSQLHOST = os.getenv("MYSQLHOST")
-    MYSQLUSER = os.getenv("MYSQLUSER")
-    MYSQLPASS = os.getenv("MYSQLPASS")
-    MYSQLDB = os.getenv("MYSQLDB")
-
     async def is_nsfw(self, channel: discord.Channel):
         try:
             _gid = channel.server.id
@@ -27,7 +22,7 @@ class NSFW:
         return channeldata['nsfw']
 
     def check_database(self, server, setting):
-        conn = pymysql.connect(host="{}".format(self.MYSQLHOST), user="{}".format(self.MYSQLUSER), password="{}".format(self.MYSQLPASS), db="{}".format(self.MYSQLDB))
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(
             setting, str(server.id))
@@ -43,13 +38,39 @@ class NSFW:
             else:
                 return row
 
+    def check_blacklist(self, setting, server, user):
+        path = "blacklist/" + str(user.id) + ".json"
+        if not os.path.exists(path):
+            return False
+        else:
+            with open(path, 'r') as f:
+                blacklistcheck = json.load(f)
+                if str(server.id) in blacklistcheck:
+                    current = blacklistcheck[server.id][setting]
+                    if current == True:
+                        return True
+                    else:
+                        return False
+                else:
+                    return False
+
     @commands.command(pass_context=True)
     async def pgif(self, ctx):
         server = ctx.message.author.server
+        author = ctx.message.author
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 
@@ -79,11 +100,21 @@ class NSFW:
 
     @commands.command(pass_context=True)
     async def fourk(self, ctx):
-        server = ctx.message.author.server
+        author = ctx.message.author
+        server = author.server
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 
@@ -113,11 +144,21 @@ class NSFW:
 
     @commands.command(pass_context=True)
     async def gonewild(self, ctx):
-        server = ctx.message.author.server
+        author = ctx.message.author
+        server = author.server
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 
@@ -147,11 +188,21 @@ class NSFW:
 
     @commands.command(pass_context=True)
     async def pussy(self, ctx):
-        server = ctx.message.author.server
+        author = ctx.message.author
+        server = author.server
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 
@@ -181,11 +232,21 @@ class NSFW:
 
     @commands.command(pass_context=True)
     async def hentai(self, ctx):
-        server = ctx.message.author.server
+        author = ctx.message.author
+        server = author.server
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 
@@ -215,11 +276,21 @@ class NSFW:
 
     @commands.command(pass_context=True)
     async def lewdneko(self, ctx):
-        server = ctx.message.author.server
+        author = ctx.message.author
+        server = author.server
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+        
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 
@@ -249,11 +320,21 @@ class NSFW:
 
     @commands.command(pass_context=True)
     async def hanal(self, ctx):
-        server = ctx.message.author.server
+        author = ctx.message.author
+        server = author.server
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 
@@ -283,11 +364,21 @@ class NSFW:
 
     @commands.command(pass_context=True)
     async def holo(self, ctx):
-        server = ctx.message.author.server
+        author = ctx.message.author
+        server = author.server
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 
@@ -317,11 +408,21 @@ class NSFW:
 
     @commands.command(pass_context=True)
     async def gasm(self, ctx):
-        server = ctx.message.author.server
+        author = ctx.message.author
+        server = author.server
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 
@@ -351,11 +452,21 @@ class NSFW:
 
     @commands.command(pass_context=True)
     async def lewdkitsune(self, ctx):
-        server = ctx.message.author.server
+        author = ctx.message.author
+        server = author.server
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 
@@ -385,11 +496,21 @@ class NSFW:
 
     @commands.command(pass_context=True)
     async def furry(self, ctx):
-        server = ctx.message.author.server
+        author = ctx.message.author
+        server = author.server
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
                 color=0xFF0000
             )
 

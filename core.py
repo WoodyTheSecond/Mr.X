@@ -13,10 +13,6 @@ import random
 from random import randint
 
 TOKEN = os.getenv("TOKEN")
-MYSQLHOST = os.getenv("MYSQLHOST")
-MYSQLUSER = os.getenv("MYSQLUSER")
-MYSQLPASS = os.getenv("MYSQLPASS")
-MYSQLDB = os.getenv("MYSQLDB")
 client = commands.Bot(command_prefix="-")
 client.remove_command("help")
 status = ["Commands: -help", "Watching you"]
@@ -36,7 +32,7 @@ async def change_status():
 
 
 def create_database(server):
-    conn = pymysql.connect(host="{}".format(MYSQLHOST), user="{}".format(MYSQLUSER), password="{}".format(MYSQLPASS), db="{}".format(MYSQLDB))
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle, earn_cooldown) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0', '0')".format(str(server.id))
     c.execute(sql)
@@ -45,7 +41,7 @@ def create_database(server):
 
 
 def update_database(server, setting, value):
-    conn = pymysql.connect(host="{}".format(MYSQLHOST), user="{}".format(MYSQLUSER), password="{}".format(MYSQLPASS), db="{}".format(MYSQLDB))
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     if setting == "Join_Role":
         sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
@@ -103,7 +99,7 @@ def check_database_multiple(conn, server, setting):
 
 
 def check_database(server, setting):
-    conn = pymysql.connect(host="{}".format(MYSQLHOST), user="{}".format(MYSQLUSER), password="{}".format(MYSQLPASS), db="{}".format(MYSQLDB))
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
     c.execute(sql)
@@ -120,7 +116,7 @@ def check_database(server, setting):
 
 
 def make_settings(server):
-    conn = pymysql.connect(host="{}".format(MYSQLHOST), user="{}".format(MYSQLUSER), password="{}".format(MYSQLPASS), db="{}".format(MYSQLDB))
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "SELECT * FROM `Server_Settings` WHERE serverid = {}".format(str(server.id))
     c.execute(sql)
@@ -157,7 +153,7 @@ async def on_ready():
 @client.event
 async def on_member_join(member):
     server = member.server
-    conn = pymysql.connect(host="{}".format(MYSQLHOST), user="{}".format(MYSQLUSER), password="{}".format(MYSQLPASS), db="{}".format(MYSQLDB))
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     join_toggle = check_database_multiple(conn, server, "JoinToggle")
     join_role = check_database_multiple(conn, server, "Join_Role")
     conn.close()
@@ -218,7 +214,7 @@ async def settings(ctx):
     server = author.server
     channel = ctx.message.channel
 
-    conn = pymysql.connect(host="{}".format(MYSQLHOST), user="{}".format(MYSQLUSER), password="{}".format(MYSQLPASS), db="{}".format(MYSQLDB))
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
 
     Ignore_Hierarchy = str(check_database_multiple(
         conn, server, "Ignore_Hierarchy"))
@@ -654,7 +650,7 @@ async def mutetime(ctx, lenght = None):
 async def jointoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    conn = pymysql.connect(host="{}".format(MYSQLHOST), user="{}".format(MYSQLUSER), password="{}".format(MYSQLPASS), db="{}".format(MYSQLDB))
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     current_toggle = check_database_multiple(conn, server, "JoinToggle")
     join_role = check_database_multiple(conn, server, "Join_Role")
     conn.close()
@@ -704,7 +700,7 @@ async def nsfwtoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
-        conn = pymysql.connect(host="{}".format(MYSQLHOST), user="{}".format(MYSQLUSER), password="{}".format(MYSQLPASS), db="{}".format(MYSQLDB))
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         current_toggle = check_database_multiple(conn, server, "NSFW_toggle")
         nsfw_role = check_database_multiple(conn, server, "NSFW_role")
         conn.close()

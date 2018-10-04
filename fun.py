@@ -11,14 +11,9 @@ import os
 class Fun:
     def __init__(self, client):
         self.client = client
-
-    MYSQLHOST = os.getenv("MYSQLHOST")
-    MYSQLUSER = os.getenv("MYSQLUSER")
-    MYSQLPASS = os.getenv("MYSQLPASS")
-    MYSQLDB = os.getenv("MYSQLDB")
         
     def check_database(self, server, setting):
-        conn = pymysql.connect(host="{}".format(self.MYSQLHOST), user="{}".format(self.MYSQLUSER), password="{}".format(self.MYSQLPASS), db="{}".format(self.MYSQLDB))
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
         c.execute(sql)

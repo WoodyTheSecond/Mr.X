@@ -14,13 +14,8 @@ class Utility:
     def __init__(self, client):
         self.client = client
 
-    MYSQLHOST = os.getenv("MYSQLHOST")
-    MYSQLUSER = os.getenv("MYSQLUSER")
-    MYSQLPASS = os.getenv("MYSQLPASS")
-    MYSQLDB = os.getenv("MYSQLDB")
-
     def check_database(self, server, setting):
-        conn = pymysql.connect(host="{}".format(self.MYSQLHOST), user="{}".format(self.MYSQLUSER), password="{}".format(self.MYSQLPASS), db="{}".format(self.MYSQLDB))
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
         c.execute(sql)
@@ -100,7 +95,7 @@ class Utility:
         embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Creator, NSFW")
         await self.client.say(embed=embed)
         user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
-        if user_response.clean_content == "Core" or user_response.clean_content == "core":
+        if user_response.clean_content.lower() == "core":
             self.client.say("Core Module Command List")
             embed = discord.Embed(
                 color=0x0000FF

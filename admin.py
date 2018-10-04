@@ -13,13 +13,8 @@ class Admin:
     def __init__(self, client):
         self.client = client
 
-    MYSQLHOST = os.getenv("MYSQLHOST")
-    MYSQLUSER = os.getenv("MYSQLUSER")
-    MYSQLPASS = os.getenv("MYSQLPASS")
-    MYSQLDB = os.getenv("MYSQLDB")
-
     def update_database(self, server, setting, value):
-        conn = pymysql.connect(host="{}".format(self.MYSQLHOST), user="{}".format(self.MYSQLUSER), password="{}".format(self.MYSQLPASS), db="{}".format(self.MYSQLDB))
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         if setting == "Join_Role":
             sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
@@ -70,7 +65,7 @@ class Admin:
                 return row
 
     def check_database(self, server, setting):
-        conn = pymysql.connect(host="{}".format(self.MYSQLHOST), user="{}".format(self.MYSQLUSER), password="{}".format(self.MYSQLPASS), db="{}".format(self.MYSQLDB))
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(
             setting, str(server.id))
@@ -603,21 +598,6 @@ class Admin:
                 if role.name == get_role:
                     mutedrole = role
 
-            userroles = user.roles
-            path = "servers/{}/muted/".format(server.id)
-            if not os.path.exists(path):
-                os.makedirs(path)
-                await self.client.say("Mute Folder was made")
-
-            mutepath = path + str(user.id) + ".txt"
-            f = open(mutepath, "w+")
-            for role in userroles:
-                if role.name != "@everyone":
-                    usrole = role.name
-                    write = usrole + "\n"
-                    f.write(write)
-
-            f.close()
             for role in user.roles:
                 await self.client.remove_roles(user, role)
 
@@ -632,24 +612,14 @@ class Admin:
                     )
                     await self.client.say(embed=embed)
                     await asyncio.sleep(time)
-                    path = "servers/" + str(server.id) + \
-                        "/muted/" + str(user.id) + ".txt"
-                    with open(path) as fp:
-                        line = fp.readline()
-                        roles_to_give = []
-                        while line:
-                            role = discord.utils.get(
-                                server.roles, name=line.strip())
-                            roles_to_give.append(role)
-                            line = fp.readline()
-                        fp.close()
-                    await self.client.replace_roles(user, *roles_to_give)
+                    # await self.client.replace_roles(user, *roles_to_give)
+                    await self.client.remove_roles(mutedrole)
                     embed = discord.Embed(
                         description="{} has been unmuted".format(user.mention),
                         color=0x00FF00
                     )
                     await self.client.say(embed=embed)
-                    os.remove(path)
+                    # os.remove(path)
                 elif time_type == "h":
                     embed = discord.Embed(
                         description="{} has been muted for **{}** hour(s)".format(
@@ -658,24 +628,14 @@ class Admin:
                     )
                     await self.client.say(embed=embed)
                     await asyncio.sleep(time)
-                    path = "servers/" + str(server.id) + \
-                        "/muted/" + str(user.id) + ".txt"
-                    with open(path) as fp:
-                        line = fp.readline()
-                        roles_to_give = []
-                        while line:
-                            role = discord.utils.get(
-                                server.roles, name=line.strip())
-                            roles_to_give.append(role)
-                            line = fp.readline()
-                        fp.close()
-                    await self.client.replace_roles(user, *roles_to_give)
+                    # await self.client.replace_roles(user, *roles_to_give)
+                    await self.client.remove_roles(mutedrole)
                     embed = discord.Embed(
                         description="{} Has been unmuted".format(user.mention),
                         color=0x00FF00
                     )
                     await self.client.say(embed=embed)
-                    os.remove(path)
+                    # os.remove(path)
 
             else:
                 embed = discord.Embed(
@@ -949,6 +909,81 @@ class Admin:
             )
 
             await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def blacklist(self, ctx, setting = None, user: discord.Member = None):
+        author = ctx.message.author
+        server = ctx.message.server
+        if self.is_admin_or_perms(server, author):
+            if setting == None:
+                embed = discord.Embed(
+                description="You have not entered a setting",
+                color=0xFF0000
+                )
+                await self.client.say(embed=embed)
+                return
+            elif user == None:
+                embed = discord.Embed(
+                description="You have not selected an user to blacklist",
+                color=0xFF0000
+                )
+                await self.client.say(embed=embed)
+                return
+            else:
+                if setting.lower() == "nsfw":
+                    path = "blacklist/" + str(author.id) + ".json"
+                    if not os.path.exists(path):
+                        with open(path, 'w+') as f:
+                            json_data = {}
+                            json_data[server.id] = {}
+                            json_data[server.id]["NSFW"] = True
+                            json.dump(json_data, f)
+                        embed = discord.Embed(
+                            description="User has been blacklisted from **NSFW**",
+                            color=0xFF0000
+                        )
+                        await self.client.say(embed=embed)
+                        return
+                    else:
+                        with open(path, 'r') as f:
+                            blacklistcheck = json.load(f)
+                            if str(server.id) in blacklistcheck:
+                                current = blacklistcheck[server.id]["NSFW"]
+                                if current == True:
+                                    blacklistcheck[server.id]["NSFW"] = False
+                                    with open(path, 'w') as f:
+                                        json.dump(blacklistcheck, f)
+                                    embed = discord.Embed(
+                                        description="User has been unblacklisted from **NSFW**",
+                                        color=0xFF0000
+                                    )
+                                    await self.client.say(embed=embed)
+                                    return
+                                else:
+                                    blacklistcheck[server.id]["NSFW"] = True
+                                    with open(path, 'w') as f:
+                                        json.dump(blacklistcheck, f)
+                                    embed = discord.Embed(
+                                        description="User has been blacklisted from **NSFW**",
+                                        color=0xFF0000
+                                    )
+                                    await self.client.say(embed=embed)
+                                    return
+
+                            else:
+                                blacklistcheck[server.id] = {}
+                                blacklistcheck[server.id]["NSFW"] = True
+                                with open(path, 'w') as f:
+                                    json.dump(blacklistcheck, f)
+                    
+        else:
+            embed = discord.Embed(
+                description="You don't have permission to use this command",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            
 
 
 def setup(client):
