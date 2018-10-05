@@ -401,7 +401,7 @@ class Admin:
                     roles_to_give = []
                     roles_to_give.append(verifyrole)
                     roles_to_give.append(extra_role)
-                    await self.client.add_roles(user, *roles_to_give)
+                    await self.client.replace_roles(user, *roles_to_give)
                     embed = discord.Embed(
                         description="{} has been verified and given the role **{}**".format(
                             user.mention, role_name),
@@ -582,10 +582,19 @@ class Admin:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def role(self, ctx, user: discord.Member, role):
+    async def role(self, ctx, user: discord.Member, *, role = None):
         author = ctx.message.author
         server = ctx.message.channel.server
         if self.is_admin_or_perms(server, author):
+            if role == None:
+                embed = discord.Embed(
+                    description = "You need to write a role name",
+                    colour = 0xFF0000
+                )
+                
+                await self.client.say(embed=embed)
+                return
+                
             found_role = discord.utils.get(server.roles, name=role)
             if found_role == None:
                 embed = discord.Embed(
@@ -618,6 +627,7 @@ class Admin:
                 description = "You don't have permission to use this command",
                 colour = 0xFF0000
             )
+
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
