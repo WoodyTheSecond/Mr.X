@@ -1,3 +1,5 @@
+#!/usr/bin/python3.6
+
 import discord
 import asyncio
 import time
