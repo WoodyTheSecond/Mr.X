@@ -11,6 +11,8 @@ import checks
 import pymysql
 import random
 from random import randint
+import atexit
+import shutil
 
 TOKEN = os.getenv("TOKEN")
 client = commands.Bot(command_prefix="-")
@@ -18,7 +20,7 @@ client.remove_command("help")
 status = ["Commands: -help", "Watching you"]
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
-extensions = ["admin", "utility", "swarm", "nsfw", "fun"]
+extensions = ["admin", "utility", "swarm", "nsfw", "fun", "economy"]
 
 
 async def change_status():
@@ -30,9 +32,60 @@ async def change_status():
         await client.change_presence(game=discord.Game(name=current_status))
         await asyncio.sleep(15)
 
+async def autosave_economy():
+    await client.wait_until_ready()
+
+    while not client.is_closed:
+        await asyncio.sleep(3600)
+
+        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        c = conn.cursor()
+        sql = "TRUNCATE `Economy`"
+        c.execute(sql)
+        conn.commit()
+        directory = os.fsencode("eco")
+        for file in os.listdir(directory):
+            filename = os.fsdecode(file)
+            user_id = os.fsdecode(file).replace(".json", "")
+            filepath = "eco/{}".format(str(filename))
+            with open(filepath, "r") as f:
+                    economy = json.load(f)
+                    for server in economy:
+                        current_money = economy[server]["Money"]
+                        current_bank = economy[server]["Bank"]
+                        sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
+                        c.execute(sql)
+                        conn.commit()
+
+        conn.close()
+        print("The economy has been saved")
+
+def save_economy():
+    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    c = conn.cursor()
+    sql = "TRUNCATE `Economy`"
+    c.execute(sql)
+    conn.commit()
+    directory = os.fsencode("eco")
+    for file in os.listdir(directory):
+        filename = os.fsdecode(file)
+        user_id = os.fsdecode(file).replace(".json", "")
+        filepath = "eco/{}".format(str(filename))
+        with open(filepath, "r") as f:
+                economy = json.load(f)
+                for server in economy:
+                    current_money = economy[server]["Money"]
+                    current_bank = economy[server]["Bank"]
+                    sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
+                    c.execute(sql)
+                    conn.commit()
+
+    conn.close()
+    print("The economy has been saved")
 
 def create_database(server):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    # conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
     c = conn.cursor()
     sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle, earn_cooldown) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0', '0')".format(str(server.id))
     c.execute(sql)
@@ -41,7 +94,7 @@ def create_database(server):
 
 
 def update_database(server, setting, value):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
     c = conn.cursor()
     if setting == "Join_Role":
         sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
@@ -99,7 +152,7 @@ def check_database_multiple(conn, server, setting):
 
 
 def check_database(server, setting):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
     c = conn.cursor()
     sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
     c.execute(sql)
@@ -116,7 +169,7 @@ def check_database(server, setting):
 
 
 def make_settings(server):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
     c = conn.cursor()
     sql = "SELECT * FROM `Server_Settings` WHERE serverid = {}".format(str(server.id))
     c.execute(sql)
@@ -148,12 +201,51 @@ async def on_server_join(server):
 @client.event
 async def on_ready():
     print("Bot is online.")
+    #Economy Load
+    directory = "eco"
+    for file in os.listdir(directory):
+        file_path = os.path.join(directory, file)
+        try:
+            if os.path.isfile(file_path):
+                os.remove(file_path)
+        except Exception as e:
+            print(e)
+    
+    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    c = conn.cursor()
+    sql = "SELECT * FROM `Economy`"
+    c.execute(sql)
+    conn.commit()
+    data = c.fetchall()
+    conn.close()
+    for d in data:
+        serverid = d[1]
+        userid = d[2]
+        money = d[3]
+        bank = d[4]
+        path = "eco/" + str(userid) + ".json"
+        if not os.path.exists(path):
+            with open(path, 'w+') as f:
+                json_data = {}
+                json_data[serverid] = {}
+                json_data[serverid]["Money"] = money
+                json_data[serverid]["Bank"] = bank
+                json.dump(json_data, f)
+        else:
+            with open(path, 'r') as f:
+                json_data = json.load(f)
+                json_data[serverid] = {}
+                json_data[serverid]["Money"] = money
+                json_data[serverid]["Bank"] = bank
+                with open(path, 'w') as f:
+                    json.dump(json_data, f)
 
+    #Economy Load End
 
 @client.event
 async def on_member_join(member):
     server = member.server
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
     join_toggle = check_database_multiple(conn, server, "JoinToggle")
     join_role = check_database_multiple(conn, server, "Join_Role")
     conn.close()
@@ -183,7 +275,6 @@ async def on_message(message):
             return
 
     await client.process_commands(message)
-    
 
 @client.command()
 async def botinfo():
@@ -214,7 +305,7 @@ async def settings(ctx):
     server = author.server
     channel = ctx.message.channel
 
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
 
     Ignore_Hierarchy = str(check_database_multiple(
         conn, server, "Ignore_Hierarchy"))
@@ -252,8 +343,7 @@ async def settings(ctx):
 
     embed.set_author(name='{} Server Settings'.format(
         server), icon_url='https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128')
-    embed.add_field(name='Ignore Hierarchy',
-                    value=Ignore_Hierarchy, inline=inline)
+    embed.add_field(name='Ignore Hierarchy',value=Ignore_Hierarchy, inline=inline)
     embed.add_field(name='Direct message on warn', value=DMWarn, inline=inline)
     embed.add_field(name='Verify Role', value=Verify_Role, inline=inline)
     embed.add_field(name='Moderator Role', value=Mod_Role, inline=inline)
@@ -262,38 +352,70 @@ async def settings(ctx):
     embed.add_field(name='Mute Role', value=Mute_Role, inline=inline)
     embed.add_field(name='Warning mute time', value=WarnMute, inline=inline)
     embed.add_field(name='Auto role on join', value=JoinToggle, inline=inline)
-    embed.add_field(name='Can moderator announce',
-                    value=CanModAnnounce, inline=inline)
+    embed.add_field(name='Can moderator announce',value=CanModAnnounce, inline=inline)
     embed.add_field(name='Level system', value=Level_System, inline=inline)
     await client.say(embed=embed)
 
+@client.command(pass_context=True)
+async def seconomy(ctx):
+    author = ctx.message.author
+    if is_owner(author):
+        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        c = conn.cursor()
+        sql = "TRUNCATE `Economy`"
+        c.execute(sql)
+        conn.commit()
+        directory = os.fsencode("eco")
+        for file in os.listdir(directory):
+            filename = os.fsdecode(file)
+            user_id = os.fsdecode(file).replace(".json", "")
+            filepath = "eco/{}".format(str(filename))            
+            with open(filepath, "r") as f:
+                    economy = json.load(f)
+                    for server in economy:
+                        current_money = economy[server]["Money"]
+                        current_bank = economy[server]["Bank"]
+                        sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
+                        c.execute(sql)
+                        conn.commit()
+
+        conn.close()
+
+        embed = discord.Embed(
+            description = "The economy has been saved",
+            color = 0x00FF00
+        )
+
+        await client.say(embed=embed)
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+
+        await client.say(embed=embed)    
 
 @client.command(pass_context=True)
 async def mylevel(ctx):
     author = ctx.message.author
-    conn = pymysql.connect(host='sql7.freesqldatabase.com',
-                           user='sql7257339', password='yakm4fsd4T', db='sql7257339')
+    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
     c = conn.cursor()
-    sql = "SELECT level from `user_levels` WHERE userid = {}".format(
-        str(author.id))
+    sql = "SELECT level from `User_Levels` WHERE userid = {}".format(str(author.id))
     c.execute(sql)
     conn.commit()
     data = c.fetchone()
     conn.close()
     if data == None:
-        conn = pymysql.connect(host='sql7.freesqldatabase.com',
-                               user='sql7257339', password='yakm4fsd4T', db='sql7257339')
+        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
         c = conn.cursor()
-        sql = "INSERT INTO `user_levels` VALUES ({}, '1', '0')".format(
-            str(author.id))
+        sql = "INSERT INTO `User_Levels` VALUES ({}, '1', '0')".format(str(author.id))
         c.execute(sql)
         conn.commit()
         conn.close()
         # Finished creating user data.
         current_level = "1"
         embed = discord.Embed(
-            description='You are currently level **{}**.'.format(
-                current_level),
+            description='You are currently level **{}**.'.format(current_level),
             colour=0x00FF00
         )
         await client.say(embed=embed)
@@ -334,7 +456,7 @@ async def togglelevel(ctx):
             print("Error")
     else:
         embed = discord.Embed(
-            description="You do know have permission to use this command",
+            description="You don't have permission to use this command",
             color=0xFF0000
         )
         await client.say(embed=embed)
@@ -650,7 +772,7 @@ async def mutetime(ctx, lenght = None):
 async def jointoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
     current_toggle = check_database_multiple(conn, server, "JoinToggle")
     join_role = check_database_multiple(conn, server, "Join_Role")
     conn.close()
@@ -700,7 +822,7 @@ async def nsfwtoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
         current_toggle = check_database_multiple(conn, server, "NSFW_toggle")
         nsfw_role = check_database_multiple(conn, server, "NSFW_role")
         conn.close()
@@ -1143,4 +1265,6 @@ if __name__ == "__main__":
             print('{} cannot be loaded. [{}]'.format(extension, error))
 
     client.loop.create_task(change_status())
+    client.loop.create_task(autosave_economy())
+    atexit.register(save_economy)
     client.run(TOKEN)

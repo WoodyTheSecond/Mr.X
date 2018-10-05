@@ -15,7 +15,7 @@ class Utility:
         self.client = client
 
     def check_database(self, server, setting):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
         c = conn.cursor()
         sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
         c.execute(sql)
@@ -91,8 +91,8 @@ class Utility:
         embed = discord.Embed(
             color=0x0000FF
         )
-        embed.add_field(name="Primary Modules", value="Core, Admin, Utility")
-        embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Creator, NSFW")
+        embed.add_field(name="Primary Modules", value="Core, Admin, Utility, Creator")
+        embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Economy, NSFW")
         await self.client.say(embed=embed)
         user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
         if user_response.clean_content.lower() == "core":
@@ -117,7 +117,7 @@ class Utility:
             embed.add_field(name="botinfo", value="Shows the bot information", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content == "Admin" or user_response.clean_content == "admin":
+        elif user_response.clean_content.lower() == "admin":
             self.client.say("Admin Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -141,7 +141,7 @@ class Utility:
             embed.add_field(name="dinvites", value="Delete all of the invites", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content == "Fun" or user_response.clean_content == "fun":
+        elif user_response.clean_content.lower() == "fun":
             self.client.say("Fun Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -152,7 +152,7 @@ class Utility:
             embed.add_field(name="catgirl", value="Posts a link to the catgirl care website", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content == "Nsfw" or user_response.clean_content == "nsfw":
+        elif user_response.clean_content.lower() == "nsfw":
             self.client.say("NSFW Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -171,7 +171,7 @@ class Utility:
             embed.add_field(name="furry", value="Posts a random furry image from reddit", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content == "Level" or user_response.clean_content == "level":
+        elif user_response.clean_content.lower() == "level":
             self.client.say("Level Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -181,7 +181,7 @@ class Utility:
             embed.add_field(name="togglelevel", value="Disables the global level system on this server", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content == "creator" or user_response.clean_content == "Creator":
+        elif user_response.clean_content.lower() == "creator":
             self.client.say("Creator Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -194,7 +194,7 @@ class Utility:
             embed.add_field(name="leave server", value="Leaves the given server", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content == "Music" or user_response.clean_content == "music":
+        elif user_response.clean_content.lower() == "music":
             self.client.say("Music Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -203,7 +203,7 @@ class Utility:
             embed.add_field(name="W.I.P", value="This module is still in progress", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content == "Swarm" or user_response.clean_content == "swarm":
+        elif user_response.clean_content.lower() == "swarm":
             self.client.say("Swarm Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -214,7 +214,7 @@ class Utility:
             embed.add_field(name="collect", value="Sends drones out to collect Organic Biomaterials", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content == "Utility" or user_response.clean_content == "utility":
+        elif user_response.clean_content.lower() == "utility":
             self.client.say("Utility Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -230,7 +230,20 @@ class Utility:
             embed.add_field(name="userinfo [user]", value="Shows info for yourself or the given user", inline=False)
             embed.add_field(name="nsfw", value="Gives/removes the nsfw role", inline=False)
             await self.client.say(embed=embed)
-
+        elif user_response.clean_content.lower() == "economy":
+            self.client.say("Economy Module Command List")
+            embed = discord.Embed(
+                color=0x0000FF
+            )
+            embed.set_author(name="Economy Module")
+            embed.add_field(name="work", value="Earn money the legal way", inline=False)
+            embed.add_field(name="bal", value="Posts your balance", inline=False)
+            embed.add_field(name="withdraw amount", value="Withdraw money from your bank", inline=False)
+            embed.add_field(name="dep amount", value="Deposit money into your bank", inline=False)
+            embed.add_field(name="give user amount", value="Give money to a user", inline=False)
+            embed.add_field(name="setmax setting value", value="Set the settings maximum amount", inline=False)
+            embed.add_field(name="setmin setting value", value="Set the settings minimum amount", inline=False)
+            await self.client.say(embed=embed)
         else:
             await self.client.say("Invalid Module.")
 
