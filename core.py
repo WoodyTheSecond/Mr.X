@@ -13,6 +13,7 @@ import random
 from random import randint
 import atexit
 import shutil
+from signal import *
 
 TOKEN = os.getenv("TOKEN")
 client = commands.Bot(command_prefix="-")
@@ -82,6 +83,7 @@ def save_economy():
 
     conn.close()
     print("The economy has been saved")
+    sys.exit(0)
 
 def create_database(server):
     # conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
@@ -1266,5 +1268,7 @@ if __name__ == "__main__":
 
     client.loop.create_task(change_status())
     client.loop.create_task(autosave_economy())
-    atexit.register(save_economy)
+    for sig in (SIGABRT, SIGBREAK, SIGILL, SIGINT, SIGSEGV, SIGTERM):
+        signal(sig, save_economy)
+
     client.run(TOKEN)
