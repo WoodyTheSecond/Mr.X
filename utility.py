@@ -171,6 +171,7 @@ class Utility:
             embed.add_field(name="gasm", value="Posts a image with someone having an orgasm", inline=False)
             embed.add_field(name="lewdkitsune", value="Posts neko NSFW content", inline=False)
             embed.add_field(name="furry", value="Posts a random furry image from reddit", inline=False)
+            embed.add_field(name="tentai", value="Posts a random tentacle image from reddit", inline=False)
             await self.client.say(embed=embed)
 
         elif user_response.clean_content.lower() == "level":
