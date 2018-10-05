@@ -465,7 +465,7 @@ class Economy:
                         json.dump(economy, f)
 
                 embed = discord.Embed(
-                    description = "You have successfully deposited **{}**".format(current_money),
+                    description = "You have successfully deposited **{}** to your bank".format(current_money),
                     color = 0x00FF00
                 )
 
@@ -548,8 +548,8 @@ class Economy:
                     with open(path, "w") as f:
                         json.dump(economy, f)
                 embed = discord.Embed(
-                    description = "You have deposited **{}** to your bank".format(str(amount)),
-                    color = 0xFF0000
+                    description = "You have successfully deposited **{}** to your bank".format(str(amount)),
+                    color = 0x00FF00
                 )
                 await self.client.say(embed=embed)
                 return
