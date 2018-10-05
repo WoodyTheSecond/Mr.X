@@ -1267,4 +1267,6 @@ if __name__ == "__main__":
     client.loop.create_task(change_status())
     client.loop.create_task(autosave_economy())
     atexit.register(save_economy)
-    client.run(TOKEN)
+    args = sys.argv[1:]
+    if args:
+        client.run(str(args[0]))
