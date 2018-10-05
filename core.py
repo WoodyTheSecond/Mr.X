@@ -61,7 +61,7 @@ async def autosave_economy():
         conn.close()
         print("The economy has been saved")
 
-def save_economy():
+def save_economy(*args):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "TRUNCATE `Economy`"
