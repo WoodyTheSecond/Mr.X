@@ -21,7 +21,7 @@ class Economy:
             return False
 
     def create_database(self, server):
-        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "INSERT INTO `Economy_Settings` (serverid, max_work_amount, min_work_amount, max_slut_amount, min_slut_amount) VALUES ('{}', '200', '100', '1000', '500')".format(str(server.id))
         c.execute(sql)
@@ -29,7 +29,7 @@ class Economy:
         conn.close()
 
     def check_database(self, server, setting):
-        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "SELECT {} from `Economy_Settings` WHERE serverid = {}".format(setting, str(server.id))
         c.execute(sql)
@@ -45,7 +45,7 @@ class Economy:
                 return row
 
     def update_database(self, server, setting, value):
-        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         if setting == "max_work_amount":
             sql = "UPDATE `Economy_Settings` SET max_work_amount = %s where serverid = %s"
@@ -64,7 +64,7 @@ class Economy:
         conn.close()
 
     def make_settings(self, server):
-        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "SELECT * FROM `Economy_Settings` WHERE serverid = {}".format(str(server.id))
         c.execute(sql)

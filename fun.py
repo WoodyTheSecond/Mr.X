@@ -13,7 +13,7 @@ class Fun:
         self.client = client
         
     def check_database(self, server, setting):
-        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
         c.execute(sql)

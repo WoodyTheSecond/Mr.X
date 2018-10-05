@@ -1,5 +1,3 @@
-#!/usr/bin/python3.6
-
 import discord
 import asyncio
 import time
@@ -40,7 +38,7 @@ async def autosave_economy():
     while not client.is_closed:
         await asyncio.sleep(3600)
 
-        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "TRUNCATE `Economy`"
         c.execute(sql)
@@ -63,7 +61,7 @@ async def autosave_economy():
         print("The economy has been saved")
 
 def save_economy():
-    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "TRUNCATE `Economy`"
     c.execute(sql)
@@ -87,7 +85,7 @@ def save_economy():
 
 def create_database(server):
     # conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle, earn_cooldown) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0', '0')".format(str(server.id))
     c.execute(sql)
@@ -96,7 +94,7 @@ def create_database(server):
 
 
 def update_database(server, setting, value):
-    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     if setting == "Join_Role":
         sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
@@ -154,7 +152,7 @@ def check_database_multiple(conn, server, setting):
 
 
 def check_database(server, setting):
-    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
     c.execute(sql)
@@ -171,7 +169,7 @@ def check_database(server, setting):
 
 
 def make_settings(server):
-    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "SELECT * FROM `Server_Settings` WHERE serverid = {}".format(str(server.id))
     c.execute(sql)
@@ -213,7 +211,7 @@ async def on_ready():
         except Exception as e:
             print(e)
     
-    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "SELECT * FROM `Economy`"
     c.execute(sql)
@@ -247,7 +245,7 @@ async def on_ready():
 @client.event
 async def on_member_join(member):
     server = member.server
-    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     join_toggle = check_database_multiple(conn, server, "JoinToggle")
     join_role = check_database_multiple(conn, server, "Join_Role")
     conn.close()
@@ -307,7 +305,7 @@ async def settings(ctx):
     server = author.server
     channel = ctx.message.channel
 
-    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
 
     Ignore_Hierarchy = str(check_database_multiple(
         conn, server, "Ignore_Hierarchy"))
@@ -362,7 +360,7 @@ async def settings(ctx):
 async def seconomy(ctx):
     author = ctx.message.author
     if is_owner(author):
-        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "TRUNCATE `Economy`"
         c.execute(sql)
@@ -400,7 +398,7 @@ async def seconomy(ctx):
 @client.command(pass_context=True)
 async def mylevel(ctx):
     author = ctx.message.author
-    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "SELECT level from `User_Levels` WHERE userid = {}".format(str(author.id))
     c.execute(sql)
@@ -408,7 +406,7 @@ async def mylevel(ctx):
     data = c.fetchone()
     conn.close()
     if data == None:
-        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "INSERT INTO `User_Levels` VALUES ({}, '1', '0')".format(str(author.id))
         c.execute(sql)
@@ -774,7 +772,7 @@ async def mutetime(ctx, lenght = None):
 async def jointoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     current_toggle = check_database_multiple(conn, server, "JoinToggle")
     join_role = check_database_multiple(conn, server, "Join_Role")
     conn.close()
@@ -824,7 +822,7 @@ async def nsfwtoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
-        conn = pymysql.connect(host="casp9536.aspitcloud.dk", user="casp9536_alice", password="2cFVjhqH4NdkrcpkqVrwv1L@Ucw12s", db="casp9536_alice_bot")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         current_toggle = check_database_multiple(conn, server, "NSFW_toggle")
         nsfw_role = check_database_multiple(conn, server, "NSFW_role")
         conn.close()
@@ -1269,6 +1267,4 @@ if __name__ == "__main__":
     client.loop.create_task(change_status())
     client.loop.create_task(autosave_economy())
     atexit.register(save_economy)
-    args = sys.argv[1:]
-    if args:
-        client.run(str(args[0]))
+    client.run(TOKEN)
