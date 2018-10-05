@@ -117,6 +117,7 @@ class Fun:
             color=0x00FF00
         )
         embed.set_image(url=submission.url)
+        embed.set_footer(text="With love from C0mpl3X, the King of Loli's")
         await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
