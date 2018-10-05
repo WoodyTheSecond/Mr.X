@@ -248,11 +248,21 @@ class Admin:
                     await self.client.say(embed=embed)
                     await self.client.ban(user)
             else:
-                embed = discord.Embed(
-                description="{} has been warned with the reason {}".format(user.mention, reason),
-                color=0x00FF00
-                )
-                await self.client.say(embed=embed)
+                if reason == "No Reason Given":
+                    embed = discord.Embed(
+                        description="{} has been warned".format(user.mention),
+                        color=0x00FF00
+                    )
+
+                    await self.client.say(embed=embed)
+                else:
+                    embed = discord.Embed(
+                        description="{} has been warned with the reason {}".format(user.mention, reason),
+                        color=0x00FF00
+                    )
+
+                    await self.client.say(embed=embed)
+
                 return
             
             print(len(data))
