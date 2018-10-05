@@ -1268,7 +1268,7 @@ if __name__ == "__main__":
 
     client.loop.create_task(change_status())
     client.loop.create_task(autosave_economy())
-    for sig in (SIGABRT, SIGBREAK, SIGILL, SIGINT, SIGSEGV, SIGTERM):
+    for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
         signal(sig, save_economy)
 
     client.run(TOKEN)
