@@ -13,6 +13,13 @@ class Admin:
     def __init__(self, client):
         self.client = client
 
+    def ValidInt(self, s):
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
+    
     def update_database(self, server, setting, value):
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
@@ -112,6 +119,12 @@ class Admin:
         else:
             return False
 
+    def is_serverowner(self, server, user):
+        if user.id == server.owner.id:
+            return True
+        else:
+            return False
+
     @commands.command(pass_context=True)
     async def warn(self, ctx, user: discord.Member = None, *, reason="No Reason Given"):
         author = ctx.message.author
@@ -124,36 +137,221 @@ class Admin:
                 )
                 await self.client.say(embed=embed)
                 return
-            # Actual Warning Code
+            #User Warn Uploaded To Database
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+            c = conn.cursor()
+            sql = "INSERT INTO `Warn_Table` (serverid, userid, reason) VALUES ('{}', '{}', '{}')".format(str(server.id), str(user.id), reason)
+            c.execute(sql)
+            conn.commit()
+            #Fetching All User Warnings
+            sql = "SELECT * FROM `Warn_Table` WHERE serverid = '{}' AND userid = '{}'".format(str(server.id), str(user.id))
+            c.execute(sql)
+            conn.commit()
+            data = c.fetchall()
+            current_warnings = len(data)
+            sql = "SELECT * FROM `Punishment_Table` WHERE serverid = '{}' AND warn_number = '{}'".format(str(server.id), str(current_warnings))
+            c.execute(sql)
+            conn.commit()
+            data = c.fetchall()
+            print(int(len(data)))
+            if int(len(data)) == 1:
+                for d in data:
+                    warn_type = d[3]
+
+                if warn_type == "mute":
+                    mute_lenght = self.check_database(server, "WarnMute")
+                    if "m" in mute_lenght:
+                        t_time = mute_lenght.replace("m", "")
+                        time_type = "m"
+                        if int(t_time) == 0:
+                            time = 0
+                        else:
+                            time = int(t_time)*60
+
+                    elif "h" in mute_lenght:
+                        t_time = mute_lenght.replace("h", "")
+                        time_type = "h"
+                        if int(t_time) == 0:
+                            time = 0
+                        else:
+                            time = int(t_time)*3600
+                    else:
+                        time_type = "h"
+                        time = 7200
+                    get_role = self.check_database(server, "Mute_Role")
+                    mutedrole = discord.utils.get(server.roles, name=get_role)
+                    if mutedrole == None:
+                        await self.client.say("Tried to mute user for reaching warning threshold, but found no muterole")
+                        return
+                    userroles = user.roles
+                    path = "servers/" + str(server.id) + "/muted/"
+                    if not os.path.exists(path):
+                        os.makedirs(path)
+                    mutepath = path + str(user.id) + ".txt"
+                    f = open(mutepath, "w+")
+                    for role in userroles:
+                        if str(role) != "@everyone":
+                            usrole = str(role)
+                            write = usrole + "\n"
+                            f.write(write)
+                    f.close()
+                    await self.client.replace_roles(user, mutedrole)
+                    if time != 0:
+                        if time_type == "m":
+                            embed = discord.Embed(
+                                description="{} has been muted for **{}** minute(s) for reaching the warning threshold".format(user.mention, t_time),
+                                color=0x00FF00
+                            )
+                            await self.client.say(embed=embed)
+                            await asyncio.sleep(time)
+                            path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
+                            with open(path) as fp:
+                                line = fp.readline()
+                                roles_to_give = []
+                                while line:
+                                    role = discord.utils.get(server.roles, name=line.strip())
+                                    roles_to_give.append(role)
+                                    line = fp.readline()
+                                fp.close()
+                            await self.client.replace_roles(user, *roles_to_give)
+                            os.remove(path)
+                        elif time_type == "h":
+                            embed = discord.Embed(
+                                description="{} has been muted for **{}** hour(s) for reaching the warning threshold".format(user.mention, t_time),
+                                color=0x00FF00
+                            )
+                            await self.client.say(embed=embed)
+                            await asyncio.sleep(time)
+                            path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
+                            with open(path) as fp:
+                                line = fp.readline()
+                                roles_to_give = []
+                                while line:
+                                    role = discord.utils.get(server.roles, name=line.strip())
+                                    roles_to_give.append(role)
+                                    line = fp.readline()
+                                fp.close()
+                            await self.client.replace_roles(user, *roles_to_give)
+                            os.remove(path)
+                elif warn_type == "kick":
+                    embed = discord.Embed(
+                        description="{} has been kicked for reaching the warning threshold".format(user.mention),
+                        color=0x00FF00
+                    )
+                    await self.client.say(embed=embed)
+                    await self.client.kick(user)
+                elif warn_type == "ban":
+                    embed = discord.Embed(
+                        description="{} has been banned for reaching the warning threshold".format(user.mention),
+                        color=0x00FF00
+                    )
+                    await self.client.say(embed=embed)
+                    await self.client.ban(user)
+            else:
+                embed = discord.Embed(
+                description="{} has been warned with the reason {}".format(user.mention, reason),
+                color=0x00FF00
+                )
+                await self.client.say(embed=embed)
+                return
             
+            print(len(data))
+            conn.close()
                                                                                        
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",
                 color=0xFF0000
             )
+
             await self.client.say(embed=embed)
         
 
     @commands.command(pass_context=True)
-    async def warns(self, ctx, user: discord.Member):
+    async def warns(self, ctx, user: discord.Member = None):
         author = ctx.message.author
         server = author.server
-        channel = ctx.message.channel
-       
+
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        c = conn.cursor()
+
+        if user == None:
+            sql = "SELECT * FROM `Warn_Table` WHERE serverid = '{}' AND userid = '{}'".format(str(server.id), str(author.id))
+            c.execute(sql)
+            conn.commit()
+            data = c.fetchall()
+            warnnumber = 1
+
+            if len(data) == 0:
+                embed = discord.Embed(
+                    title = "Your warnings",
+                    description = "No warnings",
+                    color = 0x00FF00
+                )
+
+                await self.client.say(embed=embed)
+            else:
+                embed = discord.Embed(
+                    title = "Your warnings",
+                    color = 0x00FF00
+                )
+
+                for warn in data:
+                    embed.add_field(name="Warning {}".format(warnnumber), value="{}".format(warn[3]), inline=False)
+                    warnnumber += 1
+
+                await self.client.say(embed=embed)
+        else:
+            sql = "SELECT * FROM `Warn_Table` WHERE serverid = '{}' AND userid = '{}'".format(str(server.id), str(user.id))
+            c.execute(sql)
+            conn.commit()
+            data = c.fetchall()
+            warnnumber = 1
+
+            if len(data) == 0:
+                embed = discord.Embed(
+                    title = "{} Warnings".format(str(user)),
+                    description = "No warnings",
+                    color = 0x00FF00
+                )
+
+                await self.client.say(embed=embed)
+            else:
+                embed = discord.Embed(
+                    title = "{} Warnings".format(str(user)),
+                    color = 0x00FF00
+                )
+
+                for warn in data:
+                    embed.add_field(name="Warning {}".format(warnnumber), value="{}".format(warn[3]), inline=False)
+                    warnnumber += 1
+
+                await self.client.say(embed=embed)
+
+        conn.close()
 
     @commands.command(pass_context=True)
-    async def clearwarns(self, ctx, user: discord.Member):
+    async def clearwarns(self, ctx, user: discord.Member = None):
         server = ctx.message.author.server
         author = ctx.message.author
         if self.is_admin_or_perms(server, author):
-            path = "servers/" + str(server.id) + \
-                "/warnings/" + str(user.id) + "/"
-            warnpath = path + "warnings.json"
-            os.remove(warnpath)
+            if user == None:
+                embed = discord.Embed(
+                    description="You didn't write any user",
+                    color=0xFF0000
+                )
+
+                await self.client.say(embed=embed)
+                return
+
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+            c = conn.cursor()
+            sql = "DELETE FROM `Warn_Table` WHERE serverid = '{}' AND userid = '{}'".format(server.id, user.id)
+            c.execute(sql)
+            conn.commit()
+            conn.close()
             embed = discord.Embed(
-                description="{} Warnings has been removed".format(
-                    user.mention),
+                description="{} Warnings has been removed".format(user.mention),
                 color=0x00FF00
             )
             await self.client.say(embed=embed)
@@ -162,10 +360,11 @@ class Admin:
                 description="You don't have permission to use this command",
                 color=0xFF0000
             )
+
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def verify(self, ctx, user: discord.Member, *, role_name=None):
+    async def verify(self, ctx, user: discord.Member, *, role_name = None):
         author = ctx.message.author
         server = author.server
         if self.is_admin_or_perms(server, author):
@@ -217,40 +416,114 @@ class Admin:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def setwarn(self, ctx, warn_number, punishment):
+    async def setwarn(self, ctx, warn_number = None, punishment = None):
         author = ctx.message.author
         server = author.server
-        if author == server.owner or author.id == "164068466129633280" or author.id == "142002197998206976":
-            if punishment == "mute" or punishment == "Mute":
-                t_punish = "Mute"
-            elif punishment == "kick" or punishment == "Kick":
-                t_punish = "Kick"
-            elif punishment == "ban" or punishment == "Ban":
-                t_punish = "Ban"
-            else:
-                self.client.say(
-                    "That is not a possible punishment, the possible punishments is [Mute/Kick/Ban]")
+        if self.is_owner(author):
+            if self.ValidInt(warn_number) == False:
+                embed = discord.Embed(
+                    description='Please enter a valid integer',
+                    color=0xFF0000
+                )
+                await self.client.say(embed=embed)  
                 return
-            path = "servers/" + str(server.id) + "/warn_punishments/"
-            if not os.path.exists(path):
-                os.makedirs(path)
-            newfile = path + str(warn_number) + ".txt"
-            f = open(newfile, "w+")
-            f.write(t_punish)
-            f.close()
-            embed = discord.Embed(
-                title='',
-                description='The punishment for warn number **{}** has been set to **{}**'.format(
-                    str(warn_number), t_punish),
-                color=0x00FF00
-            )
-            await self.client.say(embed=embed)
+
+            elif punishment == None:
+                embed = discord.Embed(
+                    description='Please enter a punishment',
+                    color=0xFF0000
+                )
+                await self.client.say(embed=embed)  
+                return
+
+            elif punishment.lower() != "mute" and punishment.lower() != "ban" and punishment.lower() != "kick":
+                embed = discord.Embed(
+                    description='Please enter a valid punishment [mute/kick/ban]',
+                    color=0xFF0000
+                )
+                await self.client.say(embed=embed)  
+                return
+
+            else:
+                conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+                c = conn.cursor()
+                sql = "SELECT * FROM `Punishment_Table` WHERE serverid = '{}' AND warn_number = '{}'".format(str(server.id), str(warn_number))
+                c.execute(sql)
+                conn.commit()
+                data = c.fetchall()
+                if len(data) == 1:
+                    sql = "UPDATE `Punishment_Table` SET warn_number = '{}', punishment = '{}' WHERE serverid = '{}' AND warn_number = '{}'".format(warn_number, punishment, server.id, warn_number)
+                    c.execute(sql)
+                    conn.commit()
+                    conn.close()
+                    embed = discord.Embed(
+                        description='Warning number **{}** will now result in **{}**'.format(str(warn_number), str(punishment)),
+                        color=0X00FF00
+                    )
+                    await self.client.say(embed=embed)  
+                    return
+
+                else:
+                    sql = "INSERT INTO `Punishment_Table` (serverid, warn_number, punishment) VALUES ('{}', '{}', '{}')".format(str(server.id), str(warn_number), str(punishment).lower())
+                    c.execute(sql)
+                    conn.commit()
+                    conn.close()
+                    embed = discord.Embed(
+                        description='Warning number **{}** will now result in **{}**'.format(str(warn_number), str(punishment)),
+                        color=0X00FF00
+                    )
+                    await self.client.say(embed=embed)  
+                    return
+                
         else:
             embed = discord.Embed(
                 title='',
                 description='You do not have permission to use this command.',
                 color=0xFF0000
             )
+            await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def removewarn(self, ctx, number = None):
+        author = ctx.message.author
+        server = author.server
+        if self.is_owner(author) or self.is_serverowner(server, author):
+            if number == None:
+                embed = discord.Embed(
+                    description="You need to write a warn number",
+                    color=0xFF0000
+                )
+                
+                await self.client.say(embed=embed)
+                return
+
+            if self.ValidInt(number) == False:
+                embed = discord.Embed(
+                    description="You need to write a number",
+                    color=0xFF0000
+                )
+                
+                await self.client.say(embed=embed)
+                return
+
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+            c = conn.cursor()
+            sql = "DELETE FROM `Punishment_Table` WHERE serverid = '{}' AND warn_number = '{}'".format(server.id, number)
+            c.execute(sql)
+            conn.commit()
+            conn.close()
+            embed = discord.Embed(
+                description = "You have successfully removed the punishment for warn number **{}**".format(number),
+                color = 0x00FF00
+            )
+            
+            await self.client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description = "You don't have permission to use this command",
+                color = 0xFF0000
+            )
+            
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
@@ -277,6 +550,7 @@ class Admin:
                 description="You don't have permission to use this command",
                 color=0xFF0000
             )
+
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)

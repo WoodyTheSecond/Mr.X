@@ -1022,8 +1022,7 @@ async def userid(ctx, user: discord.Member = None):
 async def members(ctx):
     server = ctx.message.author.server
     embed = discord.Embed(
-        description="There are `{}` members in this server.". format(
-            len(server.members)),
+        description="There are `{}` members in this server.". format(len(server.members)),
         color=0x00FF00
     )
     await client.say(embed=embed)

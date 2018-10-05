@@ -91,8 +91,8 @@ class Utility:
         embed = discord.Embed(
             color=0x0000FF
         )
-        embed.add_field(name="Primary Modules", value="Core, Admin, Utility, Creator")
-        embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Economy, NSFW")
+        embed.add_field(name="Primary Modules", value="Core, Admin, Utility, Creator", inline=False)
+        embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Economy, NSFW", inline=False)
         await self.client.say(embed=embed)
         user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
         if user_response.clean_content.lower() == "core":
@@ -135,6 +135,8 @@ class Utility:
             embed.add_field(name="clearwarns user",value="Clears the users warnings", inline=False)
             embed.add_field(name="warn user REASON",value="Warns the user with given warning", inline=False)
             embed.add_field(name="warns user",value="Displays the users warnings", inline=False)
+            embed.add_field(name="setwarn number punishment(mute/kick/ban)",value="Sets the punishment for the given warn number", inline=False)
+            embed.add_field(name="removewarn number",value="Removes the punishment for the given number", inline=False)
             embed.add_field(name="announce #channel MESSAGE",value="Announces the given message in given channel", inline=False)
             embed.add_field(name="role user ROLE_NAME",value="Announces the given message in given channel", inline=False)
             embed.add_field(name="verify user [ROLE_NAME]", value="Gives the user the verify role and if chosen also gives another role", inline=False)
