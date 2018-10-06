@@ -1409,6 +1409,13 @@ async def unload(ctx, extension):
         try:
             client.unload_extension(extension)
             print("Unloaded {}".format(extension))
+             embed = discord.Embed(
+                title="Module Unloaded",
+                description="The module {} has been successfully unloaded".format(
+                    extension),
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
         except Exception as error:
             print("{} can't be unloaded. [{}]".format(extension, error))
 
