@@ -84,18 +84,23 @@ class Utility:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def help(self, ctx):
+    async def help(self, ctx, module = None):
         author = ctx.message.author
         channel = ctx.message.channel
-        await self.client.say("What module do you want help with?")
-        embed = discord.Embed(
-            color=0x0000FF
-        )
-        embed.add_field(name="Primary Modules", value="Core, Admin, Utility, Creator", inline=False)
-        embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Economy, NSFW", inline=False)
-        await self.client.say(embed=embed)
-        user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
-        if user_response.clean_content.lower() == "core":
+        if module == None:
+            await self.client.say("What module do you want help with?")
+            embed = discord.Embed(
+                color=0x0000FF
+            )
+            embed.add_field(name="Primary Modules", value="Core, Admin, Utility, Creator", inline=False)
+            embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Economy, NSFW", inline=False)
+            await self.client.say(embed=embed)
+            user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
+            user_response = user_response.clean_content.lower()
+        else:
+            user_response = module.lower()
+
+        if user_response == "core":
             self.client.say("Core Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -117,7 +122,7 @@ class Utility:
             embed.add_field(name="botinfo", value="Shows the bot information", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content.lower() == "admin":
+        elif user_response == "admin":
             self.client.say("Admin Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -143,7 +148,7 @@ class Utility:
             embed.add_field(name="dinvites", value="Delete all of the invites", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content.lower() == "fun":
+        elif user_response == "fun":
             self.client.say("Fun Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -154,7 +159,7 @@ class Utility:
             embed.add_field(name="catgirl", value="Posts a link to the catgirl care website", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content.lower() == "nsfw":
+        elif user_response == "nsfw":
             self.client.say("NSFW Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -174,7 +179,7 @@ class Utility:
             embed.add_field(name="tentai", value="Posts a random tentacle image from reddit", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content.lower() == "level":
+        elif user_response == "level":
             self.client.say("Level Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -184,7 +189,7 @@ class Utility:
             embed.add_field(name="togglelevel", value="Disables the global level system on this server", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content.lower() == "creator":
+        elif user_response == "creator":
             self.client.say("Creator Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -197,7 +202,7 @@ class Utility:
             embed.add_field(name="leave server", value="Leaves the given server", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content.lower() == "music":
+        elif user_response == "music":
             self.client.say("Music Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -206,7 +211,7 @@ class Utility:
             embed.add_field(name="W.I.P", value="This module is still in progress", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content.lower() == "swarm":
+        elif user_response == "swarm":
             self.client.say("Swarm Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -217,13 +222,13 @@ class Utility:
             embed.add_field(name="collect", value="Sends drones out to collect Organic Biomaterials", inline=False)
             await self.client.say(embed=embed)
 
-        elif user_response.clean_content.lower() == "utility":
+        elif user_response == "utility":
             self.client.say("Utility Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
             )
             embed.set_author(name="Utility Module")
-            embed.add_field(name="help", value="Shows list of modules and command list", inline=False)
+            embed.add_field(name="help [module]", value="Shows list of modules and command list", inline=False)
             embed.add_field(name="avatar [user]", value="Shows your own avatar or the given users avatar", inline=False)
             embed.add_field(name="mywarns", value="Displays your warnings", inline=False)
             embed.add_field(name="flipcoin", value="Flips a coin and will either land on Heads or Tails", inline=False)
@@ -233,7 +238,7 @@ class Utility:
             embed.add_field(name="userinfo [user]", value="Shows info for yourself or the given user", inline=False)
             embed.add_field(name="nsfw", value="Gives/removes the nsfw role", inline=False)
             await self.client.say(embed=embed)
-        elif user_response.clean_content.lower() == "economy":
+        elif user_response == "economy":
             self.client.say("Economy Module Command List")
             embed = discord.Embed(
                 color=0x0000FF
@@ -248,7 +253,11 @@ class Utility:
             embed.add_field(name="setmin setting value", value="Set the settings minimum amount", inline=False)
             await self.client.say(embed=embed)
         else:
-            await self.client.say("Invalid Module.")
+            embed = discord.Embed(
+                description = "Module `{}` doesn't exist".format(module),
+                color = 0xFF0000
+            )
+            await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
     async def flipcoin(self, ctx):

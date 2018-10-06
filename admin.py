@@ -291,6 +291,7 @@ class Admin:
             conn.commit()
             data = c.fetchall()
             warnnumber = 1
+            postedten = False
 
             if len(data) == 0:
                 embed = discord.Embed(

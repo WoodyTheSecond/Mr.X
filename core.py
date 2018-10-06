@@ -267,16 +267,16 @@ async def on_member_unban(server, member):
                 await client.ban(member)
 
     
-@client.event
-async def on_message(message):
-    channel = message.channel
-    help_check = extensions
-    for check in help_check:
-        if message.content.startswith("-help " + check):
-            await client.send_message(channel, "Do not use -help {}, you just write the module | Example: -help | {}".format(check, check))
-            return
+# @client.event
+# async def on_message(message):
+#     channel = message.channel
+#     help_check = extensions
+#     for check in help_check:
+#         if message.content.startswith("-help " + check):
+#             await client.send_message(channel, "Do not use -help {}, you just write the module | Example: -help | {}".format(check, check))
+#             return
 
-    await client.process_commands(message)
+#     await client.process_commands(message)
 
 @client.command()
 async def botinfo():
