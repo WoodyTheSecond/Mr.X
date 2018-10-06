@@ -18,38 +18,64 @@ class Marriage:
             return False
 
     @commands.command(pass_context=True)
-    async def marriage(self, ctx):
+    async def marriage(self, ctx, user: discord.Member = None):
         author = ctx.message.author
         server = author.server
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
-        sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
-        c.execute(sql)
-        conn.commit()
-        data = c.fetchall()
-        if len(data) >= 1:
-            for d in data:
-                user1 = d[1]
-                user2 = d[2]
-            if user1 == str(author.id):
-                married_to = int(user2)
+        if user == None:
+            sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
+            c.execute(sql)
+            conn.commit()
+            data = c.fetchall()
+            if len(data) >= 1:
+                for d in data:
+                    user1 = d[1]
+                    user2 = d[2]
+                if user1 == str(author.id):
+                    married_to = int(user2)
+                else:
+                    married_to = int(user1)
+
+                embed = discord.Embed(
+                    description="You are married to <@{}>".format(married_to),
+                    color=0xFF0000
+                )
+                embed.set_image(url="https://cdn.pixabay.com/photo/2015/12/11/17/28/heart-1088487_960_720.png")
+                await self.client.say(embed=embed)
+
             else:
-                married_to = int(user1)
-
-            embed = discord.Embed(
-                description="You are married to <@{}>".format(married_to),
-                color=0xFF0000
-            )
-            embed.set_image(url="https://cdn.pixabay.com/photo/2015/12/11/17/28/heart-1088487_960_720.png")
-            await self.client.say(embed=embed)
-
+                embed = discord.Embed(
+                    description="You are not married",
+                    color=0xFF0000
+                )
+                await self.client.say(embed=embed)
+            conn.close()
         else:
-            embed = discord.Embed(
-                description="You are not married",
-                color=0xFF0000
-            )
-            await self.client.say(embed=embed)
-        conn.close()
+            sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(user.id), str(user.id))
+            c.execute(sql)
+            conn.commit()
+            data = c.fetchall()
+            if len(data) >= 1:
+                for d in data:
+                    user1 = d[1]
+                    user2 = d[2]
+                if user1 == str(user.id):
+                    married_to = int(user2)
+                else:
+                    married_to = int(user1)
+                embed = discord.Embed(
+                    description="{} is married to <@{}>".format(user.mention, married_to),
+                    color=0xFF0000
+                )
+                embed.set_image(url="https://cdn.pixabay.com/photo/2015/12/11/17/28/heart-1088487_960_720.png")
+                await self.client.say(embed=embed)
+            else:
+                embed = discord.Embed(
+                    description="user is not married",
+                    color=0xFF0000
+                )
+                await self.client.say(embed=embed)            
 
     @commands.command(pass_context=True)
     async def breakup(self, ctx):
@@ -126,7 +152,7 @@ class Marriage:
                 #breakup
                 conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
                 c = conn.cursor()
-                sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
+                sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(user.id), str(user.id))
                 c.execute(sql)
                 conn.commit()
                 data = c.fetchall()
