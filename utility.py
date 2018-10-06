@@ -185,7 +185,7 @@ class Utility:
                 color=0x0000FF
             )
             embed.add_field(name="Primary Modules", value="Core, Admin, Utility, Creator", inline=False)
-            embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Economy, NSFW", inline=False)
+            embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Economy, NSFW, Marriage", inline=False)
             await self.client.say(embed=embed)
             user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
             user_response = user_response.clean_content.lower()
@@ -213,6 +213,7 @@ class Utility:
             embed.add_field(name="nsfwtoggle", value="Toggles the nsfw commands", inline=False)
             embed.add_field(name="lockchannel [channel]", value="Locks the channel", inline=False)
             embed.add_field(name="unlockchannel [channel]", value="Unlocks the channel", inline=False)
+            embed.add_field(name="kickbots", value="Kicks all the bots in the server", inline=False)
             embed.add_field(name="botinfo", value="Shows the bot information", inline=False)
             await self.client.say(embed=embed)
 
@@ -348,6 +349,16 @@ class Utility:
             embed.add_field(name="give user amount", value="Give money to a user", inline=False)
             embed.add_field(name="setmax setting value", value="Set the settings maximum amount", inline=False)
             embed.add_field(name="setmin setting value", value="Set the settings minimum amount", inline=False)
+            await self.client.say(embed=embed)
+        elif user_response == "marriage":
+            self.client.say("Marriage Module Command List")
+            embed = discord.Embed(
+                color=0x0000FF
+            )
+            embed.set_author(name="Marriage Module")
+            embed.add_field(name="propose user", value="Propose to the user", inline=False)
+            embed.add_field(name="marriage", value="Shows who you are married to", inline=False)
+            embed.add_field(name="breakup", value="Breaks up with the on you are married to", inline=False)
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(

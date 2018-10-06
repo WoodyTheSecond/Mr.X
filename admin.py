@@ -1217,12 +1217,26 @@ class Admin:
                     await self.client.say(embed=embed)
                 else:
                     if user == None:
-                        await self.client.purge_from(channel, limit=int(amount))
+                        try:
+                            await self.client.purge_from(channel, limit=int(amount))
+                        except:
+                            embed = discord.Embed(
+                                description="You can't delete messages that's older than 14 days",
+                                color=0xFF0000
+                            )
+                            await self.client.say(embed=embed)
                     else:
                         def is_user(m):
                             return m.author == user
-
-                        await self.client.purge_from(channel, limit=int(amount), check=is_user)
+                        
+                        try:
+                            await self.client.purge_from(channel, limit=int(amount), check=is_user)
+                        except:
+                            embed = discord.Embed(
+                                description="You can't delete messages that's older than 14 days",
+                                color=0xFF0000
+                            )
+                            await self.client.say(embed=embed)
             except:
                 embed = discord.Embed(
                     title="Clear",

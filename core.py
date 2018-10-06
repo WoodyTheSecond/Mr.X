@@ -21,7 +21,7 @@ client.remove_command("help")
 status = ["Commands: -help", "Watching you"]
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
-extensions = ["admin", "utility", "swarm", "nsfw", "fun", "economy"]
+extensions = ["admin", "utility", "swarm", "nsfw", "fun", "economy", "marriage"]
 
 
 async def change_status():
@@ -1322,6 +1322,46 @@ async def unlockchannel(ctx, channel: discord.Channel = None):
                 color=0xFF0000
             )
 
+            await client.say(embed=embed)
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+
+        await client.say(embed=embed)
+
+@client.command(pass_context=True)
+async def kickbots(ctx):
+    author = ctx.message.author
+    server = author.server
+    channel = ctx.message.channel
+    if is_owner(author) or author == server.owner:
+        embed = discord.Embed(
+            description = "Are you sure you wan't to kick all the bots in the server? (yes/no)",
+            color = 0x00FF00
+        )
+        await client.say(embed=embed)
+        user_response = await client.wait_for_message(timeout=40, channel=channel, author=author)
+        user_response = user_response.clean_content.lower()
+        if user_response == "yes":
+            for member in list(server.members):
+                if member.bot == True and member != server.me:
+                    try:
+                        await client.kick(member)
+                    except:
+                        print("I can't kick {}".format(str(member)))
+
+            embed = discord.Embed(
+                description = "The bots has been kicked",
+                color = 0x00FF00
+            )
+            await client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description = "Command cancelled",
+                color = 0x00FF00
+            )
             await client.say(embed=embed)
     else:
         embed = discord.Embed(
