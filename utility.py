@@ -84,6 +84,98 @@ class Utility:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
+    async def setcolor(self, ctx):
+        author = ctx.message.author
+        server = author.server
+        channel = ctx.message.channel
+        if author == server.owner or self.is_owner(author):
+            embed = discord.Embed(
+                description="Enter the name for the color you wish to make",
+                color=0x00FF00
+            )
+            await self.client.say(embed=embed)
+            user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
+            color_name = user_response.clean_content.lower()
+            embed = discord.Embed(
+                description="Enter the rolename for your color **{}**".format(color_name),
+                color=0x00FF00
+            )
+            await self.client.say(embed=embed)
+            user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
+            color_rolename = user_response.clean_content
+            rolename = discord.utils.get(server.roles, name=color_rolename)
+            newrole = str(rolename)
+            if newrole == "None":
+                embed = discord.Embed(
+                    description="Role not found",
+                    color=0xFF0000
+                )
+                await self.client.say(embed=embed)
+                return
+            else:
+                embed = discord.Embed(
+                    description="Color information - Confirm[Yes/No]",
+                    color=0x00FF00
+                )
+                embed.add_field(name="Color name", value="{}".format(color_name))
+                embed.add_field(name="Color rolename", value="{}".format(newrole))
+                await self.client.say(embed=embed)
+                user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
+                user_response = user_response.clean_content.lower()
+                if user_response == "yes":
+                    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+                    c = conn.cursor()
+                    sql = "SELECT * FROM `Color_Table` WHERE serverid = '{}' AND color_name = '{}'".format(str(server.id), str(color_name))
+                    c.execute(sql)
+                    conn.commit()
+                    data = c.fetchall()
+                    if len(data) >= 1:
+                        #Color Already Exists
+                        sql = "UPDATE `Color_Table` SET color_name = '{}', color_rolename = '{}' WHERE serverid = '{}' AND color_name = '{}'".format(color_name, newrole, server.id, color_name)
+                        c.execute(sql)
+                        conn.commit()
+                        embed = discord.Embed(
+                            description="Color has been made",
+                            color=0x00FF00
+                        )
+                        await self.client.say(embed=embed)
+                        conn.close()
+                        return
+                    else:
+                        #Color Does Not Exist
+                        sql = "INSERT INTO `Color_Table` (serverid, color_name, color_rolename) VALUES ('{}', '{}', '{}')".format(str(server.id), str(color_name), newrole)
+                        c.execute(sql)
+                        conn.commit()
+                        embed = discord.Embed(
+                            description="Color has been made",
+                            color=0x00FF00
+                        )
+                        await self.client.say(embed=embed)
+                        conn.close()
+                        return
+                elif user_response == "no":
+                    embed = discord.Embed(
+                        description="Exiting",
+                        color=0xFF0000
+                    )
+                    await self.client.say(embed=embed)
+                    return
+                else:
+                    embed = discord.Embed(
+                        description="Invalid response",
+                        color=0xFF0000
+                    )
+                    await self.client.say(embed=embed)
+                    return               
+        else:
+            embed = discord.Embed(
+                description="You don't have permission to use this command.",
+                color=0xFF0000
+            )
+            await self.client.say(embed=embed)
+
+
+    @commands.command(pass_context=True)
     async def help(self, ctx, module = None):
         author = ctx.message.author
         channel = ctx.message.channel
@@ -157,6 +249,7 @@ class Utility:
             embed.add_field(name="meme", value="Posts a random meme from reddit", inline=False)
             embed.add_field(name="loli", value="Posts a random loli image from reddit", inline=False)
             embed.add_field(name="catgirl", value="Posts a link to the catgirl care website", inline=False)
+            embed.add_field(name="neko", value="Posts a random cute neko girl from reddit", inline=False)
             await self.client.say(embed=embed)
 
         elif user_response == "nsfw":
@@ -177,6 +270,8 @@ class Utility:
             embed.add_field(name="lewdkitsune", value="Posts neko NSFW content", inline=False)
             embed.add_field(name="furry", value="Posts a random furry image from reddit", inline=False)
             embed.add_field(name="tentai", value="Posts a random tentacle image from reddit", inline=False)
+            embed.add_field(name="rule34 tag", value="Posts a rule34 image", inline=False)
+            embed.add_field(name="e621 tag", value="Posts a e621 image", inline=False)
             await self.client.say(embed=embed)
 
         elif user_response == "level":

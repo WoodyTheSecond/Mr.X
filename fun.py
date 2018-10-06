@@ -121,6 +121,41 @@ class Fun:
         await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
+    async def neko(self, ctx):
+        server = ctx.message.author.server
+        author = ctx.message.author
+        fun_toggle = self.check_database(server, "FunToggle")
+        if author.id != "164068466129633280" and author.id != "142002197998206976" and author.id != "457516809940107264":
+            if fun_toggle == False:
+                embed = discord.Embed(
+                    description="The fun commands is currently disabled",
+                    color=0xFF0000
+                )
+
+                await self.client.say(embed=embed)
+                return
+
+        reddit = praw.Reddit(
+            client_id="G9hlJ0OTkWFNhw",
+            client_secret="Ps8h_yI1QbNGR0RUreP93_COsFE",
+            password="RE9!bE5fCQy8BWTdNOdw77r!W9KCuJ",
+            user_agent="Alice discord bot",
+            username="WoodyTheSecond"
+        )
+        memes_submissions = reddit.subreddit("nekogirls").hot()
+        post_to_pick = random.randint(1, 50)
+        for i in range(0, post_to_pick):
+            submission = next(x for x in memes_submissions if not x.stickied)
+
+        embed = discord.Embed(
+            color=0x00FF00
+        )
+        embed.set_image(url=submission.url)
+        embed.set_footer(text="With love from C0mpl3X, the King of Loli's")
+        await self.client.say(embed=embed)
+
+
+    @commands.command(pass_context=True)
     async def catgirl(self, ctx):
         server = ctx.message.author.server
         author = ctx.message.author

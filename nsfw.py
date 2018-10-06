@@ -7,6 +7,7 @@ import praw
 import random
 import pymysql
 import os
+import aiohttp
 
 class NSFW:
     def __init__(self, client):
@@ -531,7 +532,7 @@ class NSFW:
                 submission = next(x for x in submissions if not x.stickied)
 
             embed = discord.Embed(
-                color=0x00FF00
+                color=0x800080
             )
             embed.set_image(url=submission.url)
             await self.client.say(embed=embed)
@@ -580,10 +581,159 @@ class NSFW:
                 submission = next(x for x in submissions if not x.stickied)
 
             embed = discord.Embed(
-                color=0x00FF00
+                color=0x800080
             )
             embed.set_image(url=submission.url)
             await self.client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="This is not an NSFW channel",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def rule34(self, ctx, tag = None):
+        author = ctx.message.author
+        server = author.server
+        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        if nsfw_toggle == False:
+            embed = discord.Embed(
+                description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if await self.is_nsfw(ctx.message.channel):
+            if tag == None:
+                embed = discord.Embed(
+                    description="You need to write a tag",
+                    color=0xFF0000
+                )
+
+                await self.client.say(embed=embed)
+                return
+
+            try:
+                async with aiohttp.ClientSession() as cs:
+                    async with cs.get(f"https://rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&tags={tag}") as r:
+                        data = json.loads(await r.text())
+                
+                non_loli = list(filter(lambda x: 'loli' not in x['tags'] and 'shota' not in x['tags'], data))
+                if len(non_loli) == 0:
+                    embed = discord.Embed(
+                        description = "Loli/Shota is not allowed by discord TOS",
+                        color = 0xFF0000
+                    )
+                    await self.client.say(embed=embed)
+                    return
+
+                response = non_loli[random.randint(0, len(non_loli) - 1)]
+                img = f"https://img.rule34.xxx/images/{response['directory']}/{response['image']}"
+                embed = discord.Embed(
+                    color = 0x800080
+                )
+                embed.set_image(url=img)
+                await self.client.say(embed=embed)
+            except:
+                embed = discord.Embed(
+                    description = "Couldn't find anything",
+                    color = 0xFF0000
+                )
+
+                await self.client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="This is not an NSFW channel",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def e621(self, ctx, tag = None):
+        author = ctx.message.author
+        server = author.server
+        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        if nsfw_toggle == False:
+            embed = discord.Embed(
+                description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if await self.is_nsfw(ctx.message.channel):
+            if tag == None:
+                embed = discord.Embed(
+                    description="You need to write a tag",
+                    color=0xFF0000
+                )
+
+                await self.client.say(embed=embed)
+                return
+
+            try:
+                ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0"
+                async with aiohttp.ClientSession() as cs:
+                        async with cs.get(f"https://e621.net/post/index.json?limit=15&tags={tag}",
+                                        headers={"User-Agent": ua}) as r:
+                            res = await r.json()
+                data = random.choice(res)
+                if data == []:
+                    embed = discord.Embed(
+                        description = "No images found",
+                        color = 0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
+                    return
+
+                if "loli" in data["tags"] or "shota" in data["tags"]:
+                    embed = discord.Embed(
+                        description = "Loli/Shota is not allowed by discord TOS",
+                        color = 0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
+                    return
+
+                embed = discord.Embed(
+                    color = 0x800080
+                )
+                embed.set_image(url=data["file_url"])
+
+                await self.client.say(embed=embed)
+            except:
+                embed = discord.Embed(
+                    description = "Couldn't find anything",
+                    color = 0xFF0000
+                )
+
+                await self.client.say(embed=embed)
+            
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
