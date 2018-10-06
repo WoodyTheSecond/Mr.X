@@ -11,6 +11,12 @@ class Marriage:
     def __init__(self, client):
         self.client = client
 
+    def is_owner(self, user):
+        if user.id == "164068466129633280" or user.id == "142002197998206976" or user.id == "457516809940107264":
+            return True
+        else:
+            return False
+
     @commands.command(pass_context=True)
     async def marriage(self, ctx):
         author = ctx.message.author
@@ -74,7 +80,7 @@ class Marriage:
                             try:
                                 await self.client.delete_role(srv, role)
                             except:
-                                print("Role doesn't exist")
+                                print("Role doesn't exist in {}".format(srv.name))
 
                 sql = "DELETE FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
                 c.execute(sql)
@@ -102,6 +108,62 @@ class Marriage:
                 description="You are not married",
                 color=0xFF0000
             )
+            await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def forcebreakup(self, ctx, user: discord.Member = None):
+        author = ctx.message.author
+        server = ctx.message.server
+        if self.is_owner(author):
+            if user == None:
+                embed = discord.Embed(
+                    description="You have not tagged any user",
+                    color=0xFF0000
+                )
+                await self.client.say(embed=embed)
+                return
+            else:
+                #breakup
+                conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+                c = conn.cursor()
+                sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
+                c.execute(sql)
+                conn.commit()
+                data = c.fetchall()
+                if len(data) >= 1:
+                    sql = "DELETE FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(user.id), str(user.id))
+                    c.execute(sql)
+                    conn.commit()
+                    for d in data:
+                        roleid = d[4]
+                    for srv in self.client.servers:
+                        for role in list(srv.roles):
+                            if str(role.id) == str(roleid):
+                                try:
+                                    await self.client.delete_role(srv, role)
+                                except:
+                                    print("Role doesn't exist in {}".format(srv.name))
+                    embed = discord.Embed(
+                        description="You have successfully forced a break up on {}".format(user.mention),
+                        color=0xFF0000
+                    )
+                    
+                    await self.client.say(embed=embed)
+                    
+                else:
+                    embed = discord.Embed(
+                        description="This user is not married",
+                        color=0xFF0000
+                    )
+                    
+                    await self.client.say(embed=embed)
+                conn.close()                
+        else:
+            embed = discord.Embed(
+                description="You don't have permission to use this command",
+                color=0xFF0000
+            )
+            
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
