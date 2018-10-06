@@ -1216,6 +1216,120 @@ async def createsettings(ctx):
 
         await client.say(embed=embed)
 
+@client.command(pass_context=True)
+async def lockchannel(ctx, channel: discord.Channel = None):
+    author = ctx.message.author
+    server = author.server
+    cchannel = ctx.message.channel
+    if channel == None:
+        channel = ctx.message.channel
+
+    if is_owner(author) or author == server.owner:
+        role_list = [role for role in server.roles]
+        path = "locked/" + str(channel.id) + ".json"
+        if not os.path.exists(path):
+            with open(path, "w+") as f:
+                json_data = {}
+                json_data["Channel_Permissions"] = {}
+                for role in role_list:
+                    cur_role_perms = channel.overwrites_for(role)
+                    json_data["Channel_Permissions"][str(role.id)] = cur_role_perms.send_messages
+                    overwrite = discord.PermissionOverwrite()
+                    overwrite.send_messages = False
+                    await client.edit_channel_permissions(channel, role, overwrite)
+                json.dump(json_data, f)
+            if channel == cchannel:
+                embed = discord.Embed(
+                    description="The channel has been locked. Use **-unlockchannel** to unlock it",
+                    color=0xFF0000
+                )
+
+                await client.say(embed=embed)
+            else:
+                embed = discord.Embed(
+                    description="The channel {} has been locked. Use **-unlockchannel** to unlock it".format(channel.mention),
+                    color=0xFF0000
+                )
+
+                await client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="Channel is already locked use **-unlockchannel** to unlock it",
+                color=0xFF0000
+            )
+
+            await client.say(embed=embed)
+            return
+        bot_perms = channel.overwrites_for(server.me)
+        bot_perms_edited = False
+        if not bot_perms.read_messages:
+            bot_perms.read_messages = True
+            bot_perms_edited = True
+        if not bot_perms.send_messages:
+            bot_perms.send_messages = True
+            bot_perms_edited = True
+        if bot_perms_edited:
+            await client.edit_channel_permissions(channel, server.me, bot_perms)
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+
+        await client.say(embed=embed)
+
+@client.command(pass_context=True)
+async def unlockchannel(ctx, channel: discord.Channel = None):
+    author = ctx.message.author
+    server = author.server
+    cchannel = ctx.message.channel
+    if channel == None:
+        channel = ctx.message.channel
+
+    if is_owner(author) or author == server.owner:
+        path = "locked/" + str(channel.id) + ".json"
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                channel_perms = json.load(f)
+                role_list = [role for role in server.roles]
+                for role in role_list:
+                    if str(role.id) in channel_perms["Channel_Permissions"]:
+                        overwrite = discord.PermissionOverwrite()
+                        overwrite.send_messages = channel_perms["Channel_Permissions"][str(role.id)]
+                        await client.edit_channel_permissions(channel, role, overwrite)
+                    else:
+                        overwrite = discord.PermissionOverwrite()
+                        overwrite.send_messages = None
+                        await client.edit_channel_permissions(channel, role, overwrite)
+            os.remove(path)
+            if channel == cchannel:
+                embed = discord.Embed(
+                    description="The channel has been unlocked",
+                    color=0x00FF00
+                )
+
+                await client.say(embed=embed)
+            else:
+                embed = discord.Embed(
+                    description="The channel {} has been unlocked".format(channel.mention),
+                    color=0x00FF00
+                )
+
+                await client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="The channel isn't locked use **-lockchannel** to lock it",
+                color=0xFF0000
+            )
+
+            await client.say(embed=embed)
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+
+        await client.say(embed=embed)
 
 @client.command(pass_context=True)
 async def load(ctx, extension):

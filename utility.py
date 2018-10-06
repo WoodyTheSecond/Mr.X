@@ -211,6 +211,8 @@ class Utility:
             embed.add_field(name="funtoggle", value="Toggles the fun commands", inline=False)
             embed.add_field(name="nsfwrole ROLE_NAME", value="Sets the nsfw role", inline=False)
             embed.add_field(name="nsfwtoggle", value="Toggles the nsfw commands", inline=False)
+            embed.add_field(name="lockchannel [channel]", value="Locks the channel", inline=False)
+            embed.add_field(name="unlockchannel [channel]", value="Unlocks the channel", inline=False)
             embed.add_field(name="botinfo", value="Shows the bot information", inline=False)
             await self.client.say(embed=embed)
 

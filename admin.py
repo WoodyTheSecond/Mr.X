@@ -257,7 +257,7 @@ class Admin:
                     await self.client.say(embed=embed)
                 else:
                     embed = discord.Embed(
-                        description="{} has been warned with the reason {}".format(user.mention, reason),
+                        description="{} has been warned with the reason **{}**".format(user.mention, reason),
                         color=0x00FF00
                     )
 
