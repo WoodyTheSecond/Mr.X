@@ -358,7 +358,7 @@ class Utility:
             embed.set_author(name="Marriage Module")
             embed.add_field(name="propose user", value="Propose to the user", inline=False)
             embed.add_field(name="marriage", value="Shows who you are married to", inline=False)
-            embed.add_field(name="breakup", value="Breaks up with the on you are married to", inline=False)
+            embed.add_field(name="divorce", value="Breaks up with the on you are married to", inline=False)
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(

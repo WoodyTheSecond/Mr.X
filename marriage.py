@@ -24,22 +24,6 @@ class Marriage:
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         if user == None:
-            if author.id == "164068466129633280":
-                embed = discord.Embed(
-                    description="You are married to **Charlotte Izoard**",
-                    color=0xFF0000
-                )
-                embed.set_image(url="https://i.imgur.com/G7oJSjE.jpg")
-                await self.client.say(embed=embed)
-                return
-            elif author.id == "142002197998206976":
-                embed = discord.Embed(
-                    description="You are married to **Yukana Yame**",
-                    color=0xFF0000
-                )
-                embed.set_image(url="https://i.imgur.com/MEldWsb.jpg")
-                await self.client.say(embed=embed)
-                return
             sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
             c.execute(sql)
             conn.commit()
@@ -61,6 +45,22 @@ class Marriage:
                 await self.client.say(embed=embed)
 
             else:
+                if author.id == "164068466129633280":
+                embed = discord.Embed(
+                    description="You are married to **Charlotte Izoard**",
+                    color=0xFF0000
+                )
+                embed.set_image(url="https://i.imgur.com/G7oJSjE.jpg")
+                await self.client.say(embed=embed)
+                return
+            elif author.id == "142002197998206976":
+                embed = discord.Embed(
+                    description="You are married to **Yukana Yame**",
+                    color=0xFF0000
+                )
+                embed.set_image(url="https://i.imgur.com/MEldWsb.jpg")
+                await self.client.say(embed=embed)
+                return
                 embed = discord.Embed(
                     description="You are not married",
                     color=0xFF0000
@@ -110,7 +110,7 @@ class Marriage:
                 await self.client.say(embed=embed)          
 
     @commands.command(pass_context=True)
-    async def breakup(self, ctx):
+    async def divorce(self, ctx):
         author = ctx.message.author
         server = ctx.message.server
         channel = ctx.message.channel
@@ -122,7 +122,7 @@ class Marriage:
         data = c.fetchall()
         if len(data) >= 1:
             embed = discord.Embed(
-                description="Are you sure you wish to breakup?",
+                description="Are you sure you wish to divorce?",
                 color=0xFF0000
             )
             await self.client.say(embed=embed)
