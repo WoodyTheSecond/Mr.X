@@ -46,21 +46,21 @@ class Marriage:
 
             else:
                 if author.id == "164068466129633280":
-                embed = discord.Embed(
-                    description="You are married to **Charlotte Izoard**",
-                    color=0xFF0000
-                )
-                embed.set_image(url="https://i.imgur.com/G7oJSjE.jpg")
-                await self.client.say(embed=embed)
-                return
-            elif author.id == "142002197998206976":
-                embed = discord.Embed(
-                    description="You are married to **Yukana Yame**",
-                    color=0xFF0000
-                )
-                embed.set_image(url="https://i.imgur.com/MEldWsb.jpg")
-                await self.client.say(embed=embed)
-                return
+                    embed = discord.Embed(
+                        description="You are married to **Charlotte Izoard**",
+                        color=0xFF0000
+                    )
+                    embed.set_image(url="https://i.imgur.com/G7oJSjE.jpg")
+                    await self.client.say(embed=embed)
+                    return
+                elif author.id == "142002197998206976":
+                    embed = discord.Embed(
+                        description="You are married to **Yukana Yame**",
+                        color=0xFF0000
+                    )
+                    embed.set_image(url="https://i.imgur.com/MEldWsb.jpg")
+                    await self.client.say(embed=embed)
+                    return
                 embed = discord.Embed(
                     description="You are not married",
                     color=0xFF0000
