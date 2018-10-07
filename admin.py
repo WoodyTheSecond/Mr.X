@@ -410,7 +410,7 @@ class Admin:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def verify(self, ctx, user: discord.Member, *, role_name = None):
+    async def verify(self, ctx, user: discord.Member = None, *, role_name = None):
         author = ctx.message.author
         server = author.server
         if self.is_admin_or_perms(server, author):

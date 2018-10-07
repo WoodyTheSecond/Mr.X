@@ -50,13 +50,13 @@ async def autosave_economy():
             user_id = os.fsdecode(file).replace(".json", "")
             filepath = "eco/{}".format(str(filename))
             with open(filepath, "r") as f:
-                    economy = json.load(f)
-                    for server in economy:
-                        current_money = economy[server]["Money"]
-                        current_bank = economy[server]["Bank"]
-                        sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
-                        c.execute(sql)
-                        conn.commit()
+                economy = json.load(f)
+                for server in economy:
+                    current_money = economy[server]["Money"]
+                    current_bank = economy[server]["Bank"]
+                    sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
+                    c.execute(sql)
+                    conn.commit()
 
         conn.close()
         print("The economy has been saved")

@@ -44,6 +44,20 @@ class Economy:
             else:
                 return row
 
+    def check_database_multiple(self, conn, server, setting):
+        c = conn.cursor()
+        sql = "SELECT {} from `Economy_Settings` WHERE serverid = {}".format(setting, str(server.id))
+        c.execute(sql)
+        conn.commit()
+        data = c.fetchone()
+        for row in data:
+            if row == 1:
+                return True
+            elif row == 0:
+                return False
+            else:
+                return row
+
     def update_database(self, server, setting, value):
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
@@ -93,15 +107,17 @@ class Economy:
             if not server.id in economy_array:
                 self.make_settings(server)
                 economy_array[server.id] = {}
-                economy_array[server.id]["max_work_amount"] = int(self.check_database(server, "max_work_amount"))
-                economy_array[server.id]["min_work_amount"] = int(self.check_database(server, "min_work_amount"))
-                economy_array[server.id]["max_slut_amount"] = int(self.check_database(server, "max_slut_amount"))
-                economy_array[server.id]["min_slut_amount"] = int(self.check_database(server, "min_slut_amount"))
+                conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+                economy_array[server.id]["max_work_amount"] = int(self.check_database_multiple(conn, server, "max_work_amount"))
+                economy_array[server.id]["min_work_amount"] = int(self.check_database_multiple(conn, server, "min_work_amount"))
+                economy_array[server.id]["max_slut_amount"] = int(self.check_database_multiple(conn, server, "max_slut_amount"))
+                economy_array[server.id]["min_slut_amount"] = int(self.check_database_multiple(conn, server, "min_slut_amount"))
+                conn.close()
             #Actual Work Code
-            path = "eco/" + str(author.id) + ".json"
+            path = "eco/{}.json".format(author.id)
             if not os.path.exists(path):
                 amount_earned = randint(economy_array[server.id]["min_work_amount"], economy_array[server.id]["max_work_amount"])
-                with open(path, 'w+') as f:
+                with open(path, "w+") as f:
                     json_data = {}
                     json_data[server.id] = {}
                     json_data[server.id]["Money"] = amount_earned
@@ -115,7 +131,7 @@ class Economy:
 
                 await self.client.say(embed=embed)
             else:
-                with open(path, 'r') as f:
+                with open(path, "r") as f:
                     economy = json.load(f)
                     if str(server.id) in economy:
                         print("Found")
@@ -123,10 +139,11 @@ class Economy:
                         economy[server.id] = {}
                         economy[server.id]["Money"] = 0
                         economy[server.id]["Bank"] = 0
-                        with open(path, 'w') as f:
+                        with open(path, "w") as f:
                             json.dump(economy, f)
+
                 amount_earned = randint(economy_array[server.id]["min_work_amount"], economy_array[server.id]["max_work_amount"])
-                with open(path, 'r') as f:
+                with open(path, "r") as f:
                     economy = json.load(f)
                     if economy[server.id]["Money"]:
                         current_money = int(economy[server.id]["Money"])
@@ -135,7 +152,7 @@ class Economy:
                         economy[server.id]["Money"] = 0
             
                     economy[server.id]["Money"] = current_money + amount_earned
-                    with open(path, 'w') as f:
+                    with open(path, "w") as f:
                         json.dump(economy, f)
 
                 embed = discord.Embed(
@@ -163,24 +180,33 @@ class Economy:
                     json_data[server.id]["Money"] = 0
                     json_data[server.id]["Bank"] = 0
                     json.dump(json_data, f)
-            else:
-                with open(path, "r") as f:
-                    economy = json.load(f)
-                    if economy[server.id]["Money"] != None:
-                        current_money = int(economy[server.id]["Money"])
-                    else:
-                        economy[server.id]["Money"] = 0
-                        with open(path, "w") as f:
-                            json.dump(economy, f)
 
-                with open(path, "r") as f:
-                    economy = json.load(f)
-                    if economy[server.id]["Bank"] != None:
-                        current_bank = int(economy[server.id]["Bank"])
-                    else:
-                        economy[server.id]["Bank"] = 0
-                        with open(path, "w") as f:
-                            json.dump(economy, f)
+            with open(path, "r") as f:
+                if not str(server.id) in f.read():
+                    with open(path, "w+") as f:
+                        json_data = {}
+                        json_data[server.id] = {}
+                        json_data[server.id]["Money"] = 0
+                        json_data[server.id]["Bank"] = 0
+                        json.dump(json_data, f)
+                            
+            with open(path, "r") as f:
+                economy = json.load(f)
+                if economy[server.id]["Money"] != None:
+                    current_money = int(economy[server.id]["Money"])
+                else:
+                    economy[server.id]["Money"] = 0
+                    with open(path, "w") as f:
+                        json.dump(economy, f)
+
+            with open(path, "r") as f:
+                economy = json.load(f)
+                if economy[server.id]["Bank"] != None:
+                    current_bank = int(economy[server.id]["Bank"])
+                else:
+                    economy[server.id]["Bank"] = 0
+                    with open(path, "w") as f:
+                        json.dump(economy, f)
 
             networth_balance = current_money + current_bank
             embed = discord.Embed(
@@ -194,17 +220,31 @@ class Economy:
         else:
             path = "eco/" + str(user.id) + ".json"
             if not os.path.exists(path):
-                print("User has no money")
-            else:
-                with open(path, "r") as f:
-                    economy = json.load(f)
-                    if economy[server.id]["Money"] != None:
-                        current_money = int(economy[server.id]["Money"])
+                with open(path, "w+") as f:
+                    json_data = {}
+                    json_data[server.id] = {}
+                    json_data[server.id]["Money"] = 0
+                    json_data[server.id]["Bank"] = 0
+                    json.dump(json_data, f)
 
-                with open(path, "r") as f:
-                    economy = json.load(f)
-                    if economy[server.id]["Bank"] != None:
-                        current_bank = int(economy[server.id]["Bank"])
+            with open(path, "r") as f:
+                if not str(server.id) in f.read():
+                    with open(path, "w+") as f:
+                        json_data = {}
+                        json_data[server.id] = {}
+                        json_data[server.id]["Money"] = 0
+                        json_data[server.id]["Bank"] = 0
+                        json.dump(json_data, f)
+
+            with open(path, "r") as f:
+                economy = json.load(f)
+                if economy[server.id]["Money"] != None:
+                    current_money = int(economy[server.id]["Money"])
+
+            with open(path, "r") as f:
+                economy = json.load(f)
+                if economy[server.id]["Bank"] != None:
+                    current_bank = int(economy[server.id]["Bank"])
             networth_balance = current_money + current_bank
             embed = discord.Embed(
                 description = "{} **Balance Information**".format(user.mention),
@@ -375,7 +415,7 @@ class Economy:
                 return
 
     @commands.command(pass_context=True)
-    async def give(self, ctx, user: discord.Member = None, amount = None):
+    async def give(self, ctx, user: discord.Member = None, amount: int = None):
         author = ctx.message.author
         server = ctx.message.server
         if user == None:
@@ -386,9 +426,99 @@ class Economy:
             await self.client.say(embed=embed)
             return
         elif amount == None:
-            print("lort")
-            
-            
+            embed = discord.Embed(
+                description = "You need to specify how much you want to give",
+                color = 0xFF0000
+            )
+            await self.client.say(embed=embed)
+            return
+        elif amount <= 0:
+            embed = discord.Embed(
+                description = "The amount must be higher than 0",
+                color = 0xFF0000
+            )
+            await self.client.say(embed=embed)
+            return
+
+        path = "eco/{}.json".format(str(author.id))
+        userpath = "eco/{}.json".format(str(user.id))
+        economy = None
+        user_economy = None
+        current_money = None
+        user_current_money = None
+        if not os.path.exists(path):
+            with open(path, "w+") as f:
+                json_data = {}
+                json_data[server.id] = {}
+                json_data[server.id]["Money"] = 0
+                json_data[server.id]["Bank"] = 0
+                json.dump(json_data, f)
+
+        with open(path, "r") as f:
+            if not str(server.id) in f.read():
+                with open(path, "w+") as f:
+                    json_data = {}
+                    json_data[server.id] = {}
+                    json_data[server.id]["Money"] = 0
+                    json_data[server.id]["Bank"] = 0
+                    json.dump(json_data, f)
+
+        if not os.path.exists(userpath):
+            with open(userpath, "w+") as f:
+                json_data = {}
+                json_data[server.id] = {}
+                json_data[server.id]["Money"] = 0
+                json_data[server.id]["Bank"] = 0
+                json.dump(json_data, f)
+
+        with open(userpath, "r") as f:
+            if not str(server.id) in f.read():
+                with open(userpath, "w+") as f:
+                    json_data = {}
+                    json_data[server.id] = {}
+                    json_data[server.id]["Money"] = 0
+                    json_data[server.id]["Bank"] = 0
+                    json.dump(json_data, f)
+
+        with open(path, "r") as f:
+            economy = json.load(f)
+            if economy[server.id]["Money"] != None:
+                current_money = int(economy[server.id]["Money"])
+            else:
+                economy[server.id]["Money"] = 0
+                with open(path, "w") as f:
+                    json.dump(economy, f)
+
+        with open(userpath, "r") as f:
+            user_economy = json.load(f)
+            if user_economy[server.id]["Money"] != None:
+                user_current_money = int(user_economy[server.id]["Money"])
+            else:
+                user_economy[server.id]["Money"] = 0
+                with open(userpath, "w") as f:
+                    json.dump(user_economy, f)
+
+        if current_money < amount:
+            embed = discord.Embed(
+                description = "You don't have enough money to give **{}**".format(amount),
+                color = 0xFF0000
+            )
+            await self.client.say(embed=embed)
+            return
+
+        user_economy[server.id]["Money"] = user_current_money + amount
+        economy[server.id]["Money"] = current_money - amount
+        with open(userpath, "w") as f:
+            json.dump(user_economy, f)
+
+        with open(path, "w") as f:
+            json.dump(economy, f)
+
+        embed = discord.Embed(
+            description = "{} has successfully received **{}** money from you".format(user.mention, amount),
+            color = 0x00FF00
+        )
+        await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
     async def dep(self, ctx, amount = None):
@@ -398,12 +528,13 @@ class Economy:
         current_bank = 0
         if amount == None:
             embed = discord.Embed(
-                description = "You don't have anything to deposit",
+                description = "You need to write the amount you want to deposit",
                 color = 0xFF0000
             )
 
             await self.client.say(embed=embed)
             return
+            
         if amount.lower() == "all":
             path = "eco/" + str(author.id) + ".json"
             if not os.path.exists(path):
