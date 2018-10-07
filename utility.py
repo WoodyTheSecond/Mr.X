@@ -238,7 +238,7 @@ class Utility:
             embed.add_field(name="setwarn number punishment(mute/kick/ban)",value="Sets the punishment for the given warn number", inline=False)
             embed.add_field(name="removewarn number",value="Removes the punishment for the given number", inline=False)
             embed.add_field(name="announce #channel MESSAGE",value="Announces the given message in given channel", inline=False)
-            embed.add_field(name="role user ROLE_NAME",value="Announces the given message in given channel", inline=False)
+            embed.add_field(name="role user ROLE_NAME",value="Gives/removes the given role to/from the user", inline=False)
             embed.add_field(name="verify user [ROLE_NAME]", value="Gives the user the verify role and if chosen also gives another role", inline=False)
             embed.add_field(name="dinvites", value="Delete all of the invites", inline=False)
             await self.client.say(embed=embed)
