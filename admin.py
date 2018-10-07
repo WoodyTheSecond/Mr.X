@@ -808,8 +808,7 @@ class Admin:
         if self.is_admin_or_perms(server, author):
             if author == user:
                 embed = discord.Embed(
-                    title="Kick",
-                    description="You cannot kick youself",
+                    description="You can't kick youself",
                     color=0xFF0000
                 )
                 await self.client.say(embed=embed)
@@ -817,12 +816,12 @@ class Admin:
 
             elif self.is_allowed_by_hierarchy(server, author, user):
                 embed = discord.Embed(
-                    title="Kick",
-                    description="You cannot kick somebody higher than youself",
+                    description="You can't kick somebody higher than youself",
                     color=0xFF0000
                 )
                 await self.client.say(embed=embed)
                 return
+
             try:
                 await self.client.kick(user)
                 if reason == None:
@@ -846,7 +845,6 @@ class Admin:
                     await self.client.send_message(user, "You have been kicked from **{}** for the reason **{}**".format(server, reason))
             except discord.Forbidden:
                 embed = discord.Embed(
-                    title="Kick",
                     description="I don't have permissions to kick that user",
                     color=0xFF0000
                 )
@@ -905,7 +903,6 @@ class Admin:
                     await self.client.say(embed=embed)
                     await self.client.send_message(user, "You have been banned from `{}` for the reason `{}`".format(server, reason))
             except discord.Forbidden:
-                await self.client.kick(user)
                 embed = discord.Embed(
                     description="I don't have permissions to ban that user",
                     color=0xFF0000
