@@ -195,7 +195,14 @@ class Admin:
                             write = usrole + "\n"
                             f.write(write)
                     f.close()
-                    await self.client.replace_roles(user, mutedrole)
+                    try:
+                        await self.client.replace_roles(user, mutedrole)
+                    except discord.Forbidden:
+                        embed = discord.Embed(
+                            description = "Missing permissions",
+                            color = 0xFF0000
+                        )
+                        await self.client.say(embed=embed)
                     if time != 0:
                         if time_type == "m":
                             embed = discord.Embed(
@@ -213,7 +220,14 @@ class Admin:
                                     roles_to_give.append(role)
                                     line = fp.readline()
                                 fp.close()
-                            await self.client.replace_roles(user, *roles_to_give)
+                            try:
+                                await self.client.replace_roles(user, *roles_to_give)
+                            except discord.Forbidden:
+                                embed = discord.Embed(
+                                    description = "Missing permissions",
+                                    color = 0xFF0000
+                                )
+                                await self.client.say(embed=embed)
                             os.remove(path)
                         elif time_type == "h":
                             embed = discord.Embed(
@@ -231,22 +245,43 @@ class Admin:
                                     roles_to_give.append(role)
                                     line = fp.readline()
                                 fp.close()
-                            await self.client.replace_roles(user, *roles_to_give)
+                            try:
+                                await self.client.replace_roles(user, *roles_to_give)
+                            except discord.Forbidden:
+                                embed = discord.Embed(
+                                    description = "Missing permissions",
+                                    color = 0xFF0000
+                                )
+                                await self.client.say(embed=embed)
                             os.remove(path)
                 elif warn_type == "kick":
-                    embed = discord.Embed(
-                        description="{} has been kicked for reaching the warning threshold".format(user.mention),
-                        color=0x00FF00
-                    )
-                    await self.client.say(embed=embed)
-                    await self.client.kick(user)
+                    try:
+                        embed = discord.Embed(
+                            description="{} has been kicked for reaching the warning threshold".format(user.mention),
+                            color=0x00FF00
+                        )
+                        await self.client.say(embed=embed)
+                        await self.client.kick(user)
+                    except discord.Forbidden:
+                        embed = discord.Embed(
+                            description = "Missing permissions",
+                            color = 0xFF0000
+                        )
+                        await self.client.say(embed=embed)
                 elif warn_type == "ban":
-                    embed = discord.Embed(
-                        description="{} has been banned for reaching the warning threshold".format(user.mention),
-                        color=0x00FF00
-                    )
-                    await self.client.say(embed=embed)
-                    await self.client.ban(user)
+                    try:
+                        embed = discord.Embed(
+                            description="{} has been banned for reaching the warning threshold".format(user.mention),
+                            color=0x00FF00
+                        )
+                        await self.client.say(embed=embed)
+                        await self.client.ban(user)
+                    except discord.Forbidden:
+                        embed = discord.Embed(
+                            description = "Missing permissions",
+                            color = 0xFF0000
+                        )
+                        await self.client.say(embed=embed)
             else:
                 if reason == "No Reason Given":
                     embed = discord.Embed(
@@ -383,13 +418,20 @@ class Admin:
             verifyrole = discord.utils.get(server.roles, name=verifyrole_name)
             if role_name == None:
                 if verifyrole != None:
-                    await self.client.add_roles(user, verifyrole)
-                    embed = discord.Embed(
-                        description="{} has been verified".format(
-                            user.mention),
-                        color=0x00FF00
-                    )
-                    await self.client.say(embed=embed)
+                    try:
+                        await self.client.add_roles(user, verifyrole)
+                        embed = discord.Embed(
+                            description="{} has been verified".format(
+                                user.mention),
+                            color=0x00FF00
+                        )
+                        await self.client.say(embed=embed)
+                    except discord.Forbidden:
+                        embed = discord.Embed(
+                            description = "Missing permissions",
+                            color = 0xFF0000
+                        )
+                        await self.client.say(embed=embed)
                 else:
                     embed = discord.Embed(
                         description="There is no Verify Role set, please use -verifyrole ROLE_NAME",
@@ -402,13 +444,20 @@ class Admin:
                     roles_to_give = []
                     roles_to_give.append(verifyrole)
                     roles_to_give.append(extra_role)
-                    await self.client.replace_roles(user, *roles_to_give)
-                    embed = discord.Embed(
-                        description="{} has been verified and given the role **{}**".format(
-                            user.mention, role_name),
-                        color=0x00FF00
-                    )
-                    await self.client.say(embed=embed)
+                    try:
+                        await self.client.replace_roles(user, *roles_to_give)
+                        embed = discord.Embed(
+                            description="{} has been verified and given the role **{}**".format(
+                                user.mention, role_name),
+                            color=0x00FF00
+                        )
+                        await self.client.say(embed=embed)
+                    except discord.Forbidden:
+                        embed = discord.Embed(
+                            description = "Missing permissions",
+                            color = 0xFF0000
+                        )
+                        await self.client.say(embed=embed)
                 else:
                     embed = discord.Embed(
                         description="**{}** role was not found".format(
@@ -543,10 +592,6 @@ class Admin:
         server = author.server
         if self.is_mod_or_perms(server, author):
             try:
-                if nick == None:
-                    embed = discord.Embed(
-                        description = "test"
-                    )
                 await self.client.change_nickname(user, nick)
                 embed = discord.Embed(
                     description="Changed {}'s nickname to **{}**".format(
@@ -554,8 +599,12 @@ class Admin:
                     color=0x00FF00
                 )
                 await self.client.say(embed=embed)
-            except ValueError:
-                print("Error")
+            except discord.Forbidden:
+                embed = discord.Embed(
+                    description = "Missing permissions",
+                    color = 0xFF0000
+                )
+                await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",
@@ -569,12 +618,19 @@ class Admin:
         author = ctx.message.author
         server = author.server
         if self.is_mod_or_perms(server, author):
-            await self.client.change_nickname(user, None)
-            embed = discord.Embed(
-                description="Removed {}'s nickname.".format(user.mention),
-                color=0x00FF00
-            )
-            await self.client.say(embed=embed)
+            try:
+                await self.client.change_nickname(user, None)
+                embed = discord.Embed(
+                    description="Removed {}'s nickname.".format(user.mention),
+                    color=0x00FF00
+                )
+                await self.client.say(embed=embed)
+            except discord.Forbidden:
+                embed = discord.Embed(
+                    description = "Missing permissions",
+                    color = 0xFF0000
+                )
+                await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",
@@ -610,19 +666,33 @@ class Admin:
                     if str(role) == str(found_role):
                         has_role = True
                 if has_role == True:
-                    await self.client.remove_roles(user, found_role)
-                    embed = discord.Embed(
-                        description = "The role **{}** has been removed from {}".format(str(found_role), user.mention),
-                        color = 0x00FF00
-                    )
-                    await self.client.say(embed=embed)
+                    try:
+                        await self.client.remove_roles(user, found_role)
+                        embed = discord.Embed(
+                            description = "The role **{}** has been removed from {}".format(str(found_role), user.mention),
+                            color = 0x00FF00
+                        )
+                        await self.client.say(embed=embed)
+                    except discord.Forbidden:
+                        embed = discord.Embed(
+                            description = "Missing permissions",
+                            color = 0xFF0000
+                        )
+                        await self.client.say(embed=embed)
                 else:
-                    await self.client.add_roles(user, found_role)
-                    embed = discord.Embed(
-                        description = "{} has been given the role **{}**".format(user.mention, str(found_role)),
-                        colour = 0x00FF00
-                    )
-                    await self.client.say(embed=embed)
+                    try:
+                        await self.client.add_roles(user, found_role)
+                        embed = discord.Embed(
+                            description = "{} has been given the role **{}**".format(user.mention, str(found_role)),
+                            colour = 0x00FF00
+                        )
+                        await self.client.say(embed=embed)
+                    except discord.Forbidden:
+                        embed = discord.Embed(
+                            description = "Missing permissions",
+                            color = 0xFF0000
+                        )
+                        await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description = "You don't have permission to use this command",
@@ -1200,50 +1270,42 @@ class Admin:
         server = author.server
         if self.is_admin_or_perms(server, author):
             channel = ctx.message.channel
-            try:
-                if amount < 2:
-                    embed = discord.Embed(
-                        title="Clear",
-                        description="The amount can't be less than 2",
-                        color=0xFF0000
-                    )
-                    await self.client.say(embed=embed)
-                elif amount > 100:
-                    embed = discord.Embed(
-                        title="Clear",
-                        description="You can't clear more than 100 messages.",
-                        color=0xFF0000
-                    )
-                    await self.client.say(embed=embed)
-                else:
-                    if user == None:
-                        try:
-                            await self.client.purge_from(channel, limit=int(amount))
-                        except:
-                            embed = discord.Embed(
-                                description="You can't delete messages that's older than 14 days",
-                                color=0xFF0000
-                            )
-                            await self.client.say(embed=embed)
-                    else:
-                        def is_user(m):
-                            return m.author == user
-                        
-                        try:
-                            await self.client.purge_from(channel, limit=int(amount), check=is_user)
-                        except:
-                            embed = discord.Embed(
-                                description="You can't delete messages that's older than 14 days",
-                                color=0xFF0000
-                            )
-                            await self.client.say(embed=embed)
-            except:
+            if amount < 2:
                 embed = discord.Embed(
                     title="Clear",
-                    description="You can't clear messages that's older then 14 days",
+                    description="The amount can't be less than 2",
                     color=0xFF0000
                 )
                 await self.client.say(embed=embed)
+            elif amount > 100:
+                embed = discord.Embed(
+                    title="Clear",
+                    description="You can't clear more than 100 messages.",
+                    color=0xFF0000
+                )
+                await self.client.say(embed=embed)
+            else:
+                if user == None:
+                    try:
+                        await self.client.purge_from(channel, limit=int(amount))
+                    except discord.HTTPException:
+                        embed = discord.Embed(
+                            description="You can't delete messages that's older than 14 days",
+                            color=0xFF0000
+                        )
+                        await self.client.say(embed=embed)
+                else:
+                    def is_user(m):
+                        return m.author == user
+                    
+                    try:
+                        await self.client.purge_from(channel, limit=int(amount), check=is_user)
+                    except discord.HTTPException:
+                        embed = discord.Embed(
+                            description="You can't delete messages that's older than 14 days",
+                            color=0xFF0000
+                        )
+                        await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",
@@ -1257,16 +1319,24 @@ class Admin:
         author = ctx.message.author
         server = author.server
         if author.server_permissions.administrator:
-            invites = await self.client.invites_from(server)
-            for inv in invites:
-                await self.client.delete_invite(inv)
+            try:
+                invites = await self.client.invites_from(server)
+                for inv in invites:
+                    await self.client.delete_invite(inv)
 
-            embed = discord.Embed(
-                description = "All of the invites has been deleted",
-                color = 0x00FF00
-            )
+                embed = discord.Embed(
+                    description = "All of the invites has been deleted",
+                    color = 0x00FF00
+                )
 
-            await self.client.say(embed=embed)
+                await self.client.say(embed=embed)
+            except discord.Forbidden:
+                embed = discord.Embed(
+                    description = "Missing permissions",
+                    color = 0x00FF00
+                )
+
+                await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",
@@ -1286,14 +1356,12 @@ class Admin:
                 color=0xFF0000
                 )
                 await self.client.say(embed=embed)
-                return
             elif user == None:
                 embed = discord.Embed(
-                description="You have not selected an user to blacklist",
-                color=0xFF0000
+                    description="You have not selected an user to blacklist",
+                    color=0xFF0000
                 )
                 await self.client.say(embed=embed)
-                return
             else:
                 if setting.lower() == "nsfw":
                     path = "blacklist/" + str(author.id) + ".json"
@@ -1308,7 +1376,6 @@ class Admin:
                             color=0xFF0000
                         )
                         await self.client.say(embed=embed)
-                        return
                     else:
                         with open(path, 'r') as f:
                             blacklistcheck = json.load(f)
@@ -1323,7 +1390,6 @@ class Admin:
                                         color=0xFF0000
                                     )
                                     await self.client.say(embed=embed)
-                                    return
                                 else:
                                     blacklistcheck[server.id]["NSFW"] = True
                                     with open(path, 'w') as f:
@@ -1333,7 +1399,6 @@ class Admin:
                                         color=0xFF0000
                                     )
                                     await self.client.say(embed=embed)
-                                    return
 
                             else:
                                 blacklistcheck[server.id] = {}

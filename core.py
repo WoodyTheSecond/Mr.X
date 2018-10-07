@@ -73,13 +73,13 @@ def save_economy(*args):
         user_id = os.fsdecode(file).replace(".json", "")
         filepath = "eco/{}".format(str(filename))
         with open(filepath, "r") as f:
-                economy = json.load(f)
-                for server in economy:
-                    current_money = economy[server]["Money"]
-                    current_bank = economy[server]["Bank"]
-                    sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
-                    c.execute(sql)
-                    conn.commit()
+            economy = json.load(f)
+            for server in economy:
+                current_money = economy[server]["Money"]
+                current_bank = economy[server]["Bank"]
+                sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
+                c.execute(sql)
+                conn.commit()
 
     conn.close()
     print("The economy has been saved")
@@ -93,7 +93,6 @@ def create_database(server):
     c.execute(sql)
     conn.commit()
     conn.close()
-
 
 def update_database(server, setting, value):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
@@ -137,7 +136,6 @@ def update_database(server, setting, value):
     conn.commit()
     conn.close()
 
-
 def check_database_multiple(conn, server, setting):
     c = conn.cursor()
     sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
@@ -151,7 +149,6 @@ def check_database_multiple(conn, server, setting):
             return False
         else:
             return row
-
 
 def check_database(server, setting):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
@@ -169,7 +166,6 @@ def check_database(server, setting):
         else:
             return row
 
-
 def make_settings(server):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
@@ -184,13 +180,11 @@ def make_settings(server):
     else:
         return False
 
-
 def is_owner(user):
     if user.id == "164068466129633280" or user.id == "142002197998206976" or user.id == "457516809940107264":
         return True
     else:
         return False
-
 
 @client.event
 async def on_server_join(server):
@@ -198,7 +192,6 @@ async def on_server_join(server):
         print("The settings have been successfully created")
     else:
         print("The settings for this server already exists")
-
 
 @client.event
 async def on_ready():
@@ -255,7 +248,6 @@ async def on_member_join(member):
         role = discord.utils.get(server.roles, name=join_role)
         await client.add_roles(member, role)
 
-
 @client.event
 async def on_member_unban(server, member):
     with open("autobans.json", "r") as f:
@@ -265,18 +257,6 @@ async def on_member_unban(server, member):
         for userid in ban_array:
             if userid == member.id:
                 await client.ban(member)
-
-    
-# @client.event
-# async def on_message(message):
-#     channel = message.channel
-#     help_check = extensions
-#     for check in help_check:
-#         if message.content.startswith("-help " + check):
-#             await client.send_message(channel, "Do not use -help {}, you just write the module | Example: -help | {}".format(check, check))
-#             return
-
-#     await client.process_commands(message)
 
 @client.command()
 async def botinfo():
@@ -299,7 +279,6 @@ async def botinfo():
     embed.add_field(name='Artist', value='CSLucaris | https://www.deviantart.com/cslucaris', inline=False)
     embed.add_field(name='Version', value='0.5', inline=False)
     await client.say(embed=embed)
-
 
 @client.command(pass_context=True)
 async def settings(ctx):
@@ -373,13 +352,13 @@ async def seconomy(ctx):
             user_id = os.fsdecode(file).replace(".json", "")
             filepath = "eco/{}".format(str(filename))            
             with open(filepath, "r") as f:
-                    economy = json.load(f)
-                    for server in economy:
-                        current_money = economy[server]["Money"]
-                        current_bank = economy[server]["Bank"]
-                        sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
-                        c.execute(sql)
-                        conn.commit()
+                economy = json.load(f)
+                for server in economy:
+                    current_money = economy[server]["Money"]
+                    current_bank = economy[server]["Bank"]
+                    sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
+                    c.execute(sql)
+                    conn.commit()
 
         conn.close()
 
@@ -431,7 +410,6 @@ async def mylevel(ctx):
         )
         await client.say(embed=embed)
 
-
 @client.command(pass_context=True)
 async def togglelevel(ctx):
     author = ctx.message.author
@@ -463,11 +441,9 @@ async def togglelevel(ctx):
         )
         await client.say(embed=embed)
 
-
 @client.command(pass_context=True)
 async def cmds(ctx):
     await client.say("Please use the -help command.")
-
 
 @client.command(pass_context=True)
 async def dmwarn(ctx):
@@ -498,7 +474,6 @@ async def dmwarn(ctx):
             color=0xFF0000
         )
         await client.say(embed=embed)
-
 
 @client.command(pass_context=True)
 async def modrole(ctx, *, role = None):
@@ -533,7 +508,6 @@ async def modrole(ctx, *, role = None):
             color=0xFF0000
         )
         await client.say(embed=embed)
-
 
 @client.command(pass_context=True)
 async def adminrole(ctx, *, role = None):
@@ -915,15 +889,21 @@ async def mod(ctx, user: discord.Member = None):
         modrole = check_database(server, "Mod_Role")
         if discord.utils.get(user.roles, name=modrole):
             role = discord.utils.get(server.roles, name=modrole)
-            await client.remove_roles(user, role)
-            embed = discord.Embed(
-                title="Moderator",
-                description="Moderator role was removed from {}".format(
-                    user.mention),
-                color=0x00FF00
-            )
-            await client.say(embed=embed)
-            return
+            try:
+                await client.remove_roles(user, role)
+                embed = discord.Embed(
+                    title="Moderator",
+                    description="Moderator role was removed from {}".format(
+                        user.mention),
+                    color=0x00FF00
+                )
+                await client.say(embed=embed)
+            except discord.Forbidden:
+                embed = discord.Embed(
+                    description = "Missing permissions",
+                    color = 0xFF0000
+                )
+                await client.say(embed=embed)
         else:
             if modrole == "none":
                 embed = discord.Embed(
@@ -934,14 +914,21 @@ async def mod(ctx, user: discord.Member = None):
                 await client.say(embed=embed)
             else:
                 role = discord.utils.get(server.roles, name=modrole)
-                await client.add_roles(user, role)
-                embed = discord.Embed(
-                    title="Moderator",
-                    description="{} has been given the Moderator role.".format(
-                        user.mention),
-                    color=0x00FF00
-                )
-                await client.say(embed=embed)
+                try:
+                    await client.add_roles(user, role)
+                    embed = discord.Embed(
+                        title="Moderator",
+                        description="{} has been given the Moderator role.".format(
+                            user.mention),
+                        color=0x00FF00
+                    )
+                    await client.say(embed=embed)
+                except discord.Forbidden:
+                    embed = discord.Embed(
+                        description = "Missing permissions",
+                        color = 0xFF0000
+                    )
+                    await client.say(embed=embed)
     else:
         embed = discord.Embed(
             title="Moderator",
@@ -963,19 +950,24 @@ async def admin(ctx, user: discord.Member = None):
             color=0xFF0000
             )
             await client.say(embed=embed)
-            return
         adminrole = check_database(server, "Admin_Role")
         if discord.utils.get(user.roles, name=adminrole):
             role = discord.utils.get(server.roles, name=adminrole)
-            await client.remove_roles(user, role)
-            embed = discord.Embed(
-                title="Administrator",
-                description="Administrator role was removed from {}".format(
-                    user.mention),
-                color=0x00FF00
-            )
-            await client.say(embed=embed)
-            return
+            try:
+                await client.remove_roles(user, role)
+                embed = discord.Embed(
+                    title="Administrator",
+                    description="Administrator role was removed from {}".format(
+                        user.mention),
+                    color=0x00FF00
+                )
+                await client.say(embed=embed)
+            except discord.Forbidden:
+                embed = discord.Embed(
+                    description = "Missing permissions",
+                    color = 0xFF0000
+                )
+                await client.say(embed=embed)
         else:
             if adminrole == "none":
                 embed = discord.Embed(
@@ -986,14 +978,21 @@ async def admin(ctx, user: discord.Member = None):
                 await client.say(embed=embed)
             else:
                 role = discord.utils.get(server.roles, name=adminrole)
-                await client.add_roles(user, role)
-                embed = discord.Embed(
-                    title="Administrator",
-                    description="{} has been given the Administrator role".format(
-                        user.mention),
-                    color=0x00FF00
-                )
-                await client.say(embed=embed)
+                try:
+                    await client.add_roles(user, role)
+                    embed = discord.Embed(
+                        title="Administrator",
+                        description="{} has been given the Administrator role".format(
+                            user.mention),
+                        color=0x00FF00
+                    )
+                    await client.say(embed=embed)
+                except discord.Forbidden:
+                    embed = discord.Embed(
+                        description = "Missing permissions",
+                        color = 0xFF0000
+                    )
+                    await client.say(embed=embed)
     else:
         embed = discord.Embed(
             title="Administrator",
@@ -1097,8 +1096,7 @@ async def autoban(ctx, user: discord.Member):
                         isbanned = True
         if isbanned == True:
             embed = discord.Embed(
-                description="The user {} is already auto banned".format(
-                    user.mention),
+                description="The user {} is already auto banned".format(user.mention),
                 color=0xFF0000
             )
             await client.say(embed=embed)
@@ -1108,13 +1106,21 @@ async def autoban(ctx, user: discord.Member):
                 ban_array = autobans[server.id]["banlist"]
                 ban_array.append(user.id)
                 json.dump(autobans, f)
-            await client.ban(user)
-            embed = discord.Embed(
-                description="The user {} has been auto banned".format(
-                    user.mention),
-                color=0x00FF00
-            )
-            await client.say(embed=embed)
+
+            try:
+                await client.ban(user)
+                embed = discord.Embed(
+                    description="The user {} has been auto banned".format(
+                        user.mention),
+                    color=0x00FF00
+                )
+                await client.say(embed=embed)
+            except discord.Forbidden:
+                embed = discord.Embed(
+                    description = "Missing permissions",
+                    color = 0xFF0000
+                )
+                await client.say(embed=embed)
     else:
         embed = discord.Embed(
             description="You don't have permission to use this command",
@@ -1237,7 +1243,14 @@ async def lockchannel(ctx, channel: discord.Channel = None):
                     json_data["Channel_Permissions"][str(role.id)] = cur_role_perms.send_messages
                     overwrite = discord.PermissionOverwrite()
                     overwrite.send_messages = False
-                    await client.edit_channel_permissions(channel, role, overwrite)
+                    try:
+                        await client.edit_channel_permissions(channel, role, overwrite)
+                    except discord.Forbidden:
+                        embed = discord.Embed(
+                            description = "Missing permissions",
+                            color = 0xFF0000
+                        )
+                        await client.say(embed=embed)
                 json.dump(json_data, f)
             if channel == cchannel:
                 embed = discord.Embed(
@@ -1270,7 +1283,14 @@ async def lockchannel(ctx, channel: discord.Channel = None):
             bot_perms.send_messages = True
             bot_perms_edited = True
         if bot_perms_edited:
-            await client.edit_channel_permissions(channel, server.me, bot_perms)
+            try:
+                await client.edit_channel_permissions(channel, server.me, bot_perms)
+            except discord.Forbidden:
+                embed = discord.Embed(
+                    description = "Missing permissions",
+                    color = 0xFF0000
+                )
+                await client.say(embed=embed)
     else:
         embed = discord.Embed(
             description="You don't have permission to use this command",
@@ -1297,11 +1317,25 @@ async def unlockchannel(ctx, channel: discord.Channel = None):
                     if str(role.id) in channel_perms["Channel_Permissions"]:
                         overwrite = discord.PermissionOverwrite()
                         overwrite.send_messages = channel_perms["Channel_Permissions"][str(role.id)]
-                        await client.edit_channel_permissions(channel, role, overwrite)
+                        try:
+                            await client.edit_channel_permissions(channel, role, overwrite)
+                        except discord.Forbidden:
+                            embed = discord.Embed(
+                                description = "Missing permissions",
+                                color = 0xFF0000
+                            )
+                            await client.say(embed=embed)
                     else:
                         overwrite = discord.PermissionOverwrite()
                         overwrite.send_messages = None
-                        await client.edit_channel_permissions(channel, role, overwrite)
+                        try:
+                            await client.edit_channel_permissions(channel, role, overwrite)
+                        except discord.Forbidden:
+                            embed = discord.Embed(
+                                description = "Missing permissions",
+                                color = 0xFF0000
+                            )
+                            await client.say(embed=embed)
             os.remove(path)
             if channel == cchannel:
                 embed = discord.Embed(
@@ -1350,7 +1384,7 @@ async def kickbots(ctx):
                 if member.bot == True and member != server.me:
                     try:
                         await client.kick(member)
-                    except:
+                    except discord.Forbidden:
                         print("I can't kick {}".format(str(member)))
 
             embed = discord.Embed(

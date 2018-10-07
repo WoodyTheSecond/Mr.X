@@ -137,8 +137,13 @@ class Marriage:
                         if str(role.id) == str(roleid):
                             try:
                                 await self.client.delete_role(srv, role)
-                            except:
-                                print("Role doesn't exist in {}".format(srv.name))
+                            except discord.HTTPException:
+                                embed = discord.Embed(
+                                    description = "Role doesn't exist in {}".format(srv.name),
+                                    color = 0xFF0000
+                                )
+
+                                await self.client.say(embed=embed)
 
                 sql = "DELETE FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
                 c.execute(sql)
@@ -199,8 +204,13 @@ class Marriage:
                             if str(role.id) == str(roleid):
                                 try:
                                     await self.client.delete_role(srv, role)
-                                except:
-                                    print("Role doesn't exist in {}".format(srv.name))
+                                except discord.HTTPException:
+                                    embed = discord.Embed(
+                                        description = "Role doesn't exist in {}".format(srv.name),
+                                        color = 0xFF0000
+                                    )
+
+                                    await self.client.say(embed=embed)
                     embed = discord.Embed(
                         description="You have successfully forced a break up on {}".format(user.mention),
                         color=0xFF0000
@@ -279,20 +289,28 @@ class Marriage:
             user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=user)
             user_response = user_response.clean_content.lower()
             if user_response == "yes":
-                rolename = "{} X {}".format(author.name, user.name)
-                createdrole = await self.client.create_role(server=server, name=rolename, color=discord.Color.purple())
-                sql = "INSERT INTO `Marriage_Table` (user1, user2, ring, roleid) VALUES ('{}', '{}', '{}', '{}')".format(str(author.id), str(user.id), "default", createdrole.id)
-                c.execute(sql)
-                conn.commit()
-                await self.client.add_roles(author, createdrole)
-                await self.client.add_roles(user, createdrole)
-                embed = discord.Embed(
-                    title="Marriage",
-                    description=":heart: {} and {} is now married :heart:".format(author.mention, user.mention),
-                    color=0x330000
-                )
-                embed.set_image(url="https://cdn.pixabay.com/photo/2015/12/11/17/28/heart-1088487_960_720.png")
-                await self.client.say(embed=embed)
+                try:
+                    rolename = "{} X {}".format(author.name, user.name)
+                    createdrole = await self.client.create_role(server=server, name=rolename, color=discord.Color.purple())
+                    sql = "INSERT INTO `Marriage_Table` (user1, user2, ring, roleid) VALUES ('{}', '{}', '{}', '{}')".format(str(author.id), str(user.id), "default", createdrole.id)
+                    c.execute(sql)
+                    conn.commit()
+                    await self.client.add_roles(author, createdrole)
+                    await self.client.add_roles(user, createdrole)
+                    embed = discord.Embed(
+                        title="Marriage",
+                        description=":heart: {} and {} is now married :heart:".format(author.mention, user.mention),
+                        color=0x330000
+                    )
+                    embed.set_image(url="https://cdn.pixabay.com/photo/2015/12/11/17/28/heart-1088487_960_720.png")
+                    await self.client.say(embed=embed)
+                except discord.Forbidden:
+                    embed = discord.Embed(
+                        description = "Missing permissions",
+                        color = 0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
             elif user_response == "no":
                 embed = discord.Embed(
                     description="{} sadly denied your request to marry you :(".format(user.mention),

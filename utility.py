@@ -407,9 +407,10 @@ class Utility:
             )
             await self.client.say("Do you want the list **Inline** ? (Yes/No)")
             user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
-            if user_response.clean_content == "yes" or user_response.clean_content == "Yes":
+            user_response = user_response.clean_content.lower()
+            if user_response == "yes":
                 inline = True
-            elif user_response.clean_content == "no" or user_response.clean_content == "No":
+            elif user_response == "no":
                 inline = False
             else:
                 await self.client.say("Invalid.")
@@ -473,20 +474,28 @@ class Utility:
         invitelink = "https://discordapp.com/oauth2/authorize?client_id={}&scope=bot".format(self.client.user.id)
 
         if self.is_owner(author) == True:
-            embed = discord.Embed(
-                title="Invite link",
-                description=invitelink,
-                color=0x800080
-            )
+            try:
+                embed = discord.Embed(
+                    title="Invite link",
+                    description=invitelink,
+                    color=0x800080
+                )
 
-            await self.client.send_message(author, embed=embed)
+                await self.client.send_message(author, embed=embed)
 
-            embed = discord.Embed(
-                description="I have sent you a direct message with the invite link",
-                color=0x00FF00
-            )
+                embed = discord.Embed(
+                    description="I have sent you a direct message with the invite link",
+                    color=0x00FF00
+                )
 
-            await self.client.say(embed=embed)
+                await self.client.say(embed=embed)
+            except discord.HTTPException:
+                embed = discord.Embed(
+                    description="I can't send any direct messages to {}".format(author.mention),
+                    color=0xFF0000
+                )
+
+                await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command.",
@@ -524,23 +533,17 @@ class Utility:
                 color=0x00FF00
             )
 
-            embed.set_author(name="{}".format(str(author)),
-                             icon_url=author.avatar_url)
+            embed.set_author(name="{}".format(str(author)),icon_url=author.avatar_url)
             embed.set_thumbnail(url=author.avatar_url)
-            embed.add_field(
-                name="Status", value="{}".format(status), inline=True)
-            embed.add_field(name="Joined", value="{}".format(
-                joindate), inline=True)
-            embed.add_field(name="Registered", value="{}".format(
-                registerdate), inline=True)
+            embed.add_field(name="Status", value="{}".format(status), inline=True)
+            embed.add_field(name="Joined", value="{}".format(joindate), inline=True)
+            embed.add_field(name="Registered", value="{}".format(registerdate), inline=True)
             if nickname == name:
                 embed.add_field(name="Nickname", value="None", inline=True)
             else:
-                embed.add_field(name="Nickname", value="{}".format(
-                    nickname), inline=True)
+                embed.add_field(name="Nickname", value="{}".format(nickname), inline=True)
 
-            embed.add_field(name="Roles [{}]".format(
-                rolecount), value="{}".format(roles), inline=False)
+            embed.add_field(name="Roles [{}]".format(rolecount), value="{}".format(roles), inline=False)
             embed.set_footer(text="ID: {} • {}".format(author.id, currentdate))
             await self.client.say(embed=embed)
         else:
@@ -570,20 +573,15 @@ class Utility:
                 color=0x00FF00
             )
 
-            embed.set_author(name="{}".format(str(user)),
-                             icon_url=user.avatar_url)
+            embed.set_author(name="{}".format(str(user)),icon_url=user.avatar_url)
             embed.set_thumbnail(url=user.avatar_url)
-            embed.add_field(
-                name="Status", value="{}".format(status), inline=True)
-            embed.add_field(name="Joined", value="{}".format(
-                joindate), inline=True)
-            embed.add_field(name="Registered", value="{}".format(
-                registerdate), inline=True)
+            embed.add_field(name="Status", value="{}".format(status), inline=True)
+            embed.add_field(name="Joined", value="{}".format(joindate), inline=True)
+            embed.add_field(name="Registered", value="{}".format(registerdate), inline=True)
             if nickname == name:
                 embed.add_field(name="Nickname", value="None", inline=True)
             else:
-                embed.add_field(name="Nickname", value="{}".format(
-                    nickname), inline=True)
+                embed.add_field(name="Nickname", value="{}".format(nickname), inline=True)
 
             embed.add_field(name="Roles [{}]".format(
                 rolecount), value="{}".format(roles), inline=False)
@@ -606,22 +604,39 @@ class Utility:
             return
         else:
             if discord.utils.get(author.roles, name=nsfw_role):
-                role = discord.utils.get(server.roles, name=nsfw_role)
-                await self.client.remove_roles(author, role)
-                embed = discord.Embed(
-                    description="Your NSFW role has been removed",
-                    color=0x00FF00
-                )
-                await self.client.say(embed=embed)
-            else:
-                role = discord.utils.get(server.roles, name=nsfw_role)
-                await self.client.add_roles(author, role)
-                embed = discord.Embed(
-                    description="You have been given the designated NSFW role",
-                    color=0x00FF00
-                )
-                await self.client.say(embed=embed)
+                try:
+                    role = discord.utils.get(server.roles, name=nsfw_role)
+                    await self.client.remove_roles(author, role)
+                    embed = discord.Embed(
+                        description="Your NSFW role has been removed",
+                        color=0x00FF00
+                    )
 
+                    await self.client.say(embed=embed)
+                except discord.Forbidden:
+                    embed = discord.Embed(
+                        description="Missing permissions",
+                        color=0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
+            else:
+                try:
+                    role = discord.utils.get(server.roles, name=nsfw_role)
+                    await self.client.add_roles(author, role)
+                    embed = discord.Embed(
+                        description="You have been given the designated NSFW role",
+                        color=0x00FF00
+                    )
+
+                    await self.client.say(embed=embed)
+                except discord.Forbidden:
+                    embed = discord.Embed(
+                        description="Missing permissions",
+                        color=0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
 
 def setup(client):
     client.add_cog(Utility(client))
