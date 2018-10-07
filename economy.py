@@ -264,11 +264,12 @@ class Economy:
         current_bank = 0
         if amount == None:
             embed = discord.Embed(
-                description = "You have not entered any amount to withdraw",
+                description = "You need to write the amount you want to withdraw",
                      color = 0xFF0000
             )
             await self.client.say(embed=embed)
             return
+
         if amount.lower() == "all":
             path = "eco/" + str(author.id) + ".json"
             if not os.path.exists(path):
@@ -331,11 +332,12 @@ class Economy:
                 return
         elif self.ValidInt(amount) == False:
              embed = discord.Embed(
-                description = "Please enter a number",
+                description = "Please enter a number/all",
                 color = 0xFF0000
              )
              await self.client.say(embed=embed)
              return
+
         elif amount.startswith("-"):
             embed = discord.Embed(
                 description = "You cannot deposit a negative number",
@@ -346,7 +348,7 @@ class Economy:
 
         else:
             print("There was a number!")
-            path = "eco/" + str(author.id) + ".json"
+            path = "eco/{}.json".format(author.id)
             if not os.path.exists(path):
                 with open(path, "w+") as f:
                     json_data = {}
@@ -385,6 +387,7 @@ class Economy:
                         )
                         await self.client.say(embed=embed)
                         return
+
             if current_bank == 0:
                 embed = discord.Embed(
                     description = "You don't have anything to withdraw",
@@ -400,19 +403,18 @@ class Economy:
                     economy[server.id]["Bank"] = current_bank
                     with open(path, "w") as f:
                         json.dump(economy, f)
+
                 embed = discord.Embed(
-                    description = "You don't have anything to withdraw",
-                    color = 0xFF0000
+                    description = "You have successfully withdrawn **{}** from your bank".format(amount),
+                    color = 0x00FF00
                 )
                 await self.client.say(embed=embed)
-                return
             else:
                 embed = discord.Embed(
-                    description = "You don't have anything to withdraw",
+                    description = "You don't have enough money in your bank to withdraw **{}**".format(amount),
                     color = 0xFF0000
                 )
                 await self.client.say(embed=embed)
-                return
 
     @commands.command(pass_context=True)
     async def give(self, ctx, user: discord.Member = None, amount: int = None):
