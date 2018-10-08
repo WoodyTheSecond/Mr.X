@@ -131,7 +131,7 @@ class Economy:
                     json.dump(json_data, f)
 
                 embed = discord.Embed(
-                    description = "You earned **{}**".format(amount_earned),
+                    description = "You earned **{:,}**".format(amount_earned),
                     color = 0x00b8ff
                 )
 
@@ -162,7 +162,7 @@ class Economy:
                         json.dump(economy, f)
 
                 embed = discord.Embed(
-                    description = "You earned **{}**".format(amount_earned),
+                    description = "You earned **{:,}**".format(amount_earned),
                     color = 0x00b8ff
                 )
 
@@ -219,9 +219,9 @@ class Economy:
                 description = "**Balance Information**",
                 color = 0x00FF00
             )
-            embed.add_field(name="Money: ", value=":moneybag:{}".format(str(current_money)), inline=True)
-            embed.add_field(name="Bank: ", value=":moneybag:{}".format(str(current_bank)), inline=True)
-            embed.add_field(name="Net Worth: ", value=":moneybag:{}".format(str(networth_balance)), inline=True)
+            embed.add_field(name="Money: ", value=":moneybag:{:,}".format(current_money), inline=True)
+            embed.add_field(name="Bank: ", value=":moneybag:{:,}".format(current_bank), inline=True)
+            embed.add_field(name="Net Worth: ", value=":moneybag:{:,}".format(networth_balance), inline=True)
             await self.client.say(embed=embed)
         else:
             path = "eco/" + str(user.id) + ".json"
@@ -256,9 +256,9 @@ class Economy:
                 description = "{} **Balance Information**".format(user.mention),
                 color = 0x00FF00
             )
-            embed.add_field(name="Money: ", value=":moneybag:{}".format(str(current_money)), inline=True)
-            embed.add_field(name="Bank: ", value=":moneybag:{}".format(str(current_bank)), inline=True)
-            embed.add_field(name="Net Worth: ", value=":moneybag:{}".format(str(networth_balance)), inline=True)
+            embed.add_field(name="Money: ", value=":moneybag:{:,}".format(current_money), inline=True)
+            embed.add_field(name="Bank: ", value=":moneybag:{:,}".format(current_bank), inline=True)
+            embed.add_field(name="Net Worth: ", value=":moneybag:{:,}".format(networth_balance), inline=True)
             await self.client.say(embed=embed)
 
 
@@ -331,7 +331,7 @@ class Economy:
                     with open(path, "w") as f:
                         json.dump(economy, f)
                 embed = discord.Embed(
-                    description = "You have withdrawed **{}** from your bank".format(str(current_bank)),
+                    description = "You have withdrawed **{:,}** from your bank".format(int(current_bank)),
                     color = 0x00FF00
                 )
                 await self.client.say(embed=embed)
@@ -354,6 +354,7 @@ class Economy:
 
         else:
             print("There was a number!")
+            amount = int(amount)
             path = "eco/{}.json".format(author.id)
             if not os.path.exists(path):
                 with open(path, "w+") as f:
@@ -401,29 +402,29 @@ class Economy:
                 )
                 await self.client.say(embed=embed)
                 return
-            elif current_bank >= int(amount):
-                current_bank -= int(amount)
+            elif current_bank >= amount:
+                current_bank -= amount
                 with open(path, "r") as f:
                     economy = json.load(f)
-                    economy[server.id]["Money"] = current_money + int(amount)
+                    economy[server.id]["Money"] = current_money + amount
                     economy[server.id]["Bank"] = current_bank
                     with open(path, "w") as f:
                         json.dump(economy, f)
 
                 embed = discord.Embed(
-                    description = "You have successfully withdrawn **{}** from your bank".format(amount),
+                    description = "You have successfully withdrawn **{:,}** from your bank".format(amount),
                     color = 0x00FF00
                 )
                 await self.client.say(embed=embed)
             else:
                 embed = discord.Embed(
-                    description = "You don't have enough money in your bank to withdraw **{}**".format(amount),
+                    description = "You don't have enough money in your bank to withdraw **{:,}**".format(amount),
                     color = 0xFF0000
                 )
                 await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def give(self, ctx, user: discord.Member = None, amount: int = None):
+    async def give(self, ctx, user: discord.Member = None, amount = None):
         author = ctx.message.author
         server = ctx.message.server
         if user == None:
@@ -440,6 +441,13 @@ class Economy:
             )
             await self.client.say(embed=embed)
             return
+        elif self.ValidInt(amount) == False:
+            embed = discord.Embed(
+                description = "Please specify a valid integer",
+                color = 0xFF0000
+            )
+            await self.client.say(embed=embed)
+            return
         elif amount <= 0:
             embed = discord.Embed(
                 description = "The amount must be higher than 0",
@@ -448,6 +456,7 @@ class Economy:
             await self.client.say(embed=embed)
             return
 
+        amount = int(amount)
         path = "eco/{}.json".format(str(author.id))
         userpath = "eco/{}.json".format(str(user.id))
         economy = None
@@ -508,7 +517,7 @@ class Economy:
 
         if current_money < amount:
             embed = discord.Embed(
-                description = "You don't have enough money to give **{}**".format(amount),
+                description = "You don't have enough money to give **{:,}**".format(amount),
                 color = 0xFF0000
             )
             await self.client.say(embed=embed)
@@ -523,7 +532,7 @@ class Economy:
             json.dump(economy, f)
 
         embed = discord.Embed(
-            description = "{} has successfully received **{}** money from you".format(user.mention, amount),
+            description = "{} has successfully received **{:,}** money from you".format(user.mention, amount),
             color = 0x00FF00
         )
         await self.client.say(embed=embed)
@@ -537,6 +546,15 @@ class Economy:
         if amount == None:
             embed = discord.Embed(
                 description = "You need to write the amount you want to deposit",
+                color = 0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.ValidInt(amount) == False:
+            embed = discord.Embed(
+                description = "Please write a valid integer",
                 color = 0xFF0000
             )
 
@@ -604,7 +622,7 @@ class Economy:
                         json.dump(economy, f)
 
                 embed = discord.Embed(
-                    description = "You have successfully deposited **{}** to your bank".format(current_money),
+                    description = "You have successfully deposited **{:,}** to your bank".format(current_money),
                     color = 0x00FF00
                 )
 
@@ -628,6 +646,7 @@ class Economy:
 
         else:
             print("There was a number!")
+            amount = int(amount)
             path = "eco/" + str(author.id) + ".json"
             if not os.path.exists(path):
                 with open(path, "w+") as f:
@@ -678,23 +697,23 @@ class Economy:
 
                 await self.client.say(embed=embed)
                 return
-            elif current_money >= int(amount):
-                current_money -= int(amount)
+            elif current_money >= amount:
+                current_money -= amount
                 with open(path, "r") as f:
                     economy = json.load(f)
                     economy[server.id]["Money"] = current_money
-                    economy[server.id]["Bank"] = current_bank + int(amount)
+                    economy[server.id]["Bank"] = current_bank + amount
                     with open(path, "w") as f:
                         json.dump(economy, f)
                 embed = discord.Embed(
-                    description = "You have successfully deposited **{}** to your bank".format(str(amount)),
+                    description = "You have successfully deposited **{:,}** to your bank".format(amount),
                     color = 0x00FF00
                 )
                 await self.client.say(embed=embed)
                 return
             else:
                 embed = discord.Embed(
-                    description = "You don't have **{}**".format(str(amount)),
+                    description = "You don't have **{:,}**".format(amount),
                     color = 0xFF0000
                 )
 
@@ -771,7 +790,7 @@ class Economy:
                     economy_array[server.id]["max_slut_amount"] = amount
 
             embed = discord.Embed(
-                description = "The maximum **{}** amount has been set to **{}**".format(setting, amount),
+                description = "The maximum **{}** amount has been set to **{:,}**".format(setting, amount),
                 color = 0x00FF00
             )
 
@@ -854,7 +873,7 @@ class Economy:
                     economy_array[server.id]["min_slut_amount"] = amount
 
             embed = discord.Embed(
-                description = "The minimum **{}** amount has been set to **{}**".format(setting, amount),
+                description = "The minimum **{}** amount has been set to **{:,}**".format(setting, amount),
                 color = 0x00FF00
             )
 
@@ -890,6 +909,7 @@ class Economy:
                 await self.client.say(embed=embed)
                 return
 
+            amount = int(amount)
             if user == None:
                 path = "eco/{}.json".format(str(author.id))
                 if not os.path.exists(path):
@@ -911,12 +931,12 @@ class Economy:
 
                 with open(path, "r") as f:
                     economy = json.load(f)
-                    economy[server.id]["Money"] = int(amount)
+                    economy[server.id]["Money"] = amount
                     with open(path, "w") as f:
                         json.dump(economy, f)
 
                 embed = discord.Embed(
-                    description = "Your money has been successfully set to **{}**".format(amount),
+                    description = "Your money has been successfully set to **{:,}**".format(amount),
                     colour = 0x00FF00
                 )
                 
@@ -942,12 +962,12 @@ class Economy:
 
                 with open(path, "r") as f:
                     economy = json.load(f)
-                    economy[server.id]["Money"] = int(amount)
+                    economy[server.id]["Money"] = amount
                     with open(path, "w") as f:
                         json.dump(economy, f)
 
                 embed = discord.Embed(
-                    description = "The user {} money has been successfully set to **{}**".format(user.mention, amount),
+                    description = "The user {} money has been successfully set to **{:,}**".format(user.mention, amount),
                     colour = 0x00FF00
                 )
                 
@@ -983,6 +1003,7 @@ class Economy:
                 await self.client.say(embed=embed)
                 return
 
+            amount = int(amount)
             if user == None:
                 path = "eco/{}.json".format(str(author.id))
                 if not os.path.exists(path):
@@ -1004,12 +1025,12 @@ class Economy:
 
                 with open(path, "r") as f:
                     economy = json.load(f)
-                    economy[server.id]["Bank"] = int(amount)
+                    economy[server.id]["Bank"] = amount
                     with open(path, "w") as f:
                         json.dump(economy, f)
 
                 embed = discord.Embed(
-                    description = "Your bank money has been successfully set to **{}**".format(amount),
+                    description = "Your bank money has been successfully set to **{:,}**".format(amount),
                     colour = 0x00FF00
                 )
                 
@@ -1035,12 +1056,12 @@ class Economy:
 
                 with open(path, "r") as f:
                     economy = json.load(f)
-                    economy[server.id]["Bank"] = int(amount)
+                    economy[server.id]["Bank"] = amount
                     with open(path, "w") as f:
                         json.dump(economy, f)
 
                 embed = discord.Embed(
-                    description = "The user {} bank money has been successfully set to **{}**".format(user.mention, amount),
+                    description = "The user {} bank money has been successfully set to **{:,}**".format(user.mention, amount),
                     colour = 0x00FF00
                 )
                 
