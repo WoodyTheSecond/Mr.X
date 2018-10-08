@@ -551,15 +551,6 @@ class Economy:
 
             await self.client.say(embed=embed)
             return
-
-        if self.ValidInt(amount) == False:
-            embed = discord.Embed(
-                description = "Please write a valid integer",
-                color = 0xFF0000
-            )
-
-            await self.client.say(embed=embed)
-            return
             
         if amount.lower() == "all":
             path = "eco/" + str(author.id) + ".json"
@@ -630,7 +621,7 @@ class Economy:
                 return
         elif self.ValidInt(amount) == False:
              embed = discord.Embed(
-                description = "Please enter a number",
+                description = "Please enter a number/all",
                 color = 0xFF0000
              )
 
