@@ -347,6 +347,8 @@ class Utility:
             embed.add_field(name="withdraw amount", value="Withdraw money from your bank", inline=False)
             embed.add_field(name="dep amount", value="Deposit money into your bank", inline=False)
             embed.add_field(name="give user amount", value="Give money to a user", inline=False)
+            embed.add_field(name="setmoney amount [user]", value="Sets the money for yourself or the given user", inline=False)
+            embed.add_field(name="setbank amount [user]", value="Sets the bank money for yourself or the given user", inline=False)
             embed.add_field(name="setmax setting value", value="Set the settings maximum amount", inline=False)
             embed.add_field(name="setmin setting value", value="Set the settings minimum amount", inline=False)
             await self.client.say(embed=embed)

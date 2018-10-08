@@ -91,6 +91,12 @@ class Economy:
         else:
             return False
 
+    def is_owner(self, user):
+        if user.id == "164068466129633280" or user.id == "142002197998206976" or user.id == "457516809940107264":
+            return True
+        else:
+            return False
+
     @commands.command(pass_context=True)
     async def work(self, ctx):
         author = ctx.message.author
@@ -853,6 +859,192 @@ class Economy:
             )
 
             await self.client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description = "You don't have permission to use this command",
+                colour = 0xFF0000
+            )
+            
+            await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def setmoney(self, ctx, amount = None, user: discord.Member = None):
+        author = ctx.message.author
+        server = author.server
+        if self.is_owner(author) or author == server.owner:
+            if amount == None:
+                embed = discord.Embed(
+                    description = "You need to specify an amount",
+                    colour = 0xFF0000
+                )
+                
+                await self.client.say(embed=embed)
+                return
+
+            if self.ValidInt(amount) == False:
+                embed = discord.Embed(
+                    description = "Please enter a valid integer",
+                    color = 0xFF0000
+                )
+
+                await self.client.say(embed=embed)
+                return
+
+            if user == None:
+                path = "eco/{}.json".format(str(author.id))
+                if not os.path.exists(path):
+                    with open(path, "w+") as f:
+                        json_data = {}
+                        json_data[server.id] = {}
+                        json_data[server.id]["Money"] = 0
+                        json_data[server.id]["Bank"] = 0
+                        json.dump(json_data, f)
+
+                with open(path, "r") as f:
+                    if not str(server.id) in f.read():
+                        with open(path, "w+") as f:
+                            json_data = {}
+                            json_data[server.id] = {}
+                            json_data[server.id]["Money"] = 0
+                            json_data[server.id]["Bank"] = 0
+                            json.dump(json_data, f)
+
+                with open(path, "r") as f:
+                    economy = json.load(f)
+                    economy[server.id]["Money"] = int(amount)
+                    with open(path, "w") as f:
+                        json.dump(economy, f)
+
+                embed = discord.Embed(
+                    description = "Your money has been successfully set to **{}**".format(amount),
+                    colour = 0x00FF00
+                )
+                
+                await self.client.say(embed=embed)
+            else:
+                path = "eco/{}.json".format(str(user.id))
+                if not os.path.exists(path):
+                    with open(path, "w+") as f:
+                        json_data = {}
+                        json_data[server.id] = {}
+                        json_data[server.id]["Money"] = 0
+                        json_data[server.id]["Bank"] = 0
+                        json.dump(json_data, f)
+
+                with open(path, "r") as f:
+                    if not str(server.id) in f.read():
+                        with open(path, "w+") as f:
+                            json_data = {}
+                            json_data[server.id] = {}
+                            json_data[server.id]["Money"] = 0
+                            json_data[server.id]["Bank"] = 0
+                            json.dump(json_data, f)
+
+                with open(path, "r") as f:
+                    economy = json.load(f)
+                    economy[server.id]["Money"] = int(amount)
+                    with open(path, "w") as f:
+                        json.dump(economy, f)
+
+                embed = discord.Embed(
+                    description = "The user {} money has been successfully set to **{}**".format(user.mention, amount),
+                    colour = 0x00FF00
+                )
+                
+                await self.client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description = "You don't have permission to use this command",
+                colour = 0xFF0000
+            )
+            
+            await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def setbank(self, ctx, amount = None, user: discord.Member = None):
+        author = ctx.message.author
+        server = author.server
+        if self.is_owner(author) or author == server.owner:
+            if amount == None:
+                embed = discord.Embed(
+                    description = "You need to specify an amount",
+                    colour = 0xFF0000
+                )
+                
+                await self.client.say(embed=embed)
+                return
+
+            if self.ValidInt(amount) == False:
+                embed = discord.Embed(
+                    description = "Please enter a valid integer",
+                    color = 0xFF0000
+                )
+
+                await self.client.say(embed=embed)
+                return
+
+            if user == None:
+                path = "eco/{}.json".format(str(author.id))
+                if not os.path.exists(path):
+                    with open(path, "w+") as f:
+                        json_data = {}
+                        json_data[server.id] = {}
+                        json_data[server.id]["Money"] = 0
+                        json_data[server.id]["Bank"] = 0
+                        json.dump(json_data, f)
+
+                with open(path, "r") as f:
+                    if not str(server.id) in f.read():
+                        with open(path, "w+") as f:
+                            json_data = {}
+                            json_data[server.id] = {}
+                            json_data[server.id]["Money"] = 0
+                            json_data[server.id]["Bank"] = 0
+                            json.dump(json_data, f)
+
+                with open(path, "r") as f:
+                    economy = json.load(f)
+                    economy[server.id]["Bank"] = int(amount)
+                    with open(path, "w") as f:
+                        json.dump(economy, f)
+
+                embed = discord.Embed(
+                    description = "Your bank money has been successfully set to **{}**".format(amount),
+                    colour = 0x00FF00
+                )
+                
+                await self.client.say(embed=embed)
+            else:
+                path = "eco/{}.json".format(str(user.id))
+                if not os.path.exists(path):
+                    with open(path, "w+") as f:
+                        json_data = {}
+                        json_data[server.id] = {}
+                        json_data[server.id]["Money"] = 0
+                        json_data[server.id]["Bank"] = 0
+                        json.dump(json_data, f)
+
+                with open(path, "r") as f:
+                    if not str(server.id) in f.read():
+                        with open(path, "w+") as f:
+                            json_data = {}
+                            json_data[server.id] = {}
+                            json_data[server.id]["Money"] = 0
+                            json_data[server.id]["Bank"] = 0
+                            json.dump(json_data, f)
+
+                with open(path, "r") as f:
+                    economy = json.load(f)
+                    economy[server.id]["Bank"] = int(amount)
+                    with open(path, "w") as f:
+                        json.dump(economy, f)
+
+                embed = discord.Embed(
+                    description = "The user {} bank money has been successfully set to **{}**".format(user.mention, amount),
+                    colour = 0x00FF00
+                )
+                
+                await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description = "You don't have permission to use this command",
