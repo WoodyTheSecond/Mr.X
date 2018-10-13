@@ -68,22 +68,6 @@ class Marriage:
                 await self.client.say(embed=embed)
             conn.close()
         else:
-            if user.id == "164068466129633280":
-                embed = discord.Embed(
-                    description="{} is married to **Charlotte Izoard**".format(user.mention),
-                    color=0xFF0000
-                )
-                embed.set_image(url="https://i.imgur.com/G7oJSjE.jpg")
-                await self.client.say(embed=embed)
-                return
-            elif user.id == "142002197998206976":
-                embed = discord.Embed(
-                    description="{} is married to **Yukana Yame**".format(user.mention),
-                    color=0xFF0000
-                )
-                embed.set_image(url="https://i.imgur.com/MEldWsb.jpg")
-                await self.client.say(embed=embed)
-                return
             sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(user.id), str(user.id))
             c.execute(sql)
             conn.commit()
@@ -103,6 +87,23 @@ class Marriage:
                 embed.set_image(url="https://cdn.pixabay.com/photo/2015/12/11/17/28/heart-1088487_960_720.png")
                 await self.client.say(embed=embed)
             else:
+                if user.id == "164068466129633280":
+                    embed = discord.Embed(
+                        description="You are married to **Charlotte Izoard**",
+                        color=0xFF0000
+                    )
+                    embed.set_image(url="https://i.imgur.com/G7oJSjE.jpg")
+                    await self.client.say(embed=embed)
+                    return
+                elif user.id == "142002197998206976":
+                    embed = discord.Embed(
+                        description="You are married to **Yukana Yame**",
+                        color=0xFF0000
+                    )
+                    embed.set_image(url="https://i.imgur.com/MEldWsb.jpg")
+                    await self.client.say(embed=embed)
+                    return
+
                 embed = discord.Embed(
                     description="{} is not married".format(user.mention),
                     color=0xFF0000

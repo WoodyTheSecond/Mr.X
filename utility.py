@@ -250,9 +250,6 @@ class Utility:
             )
             embed.set_author(name="Fun Module")
             embed.add_field(name="meme", value="Posts a random meme from reddit", inline=False)
-            embed.add_field(name="loli", value="Posts a random loli image from reddit", inline=False)
-            embed.add_field(name="catgirl", value="Posts a link to the catgirl care website", inline=False)
-            embed.add_field(name="neko", value="Posts a random cute neko girl from reddit", inline=False)
             await self.client.say(embed=embed)
 
         elif user_response == "nsfw":
@@ -361,6 +358,20 @@ class Utility:
             embed.add_field(name="propose user", value="Propose to the user", inline=False)
             embed.add_field(name="marriage", value="Shows who you are married to", inline=False)
             embed.add_field(name="divorce", value="Breaks up with the on you are married to", inline=False)
+            await self.client.say(embed=embed)
+        elif user_response == "otaku":
+            self.client.say("Otaku Module Command List")
+            embed = discord.Embed(
+                color=0x0000FF
+            )
+            embed.set_author(name="Otaku Module")
+            embed.add_field(name="shiki", value="Shows information about the King of Siscon", inline=False)
+            embed.add_field(name="hdude", value="Shows information about the rapper Hentai Dude", inline=False)
+            embed.add_field(name="imotou", value="Display a random image from reddit with a cute imotou", inline=False)
+            embed.add_field(name="oniisong", value="Shows a random song from either hdude or shiki", inline=False)
+            embed.add_field(name="loli", value="Display a random image from reddit with a cute loli", inline=False)
+            embed.add_field(name="neko", value="Display a random image from reddit with a cute neko", inline=False)
+            embed.add_field(name="catgirl", value="Posts a link to the catgirl website", inline=False)
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(

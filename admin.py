@@ -157,7 +157,6 @@ class Admin:
             if int(len(data)) == 1:
                 for d in data:
                     warn_type = d[3]
-
                 if warn_type == "mute":
                     mute_lenght = self.check_database(server, "WarnMute")
                     if "m" in mute_lenght:
@@ -210,6 +209,13 @@ class Admin:
                                 color=0x00FF00
                             )
                             await self.client.say(embed=embed)
+                            if self.check_database(server, "DMWarn") == True:
+                                embed = discord.Embed(
+                                    description="You have been muted for **{}** minute(s) for reaching the warning threshold in {}".format(t_time, server.name),
+                                    color=0x00FF00
+                                )
+                                await self.client.send_message(user, embed=embed)
+
                             await asyncio.sleep(time)
                             path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
                             with open(path) as fp:
@@ -235,6 +241,13 @@ class Admin:
                                 color=0x00FF00
                             )
                             await self.client.say(embed=embed)
+                            if self.check_database(server, "DMWarn") == True:
+                                embed = discord.Embed(
+                                    description="You have been muted for **{}** hour(s) for reaching the warning threshold in {}".format(t_time, server.name),
+                                    color=0x00FF00
+                                )
+                                await self.client.send_message(user, embed=embed)
+
                             await asyncio.sleep(time)
                             path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
                             with open(path) as fp:
@@ -257,10 +270,17 @@ class Admin:
                 elif warn_type == "kick":
                     try:
                         embed = discord.Embed(
-                            description="{} has been kicked for reaching the warning threshold".format(user.mention),
+                            description="{} has been kicked for reaching the warning threshold",
                             color=0x00FF00
                         )
                         await self.client.say(embed=embed)
+                        if self.check_database(server, "DMWarn") == True:
+                            embed = discord.Embed(
+                                description="You have been kicked for reaching the warning threshold in {}".format(server.name),
+                                color=0x00FF00
+                            )
+                            await self.client.send_message(user, embed=embed)
+
                         await self.client.kick(user)
                     except discord.Forbidden:
                         embed = discord.Embed(
@@ -275,6 +295,13 @@ class Admin:
                             color=0x00FF00
                         )
                         await self.client.say(embed=embed)
+                        if self.check_database(server, "DMWarn") == True:
+                            embed = discord.Embed(
+                                description="You have been banned for reaching the warning threshold in {}".format(server.name),
+                                color=0x00FF00
+                            )
+                            await self.client.send_message(user, embed=embed)
+
                         await self.client.ban(user)
                     except discord.Forbidden:
                         embed = discord.Embed(
@@ -290,13 +317,28 @@ class Admin:
                     )
 
                     await self.client.say(embed=embed)
+                    
+                    if self.check_database(server, "DMWarn") == True:
+                        embed = discord.Embed(
+                            description="You have been warned in {}".format(server.name),
+                            color=0x00FF00
+                        )
+
+                        await self.client.send_message(user, embed=embed)
                 else:
                     embed = discord.Embed(
                         description="{} has been warned with the reason **{}**".format(user.mention, reason),
                         color=0x00FF00
                     )
 
-                    await self.client.say(embed=embed)
+                    if self.check_database(server, "DMWarn") == True:
+                        await self.client.say(embed=embed)
+                        embed = discord.Embed(
+                            description="You have been warned with the reason **{}** in {}".format(reason, server.name),
+                            color=0x00FF00
+                        )
+
+                        await self.client.send_message(user, embed=embed)
 
                 return
             
@@ -310,7 +352,6 @@ class Admin:
             )
 
             await self.client.say(embed=embed)
-        
 
     @commands.command(pass_context=True)
     async def warns(self, ctx, user: discord.Member = None):

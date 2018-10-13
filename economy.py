@@ -80,7 +80,7 @@ class Economy:
     def make_settings(self, server):
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
-        sql = "SELECT * FROM `Economy_Settings` WHERE serverid = {}".format(str(server.id))
+        sql = "SELECT * FROM `Economy_Settings` WHERE serverid = {}".format(server.id)
         c.execute(sql)
         conn.commit()
         data = c.fetchone()
@@ -149,6 +149,7 @@ class Economy:
                             json.dump(economy, f)
 
                 amount_earned = randint(economy_array[server.id]["min_work_amount"], economy_array[server.id]["max_work_amount"])
+                current_money = None
                 with open(path, "r") as f:
                     economy = json.load(f)
                     if economy[server.id]["Money"]:
@@ -156,11 +157,11 @@ class Economy:
                     else:
                         current_money = 0
                         economy[server.id]["Money"] = 0
-            
+
                     economy[server.id]["Money"] = current_money + amount_earned
                     with open(path, "w") as f:
                         json.dump(economy, f)
-
+                        
                 embed = discord.Embed(
                     description = "You earned **{:,}**".format(amount_earned),
                     color = 0x00b8ff
