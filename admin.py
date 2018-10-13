@@ -320,7 +320,7 @@ class Admin:
                     
                     if self.check_database(server, "DMWarn") == True:
                         embed = discord.Embed(
-                            description="You have been warned in {}".format(server.name),
+                            description="You have been warned in `{}`".format(server.name),
                             color=0x00FF00
                         )
 
@@ -334,7 +334,7 @@ class Admin:
                     if self.check_database(server, "DMWarn") == True:
                         await self.client.say(embed=embed)
                         embed = discord.Embed(
-                            description="You have been warned with the reason **{}** in {}".format(reason, server.name),
+                            description="You have been warned with the reason **{}** in `{}`".format(reason, server.name),
                             color=0x00FF00
                         )
 
