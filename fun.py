@@ -90,6 +90,18 @@ class Fun:
     @commands.command(pass_context=True)
     async def slap(self, ctx, user: discord.Member = None):
         author = ctx.message.author
+        server = author.server
+        fun_toggle = self.check_database(server, "FunToggle")
+        if author.id != "164068466129633280" and author.id != "142002197998206976" and author.id != "457516809940107264":
+            if fun_toggle == False:
+                embed = discord.Embed(
+                    description="The fun commands is currently disabled",
+                    color=0xFF0000
+                )
+
+                await self.client.say(embed=embed)
+                return
+
         ints = randint(1, 2)
         if user == None:
             embed = discord.Embed(
@@ -113,6 +125,18 @@ class Fun:
     @commands.command(pass_context=True)
     async def splat(self, ctx, user: discord.Member = None):
         author = ctx.message.author
+        server = author.server
+        fun_toggle = self.check_database(server, "FunToggle")
+        if author.id != "164068466129633280" and author.id != "142002197998206976" and author.id != "457516809940107264":
+            if fun_toggle == False:
+                embed = discord.Embed(
+                    description="The fun commands is currently disabled",
+                    color=0xFF0000
+                )
+
+                await self.client.say(embed=embed)
+                return
+
         if user == None:
             embed = discord.Embed(
                 description="You have not tagged any user",
