@@ -7,6 +7,7 @@ import praw
 import random
 import pymysql
 import os
+from random import randint
 
 class Fun:
     def __init__(self, client):
@@ -88,7 +89,45 @@ class Fun:
 
     @commands.command(pass_context=True)
     async def slap(self, ctx, user: discord.Member = None):
-        print("Some kind of slap command where it tags the user")
+        author = ctx.message.author
+        ints = randint(1, 2)
+        if user == None:
+            embed = discord.Embed(
+                description="You have not tagged any user",
+                color=0xFF0000
+            )
+            await self.client.say(embed=embed)
+            return
+
+        embed = discord.Embed(
+            description="{} slaps {}".format(author.mention, user.mention),
+            color=0xFF0000
+        )
+        if ints == 1:
+            embed.set_image(url="https://i.imgur.com/srwlZ8s.gif")
+        elif ints == 2:
+            embed.set_image(url="https://i.imgur.com/UFn8Huh.gif")
+
+        await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def splat(self, ctx, user: discord.Member = None):
+        author = ctx.message.author
+        if user == None:
+            embed = discord.Embed(
+                description="You have not tagged any user",
+                color=0xFF0000
+            )
+            await self.client.say(embed=embed)
+            return
+                
+        embed = discord.Embed(
+            description="{} totally annihilates {} with a simple ***SPLAT***".format(author.mention, user.mention),
+            color=0xFF0000
+        )
+        embed.set_image(url="https://i.imgur.com/GnuQkQZ.gif")
+
+        await self.client.say(embed=embed)
     
 def setup(client):
     client.add_cog(Fun(client))

@@ -185,7 +185,7 @@ class Utility:
                 color=0x0000FF
             )
             embed.add_field(name="Primary Modules", value="Core, Admin, Utility, Creator", inline=False)
-            embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Economy, NSFW, Marriage", inline=False)
+            embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Economy, NSFW, Marriage, Otaku", inline=False)
             await self.client.say(embed=embed)
             user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
             user_response = user_response.clean_content.lower()
@@ -250,6 +250,8 @@ class Utility:
             )
             embed.set_author(name="Fun Module")
             embed.add_field(name="meme", value="Posts a random meme from reddit", inline=False)
+            embed.add_field(name="slap user", value="Slaps the user", inline=False)
+            embed.add_field(name="splat user", value="Splat out the user", inline=False)
             await self.client.say(embed=embed)
 
         elif user_response == "nsfw":
