@@ -355,6 +355,7 @@ class Economy:
 
         else:
             print("There was a number!")
+            amount = amount.replace(",", "")
             amount = int(amount)
             path = "eco/{}.json".format(author.id)
             if not os.path.exists(path):
@@ -457,6 +458,7 @@ class Economy:
             await self.client.say(embed=embed)
             return
 
+        amount = amount.replace(",", "")
         amount = int(amount)
         path = "eco/{}.json".format(str(author.id))
         userpath = "eco/{}.json".format(str(user.id))
@@ -638,6 +640,7 @@ class Economy:
 
         else:
             print("There was a number!")
+            amount = amount.replace(",", "")
             amount = int(amount)
             path = "eco/" + str(author.id) + ".json"
             if not os.path.exists(path):
@@ -744,6 +747,7 @@ class Economy:
                 return
 
             setting = setting.lower()
+            amount = amount.replace(",", "")
             amount = int(amount)
             if setting == "work":
                 min_amount = int(self.check_database(server, "min_work_amount"))
@@ -827,6 +831,7 @@ class Economy:
                 return
 
             setting = setting.lower()
+            amount = amount.replace(",", "")
             amount = int(amount)
             if setting == "work":
                 max_amount = int(self.check_database(server, "max_work_amount"))
@@ -901,6 +906,7 @@ class Economy:
                 await self.client.say(embed=embed)
                 return
 
+            amount = amount.replace(",", "")
             amount = int(amount)
             if user == None:
                 path = "eco/{}.json".format(str(author.id))
@@ -995,6 +1001,7 @@ class Economy:
                 await self.client.say(embed=embed)
                 return
 
+            amount = amount.replace(",", "")
             amount = int(amount)
             if user == None:
                 path = "eco/{}.json".format(str(author.id))
