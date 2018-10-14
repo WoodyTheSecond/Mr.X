@@ -269,6 +269,7 @@ class Economy:
         server = ctx.message.server
         current_money = 0
         current_bank = 0
+        amount = amount.replace(",", "")
         if amount == None:
             embed = discord.Embed(
                 description = "You need to write the amount you want to withdraw",
@@ -355,7 +356,6 @@ class Economy:
 
         else:
             print("There was a number!")
-            amount = amount.replace(",", "")
             amount = int(amount)
             path = "eco/{}.json".format(author.id)
             if not os.path.exists(path):
@@ -429,6 +429,7 @@ class Economy:
     async def give(self, ctx, user: discord.Member = None, amount = None):
         author = ctx.message.author
         server = ctx.message.server
+        amount = amount.replace(",", "")
         if user == None:
             embed = discord.Embed(
                 description = "You have not tagged any user",
@@ -458,7 +459,6 @@ class Economy:
             await self.client.say(embed=embed)
             return
 
-        amount = amount.replace(",", "")
         amount = int(amount)
         path = "eco/{}.json".format(str(author.id))
         userpath = "eco/{}.json".format(str(user.id))
@@ -546,6 +546,7 @@ class Economy:
         server = ctx.message.server
         current_money = 0
         current_bank = 0
+        amount = amount.replace(",", "")
         if amount == None:
             embed = discord.Embed(
                 description = "You need to write the amount you want to deposit",
@@ -640,7 +641,6 @@ class Economy:
 
         else:
             print("There was a number!")
-            amount = amount.replace(",", "")
             amount = int(amount)
             path = "eco/" + str(author.id) + ".json"
             if not os.path.exists(path):
@@ -720,6 +720,7 @@ class Economy:
         author = ctx.message.author
         server = author.server
         if author.server_permissions.administrator:
+            amount = amount.replace(",", "")
             if setting == None or amount == None:
                 embed = discord.Embed(
                     description = "You need to write a setting and a value",
@@ -747,7 +748,6 @@ class Economy:
                 return
 
             setting = setting.lower()
-            amount = amount.replace(",", "")
             amount = int(amount)
             if setting == "work":
                 min_amount = int(self.check_database(server, "min_work_amount"))
@@ -804,6 +804,7 @@ class Economy:
         author = ctx.message.author
         server = author.server
         if author.server_permissions.administrator:
+            amount = amount.replace(",", "")
             if setting == None or amount == None:
                 embed = discord.Embed(
                     description = "You need to write a setting and a value",
@@ -831,7 +832,6 @@ class Economy:
                 return
 
             setting = setting.lower()
-            amount = amount.replace(",", "")
             amount = int(amount)
             if setting == "work":
                 max_amount = int(self.check_database(server, "max_work_amount"))
@@ -888,6 +888,7 @@ class Economy:
         author = ctx.message.author
         server = author.server
         if self.is_owner(author) or author == server.owner:
+            amount = amount.replace(",", "")
             if amount == None:
                 embed = discord.Embed(
                     description = "You need to specify an amount",
@@ -906,7 +907,6 @@ class Economy:
                 await self.client.say(embed=embed)
                 return
 
-            amount = amount.replace(",", "")
             amount = int(amount)
             if user == None:
                 path = "eco/{}.json".format(str(author.id))
@@ -983,6 +983,7 @@ class Economy:
         author = ctx.message.author
         server = author.server
         if self.is_owner(author) or author == server.owner:
+            amount = amount.replace(",", "")
             if amount == None:
                 embed = discord.Embed(
                     description = "You need to specify an amount",
@@ -1001,7 +1002,6 @@ class Economy:
                 await self.client.say(embed=embed)
                 return
 
-            amount = amount.replace(",", "")
             amount = int(amount)
             if user == None:
                 path = "eco/{}.json".format(str(author.id))
