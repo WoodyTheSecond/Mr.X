@@ -21,7 +21,7 @@ client.remove_command("help")
 status = ["Commands: -help", "Watching you"]
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
-extensions = ["admin", "utility", "swarm", "nsfw", "fun", "economy", "marriage"]
+extensions = ["admin", "utility", "swarm", "nsfw", "fun", "economy", "marriage", "otaku"]
 
 
 async def change_status():
@@ -38,7 +38,6 @@ async def autosave_economy():
 
     while not client.is_closed:
         await asyncio.sleep(3600)
-
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "TRUNCATE `Economy`"
@@ -86,7 +85,6 @@ def save_economy(*args):
     sys.exit(0)
 
 def create_database(server):
-    # conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle, earn_cooldown) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0', '0')".format(str(server.id))
@@ -288,8 +286,7 @@ async def settings(ctx):
 
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
 
-    Ignore_Hierarchy = str(check_database_multiple(
-        conn, server, "Ignore_Hierarchy"))
+    Ignore_Hierarchy = str(check_database_multiple(conn, server, "Ignore_Hierarchy"))
     DMWarn = check_database_multiple(conn, server, "DMWarn")
     Verify_Role = check_database_multiple(conn, server, "Verify_Role")
     Mod_Role = check_database_multiple(conn, server, "Mod_Role")
@@ -298,8 +295,7 @@ async def settings(ctx):
     Mute_Role = check_database_multiple(conn, server, "Mute_Role")
     WarnMute = check_database_multiple(conn, server, "WarnMute")
     JoinToggle = str(check_database_multiple(conn, server, "JoinToggle"))
-    CanModAnnounce = str(check_database_multiple(
-        conn, server, "CanModAnnounce"))
+    CanModAnnounce = str(check_database_multiple(conn, server, "CanModAnnounce"))
     Level_System = str(check_database_multiple(conn, server, "Level_System"))
     conn.close()
 
