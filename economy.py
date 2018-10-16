@@ -457,7 +457,9 @@ class Economy:
             )
             await self.client.say(embed=embed)
             return
-        elif amount <= 0:
+
+        amount = int(amount)
+        if amount <= 0:
             embed = discord.Embed(
                 description = "The amount must be higher than 0",
                 color = 0xFF0000
@@ -465,7 +467,6 @@ class Economy:
             await self.client.say(embed=embed)
             return
 
-        amount = int(amount)
         path = "eco/{}.json".format(str(author.id))
         userpath = "eco/{}.json".format(str(user.id))
         economy = None

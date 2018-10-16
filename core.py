@@ -299,27 +299,25 @@ async def settings(ctx):
     Level_System = str(check_database_multiple(conn, server, "Level_System"))
     conn.close()
 
-    await client.say('Do you want the list **Inline** ? (Yes/No)')
+    await client.say("Do you want the list **Inline** ? (Yes/No)")
     user_response = await client.wait_for_message(timeout=30, channel=channel, author=author)
-    if user_response.clean_content == 'yes' or user_response.clean_content == 'Yes':
+    user_response = user_response.clean_content.lower()
+    if user_response == "yes":
         inline = True
-    elif user_response.clean_content == 'no' or user_response.clean_content == 'No':
+    elif user_response == "no":
         inline = False
     else:
         await client.say("Invalid.")
         return
 
     embed = discord.Embed(
-        title='',
-        description='',
         color=0x0000FF
     )
 
     if server.icon_url != "":
         embed.set_thumbnail(url=server.icon_url)
 
-    embed.set_author(name='{} Server Settings'.format(
-        server), icon_url='https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128')
+    embed.set_author(name='{} Server Settings'.format(server), icon_url='https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128')
     embed.add_field(name='Ignore Hierarchy',value=Ignore_Hierarchy, inline=inline)
     embed.add_field(name='Direct message on warn', value=DMWarn, inline=inline)
     embed.add_field(name='Verify Role', value=Verify_Role, inline=inline)
