@@ -384,8 +384,17 @@ class Admin:
                 )
 
                 for warn in data:
-                    embed.add_field(name="Warning {}".format(warnnumber), value="{}".format(warn[3]), inline=False)
-                    warnnumber += 1
+                    if warnnumber == 10:
+                        if postedten == False:
+                            if len(data) > 10:
+                                embed.add_field(name="Warning {}".format(warnnumber), value="{}\n\n**{} more warning(s)**".format(warn[3], len(data) - 10), inline=False)
+                            else:
+                                embed.add_field(name="Warning {}".format(warnnumber), value="{}".format(warn[3]), inline=False)
+                            
+                            postedten = True
+                    else:
+                        embed.add_field(name="Warning {}".format(warnnumber), value="{}".format(warn[3]), inline=False)
+                        warnnumber += 1
 
                 await self.client.say(embed=embed)
         else:
