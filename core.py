@@ -14,6 +14,7 @@ from random import randint
 import atexit
 import shutil
 from signal import *
+from profanity import profanity
 
 TOKEN = os.getenv("TOKEN")
 client = commands.Bot(command_prefix="-")
@@ -125,6 +126,8 @@ def update_database(server, setting, value):
         sql = "UPDATE `Server_Settings` SET NSFW_role = %s where serverid = %s"
     elif setting == "NSFW_toggle":
         sql = "UPDATE `Server_Settings` SET NSFW_toggle = %s where serverid = %s"
+    elif setting == "Profanity_Filter":
+        sql = "UPDATE `Server_Settings` SET Profanity_Filter = %s where serverid = %s"
     else:
         print("No such setting found")
         return
@@ -196,6 +199,7 @@ async def on_ready():
     print("Bot is online.")
     #Economy Load
     directory = "eco"
+    swearfile = "profanity_filter.txt"
     for file in os.listdir(directory):
         file_path = os.path.join(directory, file)
         try:
@@ -203,9 +207,37 @@ async def on_ready():
                 os.remove(file_path)
         except Exception as e:
             print(e)
+
+    if os.path.exists(swearfile):
+        try:
+            os.remove(swearfile)
+        except Exception as e:
+            print(e)
     
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
+    sql = "SELECT * FROM `Server_Settings`"
+    c.execute(sql)
+    conn.commit()
+    data = c.fetchall()
+    for d in data:
+        serverid = d[1]
+        profanity_filter = d[17]
+        path = "profanity_filter.json"
+        if os.path.exists(path):
+            with open(path, "r") as f:
+                json_data = json.load(f)
+                json_data[serverid] = {}
+                json_data[serverid]["Toggle"] = profanity_filter
+                with open(path, "w") as f:
+                    json.dump(json_data, f)
+        else:
+            with open(path, "w+") as f:
+                json_data = {}
+                json_data[serverid] = {}
+                json_data[serverid]["Toggle"] = profanity_filter
+                json.dump(json_data, f)
+
     sql = "SELECT * FROM `Economy`"
     c.execute(sql)
     conn.commit()
@@ -256,6 +288,49 @@ async def on_member_unban(server, member):
             if userid == member.id:
                 await client.ban(member)
 
+@client.event
+async def on_message(message):
+    author = message.author
+    if author.bot == False:
+        channel = message.channel
+        server = author.server
+        path = "profanity_filter.json"
+        toggle = True
+        if os.path.exists(path):
+            if str(server.id) in open(path).read():
+                with open(path, "r") as f:
+                    json_data = json.load(f)
+                    toggle = json_data[server.id]["Toggle"]
+                    if toggle == 0:
+                        toggle = False
+            else:
+                profanity_filter = None
+                if check_database(server, "Profanity_Filter") == True:
+                    profanity_filter = 1
+                else:
+                    profanity_filter = 0
+
+                with open(path, "r") as f:
+                    json_data = json.load(f)
+                    json_data[server.id] = {}
+                    json_data[server.id]["Toggle"] = profanity_filter
+                    with open(path, "w") as f:
+                        json.dump(json_data, f)
+        else:
+            with open(path, "w+") as f:
+                json_data = {}
+                json_data[server.id] = {}
+                json_data[server.id]["Toggle"] = 1
+                json.dump(json_data, f)
+
+        if profanity.contains_profanity(message.clean_content) == True and toggle == True and is_owner(author) == False and author != server.owner:
+            await client.delete_message(message)
+            msg = await client.send_message(channel, "{}, Watch your language!".format(author.mention))
+            await asyncio.sleep(2)
+            await client.delete_message(msg)
+
+        await client.process_commands(message)
+
 @client.command()
 async def botinfo():
     embed = discord.Embed(
@@ -293,10 +368,16 @@ async def settings(ctx):
     Join_Role = check_database_multiple(conn, server, "Join_Role")
     Admin_Role = check_database_multiple(conn, server, "Admin_Role")
     Mute_Role = check_database_multiple(conn, server, "Mute_Role")
+    NSFW_role = check_database_multiple(conn, server, "NSFW_role")
     WarnMute = check_database_multiple(conn, server, "WarnMute")
     JoinToggle = str(check_database_multiple(conn, server, "JoinToggle"))
+    NSFW_toggle = str(check_database_multiple(conn, server, "NSFW_toggle"))
+    FunToggle = str(check_database_multiple(conn, server, "FunToggle"))
+    Profanity_Filter = str(check_database_multiple(conn, server, "Profanity_Filter"))
     CanModAnnounce = str(check_database_multiple(conn, server, "CanModAnnounce"))
     Level_System = str(check_database_multiple(conn, server, "Level_System"))
+    earn_cooldown = str(check_database_multiple(conn, server, "earn_cooldown"))
+
     conn.close()
 
     await client.say("Do you want the list **Inline** ? (Yes/No)")
@@ -325,10 +406,15 @@ async def settings(ctx):
     embed.add_field(name='Join Role', value=Join_Role, inline=inline)
     embed.add_field(name='Administrator Role', value=Admin_Role, inline=inline)
     embed.add_field(name='Mute Role', value=Mute_Role, inline=inline)
+    embed.add_field(name='NSFW Role', value=NSFW_role, inline=inline)
     embed.add_field(name='Warning mute time', value=WarnMute, inline=inline)
     embed.add_field(name='Auto role on join', value=JoinToggle, inline=inline)
+    embed.add_field(name='NSFW commands', value=NSFW_toggle, inline=inline)
+    embed.add_field(name='Fun commands', value=FunToggle, inline=inline)
+    embed.add_field(name='Profanity filter (swear filter)', value=Profanity_Filter, inline=inline)
     embed.add_field(name='Can moderator announce',value=CanModAnnounce, inline=inline)
     embed.add_field(name='Level system', value=Level_System, inline=inline)
+    embed.add_field(name='Work cooldown', value=earn_cooldown, inline=inline)
     await client.say(embed=embed)
 
 @client.command(pass_context=True)
@@ -866,6 +952,70 @@ async def funtoggle(ctx):
         )
         await client.say(embed=embed)
 
+@client.command(pass_context=True)
+async def sweartoggle(ctx):
+    author = ctx.message.author
+    server = ctx.message.server
+    if author.server_permissions.administrator:
+        current_toggle = check_database(server, "Profanity_Filter")
+        if current_toggle == False:
+            update_database(server, "Profanity_Filter", True)
+            path = "profanity_filter.json"
+            if os.path.exists(path):
+                if os.path.exists(path):
+                    with open(path, "r") as f:
+                        json_data = json.load(f)
+                        json_data[server.id] = {}
+                        json_data[server.id]["Toggle"] = 1
+                        with open(path, "w") as f:
+                            json.dump(json_data, f)
+                else:
+                    with open(path, "w+") as f:
+                        json_data = {}
+                        json_data[server.id] = {}
+                        json_data[server.id]["Toggle"] = 1
+                        json.dump(json_data, f)
+                    
+            embed = discord.Embed(
+                description="The swear filter has been **Enabled**",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+        elif current_toggle == True:
+            update_database(server, "Profanity_Filter", False)
+            path = "profanity_filter.json"
+            if os.path.exists(path):
+                if os.path.exists(path):
+                    with open(path, "r") as f:
+                        json_data = json.load(f)
+                        json_data[server.id] = {}
+                        json_data[server.id]["Toggle"] = 0
+                        with open(path, "w") as f:
+                            json.dump(json_data, f)
+                else:
+                    with open(path, "w+") as f:
+                        json_data = {}
+                        json_data[server.id] = {}
+                        json_data[server.id]["Toggle"] = 0
+                        json.dump(json_data, f)
+            embed = discord.Embed(
+                description="The swear filter has been **Disabled**",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="Error",
+                color=0xFF0000
+            )
+            await client.say(embed=embed)
+
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+        await client.say(embed=embed)
 
 @client.command(pass_context=True)
 async def mod(ctx, user: discord.Member = None):

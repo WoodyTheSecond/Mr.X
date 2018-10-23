@@ -4,3 +4,4 @@ pymysql
 youtube_dl
 PyNaCl
 praw
+profanity
