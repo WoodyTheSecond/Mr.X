@@ -1756,16 +1756,16 @@ async def unbanword(ctx, word: str = None):
                     
                 if os.path.exists(c_path):
                     data = open(c_path, "r").read().splitlines()
-                    data.remove(word)
-                    datatxt = None
+                    banned_words = None
                     for d in data:
-                        if datatxt == None:
-                            datatxt = d
-                        else:
-                            datatxt += "\n{}".format(d)
+                        if d != word:
+                            if banned_words == None:
+                                banned_words = d
+                            else:
+                                banned_words += "\n{}".format(d)
 
                     with open(c_path, "w") as f:
-                        f.write(datatxt)
+                        f.write(banned_words)
 
                 embed = discord.Embed(
                     description="The word `{}` has been successfully unbanned".format(word),
