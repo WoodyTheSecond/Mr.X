@@ -1820,6 +1820,13 @@ async def bannedwords(ctx):
             )
 
             await client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="There isn't any banned words",
+                color=0xFF0000
+            )
+            
+            await client.say(embed=embed)
     else:
         embed = discord.Embed(
             description="You don't have permission to use this command",
