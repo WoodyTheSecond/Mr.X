@@ -1789,6 +1789,46 @@ async def unbanword(ctx, word: str = None):
         await client.say(embed=embed)
 
 @client.command(pass_context=True)
+async def bannedwords(ctx):
+    author = ctx.message.author
+    server = author.server
+    if is_owner(author) == True or author == server.owner:
+        c_path = "servers/{}/banned_words.txt".format(str(server.id))
+        if os.path.exists(c_path):
+            banned_words = open(c_path, "r").read().splitlines()
+            words = None
+            num = 1
+            for word in banned_words:
+                if words == None:
+                    words = "{}. {}".format(num, word)
+                else:
+                    words += "\n{}. {}".format(num, word)
+
+                num += 1
+
+            embed = discord.Embed(
+                title = "Banned Words",
+                description = words,
+                color = 0x00FF00
+            )
+
+            client.send_message(author, embed=embed)
+
+            embed = discord.Embed(
+                description = "I have sent you the list of banned words",
+                color = 0x00FF00
+            )
+
+            client.say(embed=embed)
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+        
+        await client.say(embed=embed)
+
+@client.command(pass_context=True)
 async def load(ctx, extension):
     author = ctx.message.author
     if is_owner(author) == True:
