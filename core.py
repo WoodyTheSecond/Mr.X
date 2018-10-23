@@ -265,8 +265,6 @@ async def on_ready():
                 banned_words += "\n{}".format(word)
                 with open(banned_words_path, "w") as f:
                     f.write(banned_words)
-
-            print(banned_words)
         else:
             with open(banned_words_path, "w+") as f:
                 f.write(word)
