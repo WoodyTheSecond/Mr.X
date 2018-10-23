@@ -1812,14 +1812,14 @@ async def bannedwords(ctx):
                 color = 0x00FF00
             )
 
-            client.send_message(author, embed=embed)
+            await client.send_message(author, embed=embed)
 
             embed = discord.Embed(
                 description = "I have sent you the list of banned words",
                 color = 0x00FF00
             )
 
-            client.say(embed=embed)
+            await client.say(embed=embed)
     else:
         embed = discord.Embed(
             description="You don't have permission to use this command",
