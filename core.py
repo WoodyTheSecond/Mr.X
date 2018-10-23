@@ -128,6 +128,8 @@ def update_database(server, setting, value):
         sql = "UPDATE `Server_Settings` SET NSFW_toggle = %s where serverid = %s"
     elif setting == "Profanity_Filter":
         sql = "UPDATE `Server_Settings` SET Profanity_Filter = %s where serverid = %s"
+    elif setting == "Custom_Words":
+        sql = "UPDATE `Server_Settings` SET Custom_Words = %s where serverid = %s"
     else:
         print("No such setting found")
         return
@@ -199,18 +201,11 @@ async def on_ready():
     print("Bot is online.")
     #Economy Load
     directory = "eco"
-    swearfile = "profanity_filter.txt"
     for file in os.listdir(directory):
         file_path = os.path.join(directory, file)
         try:
             if os.path.isfile(file_path):
                 os.remove(file_path)
-        except Exception as e:
-            print(e)
-
-    if os.path.exists(swearfile):
-        try:
-            os.remove(swearfile)
         except Exception as e:
             print(e)
     
@@ -223,20 +218,58 @@ async def on_ready():
     for d in data:
         serverid = d[1]
         profanity_filter = d[17]
-        path = "profanity_filter.json"
-        if os.path.exists(path):
-            with open(path, "r") as f:
+        custom_filter = d[18]
+        if not os.path.exists("servers/{}".format(serverid)):
+            os.makedirs("servers/{}".format(serverid))
+
+        togglepath = "servers/{}/profanity_filter.json".format(str(serverid))
+        customfilterpath = "servers/{}/custom_filter.json".format(str(serverid))
+        if os.path.exists(togglepath):
+            with open(togglepath, "r") as f:
                 json_data = json.load(f)
-                json_data[serverid] = {}
-                json_data[serverid]["Toggle"] = profanity_filter
-                with open(path, "w") as f:
+                json_data["Toggle"] = profanity_filter
+                with open(togglepath, "w") as f:
                     json.dump(json_data, f)
         else:
-            with open(path, "w+") as f:
+            with open(togglepath, "w+") as f:
                 json_data = {}
-                json_data[serverid] = {}
-                json_data[serverid]["Toggle"] = profanity_filter
+                json_data["Toggle"] = profanity_filter
                 json.dump(json_data, f)
+
+        if os.path.exists(customfilterpath):
+            with open(customfilterpath, "r") as f:
+                json_data = json.load(f)
+                json_data["Toggle"] = custom_filter
+                with open(customfilterpath, "w") as f:
+                    json.dump(json_data, f)
+        else:
+            with open(customfilterpath, "w+") as f:
+                json_data = {}
+                json_data["Toggle"] = custom_filter
+                json.dump(json_data, f)
+
+    sql = "SELECT * FROM `Banned_Words`"
+    c.execute(sql)
+    conn.commit()
+    data = c.fetchall()
+    for d in data:
+        serverid = d[1]
+        word = d[2]
+        banned_words_path = "servers/{}/banned_words.txt".format(str(serverid))
+        if not os.path.exists("servers/{}".format(serverid)):
+            os.makedirs("servers/{}".format(serverid))
+
+        if os.path.exists(banned_words_path):
+            banned_words = open(banned_words_path, "r").read()
+            if not word in banned_words:
+                banned_words += "\n{}".format(word)
+                with open(banned_words_path, "w") as f:
+                    f.write(banned_words)
+
+            print(banned_words)
+        else:
+            with open(banned_words_path, "w+") as f:
+                f.write(word)
 
     sql = "SELECT * FROM `Economy`"
     c.execute(sql)
@@ -290,46 +323,57 @@ async def on_member_unban(server, member):
 
 @client.event
 async def on_message(message):
+    await client.process_commands(message)
     author = message.author
     if author.bot == False:
         channel = message.channel
         server = author.server
-        path = "profanity_filter.json"
-        toggle = True
-        if os.path.exists(path):
-            if str(server.id) in open(path).read():
-                with open(path, "r") as f:
-                    json_data = json.load(f)
-                    toggle = json_data[server.id]["Toggle"]
-                    if toggle == 0:
-                        toggle = False
-            else:
-                profanity_filter = None
-                if check_database(server, "Profanity_Filter") == True:
-                    profanity_filter = 1
-                else:
-                    profanity_filter = 0
-
-                with open(path, "r") as f:
-                    json_data = json.load(f)
-                    json_data[server.id] = {}
-                    json_data[server.id]["Toggle"] = profanity_filter
-                    with open(path, "w") as f:
-                        json.dump(json_data, f)
+        togglepath = "servers/{}/profanity_filter.json".format(str(server.id))
+        customfilterpath = "servers/{}/custom_filter.json".format(str(server.id))
+        c_path = "servers/{}/banned_words.txt".format(str(server.id))
+        toggle = False
+        customfiltertoggle = False
+        if os.path.exists(togglepath):
+            with open(togglepath, "r") as f:
+                json_data = json.load(f)
+                toggle = json_data["Toggle"]
+                if toggle == 1:
+                    toggle = True
         else:
-            with open(path, "w+") as f:
+            with open(togglepath, "w+") as f:
                 json_data = {}
-                json_data[server.id] = {}
-                json_data[server.id]["Toggle"] = 1
+                json_data["Toggle"] = 0
                 json.dump(json_data, f)
 
-        if profanity.contains_profanity(message.clean_content) == True and toggle == True and is_owner(author) == False and author != server.owner:
-            await client.delete_message(message)
-            msg = await client.send_message(channel, "{}, Watch your language!".format(author.mention))
-            await asyncio.sleep(2)
-            await client.delete_message(msg)
+        if os.path.exists(customfilterpath):
+            with open(customfilterpath, "r") as f:
+                json_data = json.load(f)
+                customfiltertoggle = json_data["Toggle"]
+                if customfiltertoggle == 1:
+                    customfiltertoggle = True
+        else:
+            with open(customfilterpath, "w+") as f:
+                json_data = {}
+                json_data["Toggle"] = 0
+                json.dump(json_data, f)
 
-        await client.process_commands(message)
+        if toggle == True and is_owner(author) == False and author != server.owner:
+            if profanity.contains_profanity(message.clean_content) == True:
+                 await client.delete_message(message)
+                 msg = await client.send_message(channel, "{}, Watch your language!".format(author.mention))
+                 await asyncio.sleep(2)
+                 await client.delete_message(msg)
+            elif customfiltertoggle == True:
+                if os.path.exists(c_path):
+                    banned_words = open(c_path, "r").read().splitlines()
+                    deleted = False
+                    for word in banned_words:
+                        if word in message.clean_content and deleted == False:
+                            deleted = True
+                            await client.delete_message(message)
+                            msg = await client.send_message(channel, "{}, Watch your language!".format(author.mention))
+                            await asyncio.sleep(2)
+                            await client.delete_message(msg)
 
 @client.command()
 async def botinfo():
@@ -960,21 +1004,21 @@ async def sweartoggle(ctx):
         current_toggle = check_database(server, "Profanity_Filter")
         if current_toggle == False:
             update_database(server, "Profanity_Filter", True)
-            path = "profanity_filter.json"
+            if not os.path.exists("servers/{}".format(server.id)):
+                os.makedirs("servers/{}".format(server.id))
+
+            path = "servers/{}/profanity_filter.json".format(server.id)
             if os.path.exists(path):
-                if os.path.exists(path):
-                    with open(path, "r") as f:
-                        json_data = json.load(f)
-                        json_data[server.id] = {}
-                        json_data[server.id]["Toggle"] = 1
-                        with open(path, "w") as f:
-                            json.dump(json_data, f)
-                else:
-                    with open(path, "w+") as f:
-                        json_data = {}
-                        json_data[server.id] = {}
-                        json_data[server.id]["Toggle"] = 1
+                with open(path, "r") as f:
+                    json_data = json.load(f)
+                    json_data["Toggle"] = 1
+                    with open(path, "w") as f:
                         json.dump(json_data, f)
+            else:
+                with open(path, "w+") as f:
+                    json_data = {}
+                    json_data["Toggle"] = 1
+                    json.dump(json_data, f)
                     
             embed = discord.Embed(
                 description="The swear filter has been **Enabled**",
@@ -983,23 +1027,90 @@ async def sweartoggle(ctx):
             await client.say(embed=embed)
         elif current_toggle == True:
             update_database(server, "Profanity_Filter", False)
-            path = "profanity_filter.json"
+            if not os.path.exists("servers/{}".format(server.id)):
+                os.makedirs("servers/{}".format(server.id))
+
+            path = "servers/{}/profanity_filter.json".format(server.id)
             if os.path.exists(path):
-                if os.path.exists(path):
-                    with open(path, "r") as f:
-                        json_data = json.load(f)
-                        json_data[server.id] = {}
-                        json_data[server.id]["Toggle"] = 0
-                        with open(path, "w") as f:
-                            json.dump(json_data, f)
-                else:
-                    with open(path, "w+") as f:
-                        json_data = {}
-                        json_data[server.id] = {}
-                        json_data[server.id]["Toggle"] = 0
+                with open(path, "r") as f:
+                    json_data = json.load(f)
+                    json_data["Toggle"] = 0
+                    with open(path, "w") as f:
                         json.dump(json_data, f)
+            else:
+                with open(path, "w+") as f:
+                    json_data = {}
+                    json_data["Toggle"] = 0
+                    json.dump(json_data, f)
+
             embed = discord.Embed(
                 description="The swear filter has been **Disabled**",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="Error",
+                color=0xFF0000
+            )
+            await client.say(embed=embed)
+
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+        await client.say(embed=embed)
+
+@client.command(pass_context=True)
+async def customwords(ctx):
+    author = ctx.message.author
+    server = ctx.message.server
+    if author.server_permissions.administrator:
+        current_toggle = check_database(server, "Custom_Words")
+        if current_toggle == False:
+            update_database(server, "Custom_Words", True)
+            if not os.path.exists("servers/{}".format(server.id)):
+                os.makedirs("servers/{}".format(server.id))
+
+            path = "servers/{}/custom_filter.json".format(server.id)
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    json_data = json.load(f)
+                    json_data["Toggle"] = 1
+                    with open(path, "w") as f:
+                        json.dump(json_data, f)
+            else:
+                with open(path, "w+") as f:
+                    json_data = {}
+                    json_data["Toggle"] = 1
+                    json.dump(json_data, f)
+                    
+            embed = discord.Embed(
+                description="The custom words filter has been **Enabled**",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+        elif current_toggle == True:
+            update_database(server, "Custom_Words", False)
+            if not os.path.exists("servers/{}".format(server.id)):
+                os.makedirs("servers/{}".format(server.id))
+
+            path = "servers/{}/custom_filter.json".format(server.id)
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    json_data = json.load(f)
+                    json_data["Toggle"] = 0
+                    with open(path, "w") as f:
+                        json.dump(json_data, f)
+            else:
+                with open(path, "w+") as f:
+                    json_data = {}
+                    json_data["Toggle"] = 0
+                    json.dump(json_data, f)
+
+            embed = discord.Embed(
+                description="The custom words filter has been **Disabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
@@ -1551,6 +1662,135 @@ async def kickbots(ctx):
         await client.say(embed=embed)
 
 @client.command(pass_context=True)
+async def banword(ctx, word: str = None):
+    author = ctx.message.author
+    server = author.server
+    if is_owner(author) == True or author == server.owner:
+        if word == None:
+            embed = discord.Embed(
+                description="You need to write a word",
+                color=0xFF0000
+            )
+            
+            await client.say(embed=embed)
+        else:
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+            c = conn.cursor()
+            sql = "SELECT * FROM `Banned_Words` WHERE serverid = '{}'".format(server.id)
+            c.execute(sql)
+            conn.commit()
+            data = c.fetchall()
+            for d in data:
+                bannedword = d[2]
+                if word == bannedword:
+                    embed = discord.Embed(
+                        description="The word `{}` is already banned".format(word),
+                        color=0xFF0000
+                    )
+                    
+                    await client.say(embed=embed)
+                    return
+
+            sql = "INSERT INTO `Banned_Words` (serverid, word) VALUES ('{}', '{}')".format(server.id, word)
+            c.execute(sql)
+            conn.commit()
+            conn.close()
+            c_path = "servers/{}/banned_words.txt".format(str(server.id))
+            if not os.path.exists("servers/{}".format(server.id)):
+                os.makedirs("servers/{}".format(server.id))
+
+            if os.path.exists(c_path):
+                data = open(c_path, "r").read()
+                data += "\n{}".format(word)
+                with open(c_path, "w") as f:
+                    f.write(data)
+            else:
+                with open(c_path, "w+") as f:
+                    f.write(word)
+
+            embed = discord.Embed(
+                description="The word `{}` has been successfully banned".format(word),
+                color=0x00FF00
+            )
+            
+            await client.say(embed=embed)
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+        
+        await client.say(embed=embed)
+
+@client.command(pass_context=True)
+async def unbanword(ctx, word: str = None):
+    author = ctx.message.author
+    server = author.server
+    if is_owner(author) == True or author == server.owner:
+        if word == None:
+            embed = discord.Embed(
+                description="You need to write a word",
+                color=0xFF0000
+            )
+            
+            await client.say(embed=embed)
+        else:
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+            c = conn.cursor()
+            sql = "SELECT * FROM `Banned_Words` WHERE serverid = '{}'".format(server.id)
+            c.execute(sql)
+            conn.commit()
+            data = c.fetchall()
+            wordfound = False
+            for d in data:
+                bannedword = d[2]
+                if word == bannedword:
+                    wordfound = True
+
+            if wordfound == True:
+                sql = "DELETE FROM `Banned_Words` WHERE serverid = '{}' AND word = '{}'".format(server.id, word)
+                c.execute(sql)
+                conn.commit()
+                conn.close()
+                c_path = "servers/{}/banned_words.txt".format(str(server.id))
+                if not os.path.exists("servers/{}".format(server.id)):
+                    os.makedirs("servers/{}".format(server.id))
+                    
+                if os.path.exists(c_path):
+                    data = open(c_path, "r").read().splitlines()
+                    data.remove(word)
+                    datatxt = None
+                    for d in data:
+                        if datatxt == None:
+                            datatxt = d
+                        else:
+                            datatxt += "\n{}".format(d)
+
+                    with open(c_path, "w") as f:
+                        f.write(datatxt)
+
+                embed = discord.Embed(
+                    description="The word `{}` has been successfully unbanned".format(word),
+                    color=0x00FF00
+                )
+                
+                await client.say(embed=embed)
+            else:
+                embed = discord.Embed(
+                    description="The word `{}` isn't banned".format(word),
+                    color=0xFF0000
+                )
+                
+                await client.say(embed=embed)
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+        
+        await client.say(embed=embed)
+
+@client.command(pass_context=True)
 async def load(ctx, extension):
     author = ctx.message.author
     if is_owner(author) == True:
@@ -1577,6 +1817,7 @@ async def load(ctx, extension):
             description="You don't have permission to use this command",
             color=0xFF0000
         )
+
         await client.say(embed=embed)
 
 
