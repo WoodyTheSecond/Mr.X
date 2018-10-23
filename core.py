@@ -1806,6 +1806,15 @@ async def bannedwords(ctx):
 
                 num += 1
 
+            if words == "":
+                embed = discord.Embed(
+                    description="There isn't any banned words",
+                    color=0xFF0000
+                )
+                
+                await client.say(embed=embed)
+                return
+
             embed = discord.Embed(
                 title = "Banned Words",
                 description = words,
