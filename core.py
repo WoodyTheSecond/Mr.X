@@ -1756,10 +1756,10 @@ async def unbanword(ctx, word: str = None):
                     
                 if os.path.exists(c_path):
                     data = open(c_path, "r").read().splitlines()
-                    banned_words = None
+                    banned_words = ""
                     for d in data:
                         if d != word:
-                            if banned_words == None:
+                            if banned_words == "":
                                 banned_words = d
                             else:
                                 banned_words += "\n{}".format(d)
@@ -1796,10 +1796,10 @@ async def bannedwords(ctx):
         c_path = "servers/{}/banned_words.txt".format(str(server.id))
         if os.path.exists(c_path):
             banned_words = open(c_path, "r").read().splitlines()
-            words = None
+            words = ""
             num = 1
             for word in banned_words:
-                if words == None:
+                if words == "":
                     words = "{}. {}".format(num, word)
                 else:
                     words += "\n{}. {}".format(num, word)
