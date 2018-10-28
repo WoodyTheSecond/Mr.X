@@ -184,7 +184,7 @@ class NSFW:
         if await self.is_nsfw(ctx.message.channel):
             if porntype == None:
                 embed = discord.Embed(
-                    title = "Which type of GIF do you want?",
+                    title = "Which category do you want?",
                     description = porntypestxt,
                     color = 0x800080
                 )
@@ -205,7 +205,7 @@ class NSFW:
                         pickedType = int(user_response) - 1
                         if int(user_response) > len(porntypes):
                             embed = discord.Embed(
-                                description="Invalid porn type",
+                                description="Invalid category",
                                 color=0xFF0000
                             )
 
@@ -228,7 +228,7 @@ class NSFW:
 
                     if pickedType == None:
                         embed = discord.Embed(
-                            description="Invalid porn type",
+                            description="Invalid category",
                             color=0xFF0000
                         )
 
@@ -261,7 +261,7 @@ class NSFW:
 
                 if pickedType == None:
                     embed = discord.Embed(
-                        description="Invalid porn type",
+                        description="Invalid category",
                         color=0xFF0000
                     )
 
@@ -333,7 +333,7 @@ class NSFW:
         if await self.is_nsfw(ctx.message.channel):
             if porntype == None:
                 embed = discord.Embed(
-                    title = "Which type of image do you want?",
+                    title = "Which category do you want?",
                     description = porntypestxt,
                     color = 0x800080
                 )
@@ -354,7 +354,7 @@ class NSFW:
                         pickedType = int(user_response) - 1
                         if int(user_response) > len(porntypes):
                             embed = discord.Embed(
-                                description="Invalid porn type",
+                                description="Invalid category",
                                 color=0xFF0000
                             )
 
@@ -377,7 +377,7 @@ class NSFW:
 
                     if pickedType == None:
                         embed = discord.Embed(
-                            description="Invalid porn type",
+                            description="Invalid category",
                             color=0xFF0000
                         )
 
@@ -410,7 +410,7 @@ class NSFW:
 
                 if pickedType == None:
                     embed = discord.Embed(
-                        description="Invalid porn type",
+                        description="Invalid category",
                         color=0xFF0000
                     )
 
