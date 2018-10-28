@@ -8,6 +8,7 @@ import random
 import pymysql
 import os
 import aiohttp
+from html.parser import HTMLParser
 
 class NSFW:
     def __init__(self, client):
@@ -55,10 +56,112 @@ class NSFW:
                 else:
                     return False
 
+    def getPornImage(self, url):
+        req = urllib.request.Request(url)
+        fp = urllib.request.urlopen(req)
+        mybytes = fp.read()
+        message = mybytes.decode("utf8")
+        fp.close()
+
+        images = []
+        class MyHTMLParser(HTMLParser):
+            def handle_starttag(self, tag, attrs):
+                if tag == "img":
+                    toAppend = []
+                    if len(attrs) == 6 and "https://images.sex.com" in attrs[2][1]:
+                        toAppend.append(attrs[2][1])
+                        toAppend.append(attrs[5][1])
+
+                    images.append(toAppend)
+
+        parser = MyHTMLParser()
+        parser.feed(message)
+        image = []
+        while True:
+            image = random.choice(images)
+            if len(image) == 2:
+                break
+
+        return image
+
+    def ValidInt(self, s):
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
+
+    def getPornTypes(self):
+        porntypes = [
+            "popular",
+            "amateur",
+            "anal",
+            "asian",
+            "ass",
+            "babes",
+            "bbw",
+            "bdsm",
+            "big-tits",
+            "blonde",
+            "blowjob",
+            "brunette",
+            "celebrity",
+            "college",
+            "creampie",
+            "cumshots",
+            "double-penetration",
+            "ebony",
+            "emo",
+            "female-ejaculation",
+            "fisting",
+            "footjob",
+            "gang-bang",
+            "gay",
+            "girlfriend",
+            "group-sex",
+            "hairy",
+            "handjob",
+            "hardcore",
+            "hentai",
+            "indian",
+            "interracial",
+            "latina",
+            "lesbian",
+            "lingerie",
+            "masturbation",
+            "mature",
+            "milf",
+            "non-dude",
+            "panties",
+            "penis",
+            "pornstar",
+            "public-sex",
+            "pussy",
+            "redhead",
+            "selfshot",
+            "shemale",
+            "teen",
+            "threesome",
+            "toys"
+        ]
+        return porntypes
+
     @commands.command(pass_context=True)
-    async def pgif(self, ctx):
-        server = ctx.message.author.server
+    async def porngif(self, ctx, porntype = None):
+        porntypes = self.getPornTypes()
         author = ctx.message.author
+        server = author.server
+        channel = ctx.message.channel
+        porntypestxt = None
+        numoftype = 1
+        for porn in porntypes:
+            if porntypestxt == None:
+                porntypestxt = "{}. {}".format(numoftype, porn)
+            else:
+                porntypestxt += "\n{}. {}".format(numoftype, porn)
+
+            numoftype += 1
+
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
@@ -79,18 +182,260 @@ class NSFW:
             return
 
         if await self.is_nsfw(ctx.message.channel):
-            req = urllib.request.Request("https://nekobot.xyz/api/image?type=pgif", headers={"User-Agent": "Mozilla/5.0"})
-            fp = urllib.request.urlopen(req)
-            mybytes = fp.read()
-            message = mybytes.decode("utf8")
-            fp.close()
-            res = json.loads(message)
+            if porntype == None:
+                embed = discord.Embed(
+                    title = "Which type of GIF do you want?",
+                    description = porntypestxt,
+                    color = 0x800080
+                )
+                await self.client.say(embed=embed)
+                user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
+                user_response = user_response.clean_content.lower()
+                if self.ValidInt(user_response):
+                    if int(user_response) == 1:
+                        image = self.getPornImage("https://www.sex.com/gifs/?sort=popular&sub=all")
+                        embed = discord.Embed(
+                            title = image[1],
+                            color = 0x800080
+                        )
+                        embed.set_image(url=image[0])
+
+                        await self.client.say(embed=embed)
+                    else:
+                        pickedType = int(user_response) - 1
+                        if int(user_response) > len(porntypes):
+                            embed = discord.Embed(
+                                description="Invalid porn type",
+                                color=0xFF0000
+                            )
+
+                            await self.client.say(embed=embed)
+                            return
+
+                        image = self.getPornImage("https://www.sex.com/gifs/{}/".format(porntypes[pickedType]))
+                        embed = discord.Embed(
+                            title = image[1],
+                            color = 0x800080
+                        )
+                        embed.set_image(url=image[0])
+
+                        await self.client.say(embed=embed)
+                else:
+                    pickedType = None
+                    for porn in porntypes:
+                        if porn == user_response:
+                            pickedType = porntypes.index(porn)
+
+                    if pickedType == None:
+                        embed = discord.Embed(
+                            description="Invalid porn type",
+                            color=0xFF0000
+                        )
+
+                        await self.client.say(embed=embed)
+                        return
+
+                    if user_response == "popular":
+                        image = self.getPornImage("https://www.sex.com/gifs/?sort=popular&sub=all")
+                        embed = discord.Embed(
+                            title = image[1],
+                            color = 0x800080
+                        )
+                        embed.set_image(url=image[0])
+
+                        await self.client.say(embed=embed)
+                    else:
+                        image = self.getPornImage("https://www.sex.com/gifs/{}/".format(porntypes[pickedType]))
+                        embed = discord.Embed(
+                            title = image[1],
+                            color = 0x800080
+                        )
+                        embed.set_image(url=image[0])
+
+                        await self.client.say(embed=embed)
+            else:
+                pickedType = None
+                for porn in porntypes:
+                    if porn == porntype:
+                        pickedType = porntypes.index(porn)
+
+                if pickedType == None:
+                    embed = discord.Embed(
+                        description="Invalid porn type",
+                        color=0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
+                    return
+
+                if porntype == "popular":
+                    image = self.getPornImage("https://www.sex.com/gifs/?sort=popular&sub=all")
+                    embed = discord.Embed(
+                        title = image[1],
+                        color = 0x800080
+                    )
+                    embed.set_image(url=image[0])
+
+                    await self.client.say(embed=embed)
+                else:
+                    image = self.getPornImage("https://www.sex.com/gifs/{}/".format(porntypes[pickedType]))
+                    embed = discord.Embed(
+                        title = image[1],
+                        color = 0x800080
+                    )
+                    embed.set_image(url=image[0])
+
+                    await self.client.say(embed=embed)
+
+        else:
             embed = discord.Embed(
-                color=0x800080
+                description="This is not an NSFW channel",
+                color=0xFF0000
             )
-            embed.set_image(url=res["message"])
 
             await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def pornimg(self, ctx, porntype = None):
+        porntypes = self.getPornTypes()
+        author = ctx.message.author
+        server = author.server
+        channel = ctx.message.channel
+        porntypestxt = None
+        numoftype = 1
+        for porn in porntypes:
+            if porntypestxt == None:
+                porntypestxt = "{}. {}".format(numoftype, porn)
+            else:
+                porntypestxt += "\n{}. {}".format(numoftype, porn)
+
+            numoftype += 1
+
+        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        if nsfw_toggle == False:
+            embed = discord.Embed(
+                description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if await self.is_nsfw(ctx.message.channel):
+            if porntype == None:
+                embed = discord.Embed(
+                    title = "Which type of image do you want?",
+                    description = porntypestxt,
+                    color = 0x800080
+                )
+                await self.client.say(embed=embed)
+                user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
+                user_response = user_response.clean_content.lower()
+                if self.ValidInt(user_response):
+                    if int(user_response) == 1:
+                        image = self.getPornImage("https://www.sex.com/pics/?sort=popular&sub=all")
+                        embed = discord.Embed(
+                            title = image[1],
+                            color = 0x800080
+                        )
+                        embed.set_image(url=image[0])
+
+                        await self.client.say(embed=embed)
+                    else:
+                        pickedType = int(user_response) - 1
+                        if int(user_response) > len(porntypes):
+                            embed = discord.Embed(
+                                description="Invalid porn type",
+                                color=0xFF0000
+                            )
+
+                            await self.client.say(embed=embed)
+                            return
+
+                        image = self.getPornImage("https://www.sex.com/pics/{}/".format(porntypes[pickedType]))
+                        embed = discord.Embed(
+                            title = image[1],
+                            color = 0x800080
+                        )
+                        embed.set_image(url=image[0])
+
+                        await self.client.say(embed=embed)
+                else:
+                    pickedType = None
+                    for porn in porntypes:
+                        if porn == user_response:
+                            pickedType = porntypes.index(porn)
+
+                    if pickedType == None:
+                        embed = discord.Embed(
+                            description="Invalid porn type",
+                            color=0xFF0000
+                        )
+
+                        await self.client.say(embed=embed)
+                        return
+
+                    if user_response == "popular":
+                        image = self.getPornImage("https://www.sex.com/pics/?sort=popular&sub=all")
+                        embed = discord.Embed(
+                            title = image[1],
+                            color = 0x800080
+                        )
+                        embed.set_image(url=image[0])
+
+                        await self.client.say(embed=embed)
+                    else:
+                        image = self.getPornImage("https://www.sex.com/pics/{}/".format(porntypes[pickedType]))
+                        embed = discord.Embed(
+                            title = image[1],
+                            color = 0x800080
+                        )
+                        embed.set_image(url=image[0])
+
+                        await self.client.say(embed=embed)
+            else:
+                pickedType = None
+                for porn in porntypes:
+                    if porn == porntype:
+                        pickedType = porntypes.index(porn)
+
+                if pickedType == None:
+                    embed = discord.Embed(
+                        description="Invalid porn type",
+                        color=0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
+                    return
+
+                if porntype == "popular":
+                    image = self.getPornImage("https://www.sex.com/pics/?sort=popular&sub=all")
+                    embed = discord.Embed(
+                        title = image[1],
+                        color = 0x800080
+                    )
+                    embed.set_image(url=image[0])
+
+                    await self.client.say(embed=embed)
+                else:
+                    image = self.getPornImage("https://www.sex.com/pics/{}/".format(porntypes[pickedType]))
+                    embed = discord.Embed(
+                        title = image[1],
+                        color = 0x800080
+                    )
+                    embed.set_image(url=image[0])
+
+                    await self.client.say(embed=embed)
+
         else:
             embed = discord.Embed(
                 description="This is not an NSFW channel",
@@ -188,94 +533,6 @@ class NSFW:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def pussy(self, ctx):
-        author = ctx.message.author
-        server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
-        if nsfw_toggle == False:
-            embed = discord.Embed(
-                description="The NSFW commands is currently disabled",
-                color=0xFF0000
-            )
-
-            await self.client.say(embed=embed)
-            return
-
-        if self.check_blacklist("NSFW", server, author) == True:
-            embed = discord.Embed(
-                description="You are blacklisted",
-                color=0xFF0000
-            )
-
-            await self.client.say(embed=embed)
-            return
-
-        if await self.is_nsfw(ctx.message.channel):
-            req = urllib.request.Request("https://nekobot.xyz/api/image?type=pussy", headers={"User-Agent": "Mozilla/5.0"})
-            fp = urllib.request.urlopen(req)
-            mybytes = fp.read()
-            message = mybytes.decode("utf8")
-            fp.close()
-            res = json.loads(message)
-            embed = discord.Embed(
-                color=0x800080
-            )
-            embed.set_image(url=res["message"])
-
-            await self.client.say(embed=embed)
-        else:
-            embed = discord.Embed(
-                description="This is not an NSFW channel",
-                color=0xFF0000
-            )
-
-            await self.client.say(embed=embed)
-
-    @commands.command(pass_context=True)
-    async def hentai(self, ctx):
-        author = ctx.message.author
-        server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
-        if nsfw_toggle == False:
-            embed = discord.Embed(
-                description="The NSFW commands is currently disabled",
-                color=0xFF0000
-            )
-
-            await self.client.say(embed=embed)
-            return
-
-        if self.check_blacklist("NSFW", server, author) == True:
-            embed = discord.Embed(
-                description="You are blacklisted",
-                color=0xFF0000
-            )
-
-            await self.client.say(embed=embed)
-            return
-
-        if await self.is_nsfw(ctx.message.channel):
-            req = urllib.request.Request("https://nekobot.xyz/api/image?type=hentai", headers={"User-Agent": "Mozilla/5.0"})
-            fp = urllib.request.urlopen(req)
-            mybytes = fp.read()
-            message = mybytes.decode("utf8")
-            fp.close()
-            res = json.loads(message)
-            embed = discord.Embed(
-                color=0x800080
-            )
-            embed.set_image(url=res["message"])
-
-            await self.client.say(embed=embed)
-        else:
-            embed = discord.Embed(
-                description="This is not an NSFW channel",
-                color=0xFF0000
-            )
-
-            await self.client.say(embed=embed)
-
-    @commands.command(pass_context=True)
     async def lewdneko(self, ctx):
         author = ctx.message.author
         server = author.server
@@ -300,50 +557,6 @@ class NSFW:
 
         if await self.is_nsfw(ctx.message.channel):
             req = urllib.request.Request("https://nekobot.xyz/api/image?type=lewdneko", headers={"User-Agent": "Mozilla/5.0"})
-            fp = urllib.request.urlopen(req)
-            mybytes = fp.read()
-            message = mybytes.decode("utf8")
-            fp.close()
-            res = json.loads(message)
-            embed = discord.Embed(
-                color=0x800080
-            )
-            embed.set_image(url=res["message"])
-
-            await self.client.say(embed=embed)
-        else:
-            embed = discord.Embed(
-                description="This is not an NSFW channel",
-                color=0xFF0000
-            )
-
-            await self.client.say(embed=embed)
-
-    @commands.command(pass_context=True)
-    async def hanal(self, ctx):
-        author = ctx.message.author
-        server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
-        if nsfw_toggle == False:
-            embed = discord.Embed(
-                description="The NSFW commands is currently disabled",
-                color=0xFF0000
-            )
-
-            await self.client.say(embed=embed)
-            return
-
-        if self.check_blacklist("NSFW", server, author) == True:
-            embed = discord.Embed(
-                description="You are blacklisted",
-                color=0xFF0000
-            )
-
-            await self.client.say(embed=embed)
-            return
-
-        if await self.is_nsfw(ctx.message.channel):
-            req = urllib.request.Request("https://nekobot.xyz/api/image?type=hentai_anal", headers={"User-Agent": "Mozilla/5.0"})
             fp = urllib.request.urlopen(req)
             mybytes = fp.read()
             message = mybytes.decode("utf8")
@@ -741,29 +954,6 @@ class NSFW:
             )
 
             await self.client.say(embed=embed)
-
-    # @commands.command(pass_context=True)
-    # async def trap(self, ctx):
-    #     if await self.is_nsfw(ctx.message.channel):
-    #         req = urllib.request.Request("https://api.computerfreaker.cf/v1/trap", headers={"User-Agent": "Mozilla/5.0"})
-    #         fp = urllib.request.urlopen(req)
-    #         mybytes = fp.read()
-    #         message = mybytes.decode("utf8")
-    #         fp.close()
-    #         res = json.loads(message)
-    #         embed = discord.Embed(
-    #             color=0x800080
-    #         )
-    #         embed.set_image(url=res["url"])
-
-    #         await self.client.say(embed=embed)
-    #     else:
-    #         embed = discord.Embed(
-    #             description="This is not an NSFW channel",
-    #             color=0xFF0000
-    #         )
-
-    #         await self.client.say(embed=embed)
 
 def setup(client):
     client.add_cog(NSFW(client))
