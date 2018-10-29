@@ -13,24 +13,19 @@ class Otaku:
     def __init__(self, client):
         self.client = client
         
-    def check_database(self, server, setting):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-        c = conn.cursor()
-        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
-        c.execute(sql)
-        conn.commit()
-        data = c.fetchone()
-        conn.close()
-        for row in data:
-            if row == 1:
+    def check_setting(self, server, setting):
+        settingspath = "servers/{}/settings.json".format(server.id)
+        with open(settingspath, "r") as f:
+            json_data = json.load(f)
+            if json_data[setting] == 1:
                 return True
-            elif row == 0:
+            elif json_data[setting] == 0:
                 return False
             else:
-                return row
+                return json_data[setting]
     
     def is_allowed_by_hierarchy(self, server, mod, user):
-        setting = self.check_database(server, "Ignore_Hierarchy")
+        setting = self.check_setting(server, "Ignore_Hierarchy")
         toggle = setting
         if toggle == False:
             if mod.top_role.position > user.top_role.position:
@@ -41,14 +36,14 @@ class Otaku:
             return True
 
     def is_mod_or_perms(self, server, mod):
-        t_modrole = self.check_database(server, "Mod_Role")
+        t_modrole = self.check_setting(server, "Mod_Role")
         if discord.utils.get(mod.roles, name=t_modrole) or mod.server_permissions.administrator or mod.id == "164068466129633280" or mod.id == "142002197998206976" or discord.utils.get(mod.roles, name=t_modrole):
             return True
         else:
             return False
 
     def is_admin_or_perms(self, server, mod):
-        t_adminrole = self.check_database(server, "Admin_Role")
+        t_adminrole = self.check_setting(server, "Admin_Role")
         if discord.utils.get(mod.roles, name=t_adminrole) or mod.server_permissions.administrator or mod.id == "164068466129633280" or mod.id == "142002197998206976":
             return True
         else:
@@ -58,7 +53,7 @@ class Otaku:
     async def shiki(self, ctx):
         server = ctx.message.author.server
         author = ctx.message.author
-        fun_toggle = self.check_database(server, "FunToggle")
+        fun_toggle = self.check_setting(server, "FunToggle")
         if author.id != "164068466129633280" and author.id != "142002197998206976" and author.id != "457516809940107264":
             if fun_toggle == False:
                 embed = discord.Embed(
@@ -82,7 +77,7 @@ class Otaku:
     async def hdude(self, ctx):
         server = ctx.message.author.server
         author = ctx.message.author
-        fun_toggle = self.check_database(server, "FunToggle")
+        fun_toggle = self.check_setting(server, "FunToggle")
         if author.id != "164068466129633280" and author.id != "142002197998206976" and author.id != "457516809940107264":
             if fun_toggle == False:
                 embed = discord.Embed(
@@ -107,7 +102,7 @@ class Otaku:
     async def imotou(self, ctx):
         server = ctx.message.author.server
         author = ctx.message.author
-        fun_toggle = self.check_database(server, "FunToggle")
+        fun_toggle = self.check_setting(server, "FunToggle")
         if author.id != "164068466129633280" and author.id != "142002197998206976" and author.id != "457516809940107264":
             if fun_toggle == False:
                 embed = discord.Embed(
@@ -141,7 +136,7 @@ class Otaku:
     async def oniisong(self, ctx):
         server = ctx.message.author.server
         author = ctx.message.author
-        fun_toggle = self.check_database(server, "FunToggle")
+        fun_toggle = self.check_setting(server, "FunToggle")
         if author.id != "164068466129633280" and author.id != "142002197998206976" and author.id != "457516809940107264":
             if fun_toggle == False:
                 embed = discord.Embed(
@@ -200,7 +195,7 @@ class Otaku:
     async def loli(self, ctx):
         server = ctx.message.author.server
         author = ctx.message.author
-        fun_toggle = self.check_database(server, "FunToggle")
+        fun_toggle = self.check_setting(server, "FunToggle")
         if author.id != "164068466129633280" and author.id != "142002197998206976" and author.id != "457516809940107264":
             if fun_toggle == False:
                 embed = discord.Embed(
@@ -234,7 +229,7 @@ class Otaku:
     async def neko(self, ctx):
         server = ctx.message.author.server
         author = ctx.message.author
-        fun_toggle = self.check_database(server, "FunToggle")
+        fun_toggle = self.check_setting(server, "FunToggle")
         if author.id != "164068466129633280" and author.id != "142002197998206976" and author.id != "457516809940107264":
             if fun_toggle == False:
                 embed = discord.Embed(
@@ -269,7 +264,7 @@ class Otaku:
     async def catgirl(self, ctx):
         server = ctx.message.author.server
         author = ctx.message.author
-        fun_toggle = self.check_database(server, "FunToggle")
+        fun_toggle = self.check_setting(server, "FunToggle")
         if author.id != "164068466129633280" and author.id != "142002197998206976" and author.id != "457516809940107264":
             if fun_toggle == False:
                 embed = discord.Embed(

@@ -85,6 +85,83 @@ def save_economy(*args):
     print("The economy has been saved")
     sys.exit(0)
 
+async def autosave_settings():
+    await client.wait_until_ready()
+
+    while not client.is_closed:
+        await asyncio.sleep(3600)
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        c = conn.cursor()
+        directory = "servers"
+        for file in os.listdir(directory):
+            filename = os.fsdecode(file)
+            server_id = os.fsdecode(file).replace(".json", "")
+            filepath = "servers/{}/{}".format(str(server_id), str(filename))
+            with open(filepath, "r") as f:
+                settings = json.load(f)
+                for server in settings:
+                    join_role = settings["Join_Role"]
+                    dmwarn = settings["DMWarn"]
+                    verify_role = settings["Verify_Role"]
+                    mod_role = settings["Mod_Role"]
+                    admin_role = settings["Admin_Role"]
+                    mute_role = settings["Mute_Role"]
+                    warn_mute = settings["WarnMute"]
+                    join_toggle = settings["JoinToggle"]
+                    can_mod_announce = settings["CanModAnnounce"]
+                    level_system = settings["Level_System"]
+                    chat_filter = settings["Chat_Filter"]
+                    ignore_hierarchy = settings["Ignore_Hierarchy"]
+                    nsfw_role = settings["NSFW_role"]
+                    nsfw_toggle = settings["NSFW_toggle"]
+                    fun_toggle = settings["FunToggle"]
+                    profanity_filter = settings["Profanity_Filter"]
+                    customwords_toggle = settings["Custom_Words"]
+                    earn_cooldown = settings["earn_cooldown"]
+                    sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, server)
+                    c.execute(sql)
+                    conn.commit()
+
+        conn.close()
+        print("The settings has been saved")
+
+def save_settings(*args):
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    c = conn.cursor()
+    directory = "servers"
+    for file in os.listdir(directory):
+        filename = os.fsdecode(file)
+        server_id = os.fsdecode(file).replace(".json", "")
+        filepath = "servers/{}/{}".format(str(server_id), str(filename))
+        with open(filepath, "r") as f:
+            settings = json.load(f)
+            for server in settings:
+                join_role = settings["Join_Role"]
+                dmwarn = settings["DMWarn"]
+                verify_role = settings["Verify_Role"]
+                mod_role = settings["Mod_Role"]
+                admin_role = settings["Admin_Role"]
+                mute_role = settings["Mute_Role"]
+                warn_mute = settings["WarnMute"]
+                join_toggle = settings["JoinToggle"]
+                can_mod_announce = settings["CanModAnnounce"]
+                level_system = settings["Level_System"]
+                chat_filter = settings["Chat_Filter"]
+                ignore_hierarchy = settings["Ignore_Hierarchy"]
+                nsfw_role = settings["NSFW_role"]
+                nsfw_toggle = settings["NSFW_toggle"]
+                fun_toggle = settings["FunToggle"]
+                profanity_filter = settings["Profanity_Filter"]
+                customwords_toggle = settings["Custom_Words"]
+                earn_cooldown = settings["earn_cooldown"]
+                sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, server)
+                c.execute(sql)
+                conn.commit()
+
+    conn.close()
+    print("The settings has been saved")
+    sys.exit(0)
+
 def create_database(server):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
@@ -139,35 +216,16 @@ def update_database(server, setting, value):
     conn.commit()
     conn.close()
 
-def check_database_multiple(conn, server, setting):
-    c = conn.cursor()
-    sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
-    c.execute(sql)
-    conn.commit()
-    data = c.fetchone()
-    for row in data:
-        if row == 1:
+def check_setting(server, setting):
+    settingspath = "servers/{}/settings.json".format(server.id)
+    with open(settingspath, "r") as f:
+        json_data = json.load(f)
+        if json_data[setting] == 1:
             return True
-        elif row == 0:
+        elif json_data[setting] == 0:
             return False
         else:
-            return row
-
-def check_database(server, setting):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-    c = conn.cursor()
-    sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
-    c.execute(sql)
-    conn.commit()
-    data = c.fetchone()
-    conn.close()
-    for row in data:
-        if row == 1:
-            return True
-        elif row == 0:
-            return False
-        else:
-            return row
+            return json_data[setting]
 
 def make_settings(server):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
@@ -199,7 +257,6 @@ async def on_server_join(server):
 @client.event
 async def on_ready():
     print("Bot is online.")
-    #Economy Load
     directory = "eco"
     for file in os.listdir(directory):
         file_path = os.path.join(directory, file)
@@ -217,35 +274,72 @@ async def on_ready():
     data = c.fetchall()
     for d in data:
         serverid = d[1]
+        join_role = d[2]
+        dmwarn = d[3]
+        verify_role = d[4]
+        mod_role = d[5]
+        admin_role = d[6]
+        mute_role = d[7]
+        warn_mute = d[8]
+        join_toggle = d[9]
+        can_mod_announce = d[10]
+        level_system = d[11]
+        chat_filter = d[12]
+        ignore_hierarchy = d[13]
+        nsfw_role = d[14]
+        nsfw_toggle = d[15]
+        fun_toggle = d[16]
         profanity_filter = d[17]
-        custom_filter = d[18]
+        customwords_toggle = d[18]
+        earn_cooldown = d[19]
         if not os.path.exists("servers/{}".format(serverid)):
             os.makedirs("servers/{}".format(serverid))
 
-        togglepath = "servers/{}/profanity_filter.json".format(str(serverid))
-        customfilterpath = "servers/{}/custom_filter.json".format(str(serverid))
-        if os.path.exists(togglepath):
-            with open(togglepath, "r") as f:
+        settingspath = "servers/{}/settings.json".format(str(serverid))
+        if os.path.exists(settingspath):
+            with open(settingspath, "r") as f:
                 json_data = json.load(f)
-                json_data["Toggle"] = profanity_filter
-                with open(togglepath, "w") as f:
+                json_data["Join_Role"] = join_role
+                json_data["DMWarn"] = dmwarn
+                json_data["Verify_Role"] = verify_role
+                json_data["Mod_Role"] = mod_role
+                json_data["Admin_Role"] = admin_role
+                json_data["Mute_Role"] = mute_role
+                json_data["WarnMute"] = warn_mute
+                json_data["JoinToggle"] = join_toggle
+                json_data["CanModAnnounce"] = can_mod_announce
+                json_data["Level_System"] = level_system
+                json_data["Chat_Filter"] = chat_filter
+                json_data["Ignore_Hierarchy"] = ignore_hierarchy
+                json_data["NSFW_role"] = nsfw_role
+                json_data["NSFW_toggle"] = nsfw_toggle
+                json_data["FunToggle"] = fun_toggle
+                json_data["Profanity_Filter"] = profanity_filter
+                json_data["Custom_Words"] = customwords_toggle
+                json_data["earn_cooldown"] = earn_cooldown
+                with open(settingspath, "w") as f:
                     json.dump(json_data, f)
         else:
-            with open(togglepath, "w+") as f:
+            with open(settingspath, "w+") as f:
                 json_data = {}
-                json_data["Toggle"] = profanity_filter
-                json.dump(json_data, f)
-
-        if os.path.exists(customfilterpath):
-            with open(customfilterpath, "r") as f:
-                json_data = json.load(f)
-                json_data["Toggle"] = custom_filter
-                with open(customfilterpath, "w") as f:
-                    json.dump(json_data, f)
-        else:
-            with open(customfilterpath, "w+") as f:
-                json_data = {}
-                json_data["Toggle"] = custom_filter
+                json_data["Join_Role"] = join_role
+                json_data["DMWarn"] = dmwarn
+                json_data["Verify_Role"] = verify_role
+                json_data["Mod_Role"] = mod_role
+                json_data["Admin_Role"] = admin_role
+                json_data["Mute_Role"] = mute_role
+                json_data["WarnMute"] = warn_mute
+                json_data["JoinToggle"] = join_toggle
+                json_data["CanModAnnounce"] = can_mod_announce
+                json_data["Level_System"] = level_system
+                json_data["Chat_Filter"] = chat_filter
+                json_data["Ignore_Hierarchy"] = ignore_hierarchy
+                json_data["NSFW_role"] = nsfw_role
+                json_data["NSFW_toggle"] = nsfw_toggle
+                json_data["FunToggle"] = fun_toggle
+                json_data["Profanity_Filter"] = profanity_filter
+                json_data["Custom_Words"] = customwords_toggle
+                json_data["earn_cooldown"] = earn_cooldown
                 json.dump(json_data, f)
 
     sql = "SELECT * FROM `Banned_Words`"
@@ -296,15 +390,11 @@ async def on_ready():
                 with open(path, 'w') as f:
                     json.dump(json_data, f)
 
-    #Economy Load End
-
 @client.event
 async def on_member_join(member):
     server = member.server
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-    join_toggle = check_database_multiple(conn, server, "JoinToggle")
-    join_role = check_database_multiple(conn, server, "Join_Role")
-    conn.close()
+    join_toggle = check_setting(server, "JoinToggle")
+    join_role = check_setting(server, "Join_Role")
     if join_toggle == True:
         role = discord.utils.get(server.roles, name=join_role)
         await client.add_roles(member, role)
@@ -401,26 +491,22 @@ async def settings(ctx):
     server = author.server
     channel = ctx.message.channel
 
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-
-    Ignore_Hierarchy = str(check_database_multiple(conn, server, "Ignore_Hierarchy"))
-    DMWarn = check_database_multiple(conn, server, "DMWarn")
-    Verify_Role = check_database_multiple(conn, server, "Verify_Role")
-    Mod_Role = check_database_multiple(conn, server, "Mod_Role")
-    Join_Role = check_database_multiple(conn, server, "Join_Role")
-    Admin_Role = check_database_multiple(conn, server, "Admin_Role")
-    Mute_Role = check_database_multiple(conn, server, "Mute_Role")
-    NSFW_role = check_database_multiple(conn, server, "NSFW_role")
-    WarnMute = check_database_multiple(conn, server, "WarnMute")
-    JoinToggle = str(check_database_multiple(conn, server, "JoinToggle"))
-    NSFW_toggle = str(check_database_multiple(conn, server, "NSFW_toggle"))
-    FunToggle = str(check_database_multiple(conn, server, "FunToggle"))
-    Profanity_Filter = str(check_database_multiple(conn, server, "Profanity_Filter"))
-    CanModAnnounce = str(check_database_multiple(conn, server, "CanModAnnounce"))
-    Level_System = str(check_database_multiple(conn, server, "Level_System"))
-    earn_cooldown = str(check_database_multiple(conn, server, "earn_cooldown"))
-
-    conn.close()
+    Ignore_Hierarchy = str(check_setting(server, "Ignore_Hierarchy"))
+    DMWarn = check_setting(server, "DMWarn")
+    Verify_Role = check_setting(server, "Verify_Role")
+    Mod_Role = check_setting(server, "Mod_Role")
+    Join_Role = check_setting(server, "Join_Role")
+    Admin_Role = check_setting(server, "Admin_Role")
+    Mute_Role = check_setting(server, "Mute_Role")
+    NSFW_role = check_setting(server, "NSFW_role")
+    WarnMute = check_setting(server, "WarnMute")
+    JoinToggle = str(check_setting(server, "JoinToggle"))
+    NSFW_toggle = str(check_setting(server, "NSFW_toggle"))
+    FunToggle = str(check_setting(server, "FunToggle"))
+    Profanity_Filter = str(check_setting(server, "Profanity_Filter"))
+    CanModAnnounce = str(check_setting(server, "CanModAnnounce"))
+    Level_System = str(check_setting(server, "Level_System"))
+    earn_cooldown = str(check_setting(server, "earn_cooldown"))
 
     await client.say("Do you want the list **Inline** ? (Yes/No)")
     user_response = await client.wait_for_message(timeout=30, channel=channel, author=author)
@@ -496,7 +582,58 @@ async def seconomy(ctx):
             color=0xFF0000
         )
 
-        await client.say(embed=embed)    
+        await client.say(embed=embed)
+
+@client.command(pass_context=True)
+async def ssettings(ctx):
+    author = ctx.message.author
+    if is_owner(author):
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        c = conn.cursor()
+        directory = "servers"
+        for file in os.listdir(directory):
+            filename = os.fsdecode(file)
+            server_id = os.fsdecode(file).replace(".json", "")
+            filepath = "servers/{}/{}".format(str(server_id), str(filename))
+            with open(filepath, "r") as f:
+                settings = json.load(f)
+                for server in settings:
+                    join_role = settings["Join_Role"]
+                    dmwarn = settings["DMWarn"]
+                    verify_role = settings["Verify_Role"]
+                    mod_role = settings["Mod_Role"]
+                    admin_role = settings["Admin_Role"]
+                    mute_role = settings["Mute_Role"]
+                    warn_mute = settings["WarnMute"]
+                    join_toggle = settings["JoinToggle"]
+                    can_mod_announce = settings["CanModAnnounce"]
+                    level_system = settings["Level_System"]
+                    chat_filter = settings["Chat_Filter"]
+                    ignore_hierarchy = settings["Ignore_Hierarchy"]
+                    nsfw_role = settings["NSFW_role"]
+                    nsfw_toggle = settings["NSFW_toggle"]
+                    fun_toggle = settings["FunToggle"]
+                    profanity_filter = settings["Profanity_Filter"]
+                    customwords_toggle = settings["Custom_Words"]
+                    earn_cooldown = settings["earn_cooldown"]
+                    sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, server)
+                    c.execute(sql)
+                    conn.commit()
+
+        conn.close()
+        embed = discord.Embed(
+            description = "The settings has been saved",
+            color = 0x00FF00
+        )
+
+        await client.say(embed=embed)
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+
+        await client.say(embed=embed)
 
 @client.command(pass_context=True)
 async def mylevel(ctx):
@@ -537,7 +674,7 @@ async def togglelevel(ctx):
     author = ctx.message.author
     server = author.server
     if author == server.owner or author.id == 164068466129633280:
-        toggle = check_database(server, "Level_System")
+        toggle = check_setting(server, "Level_System")
         if toggle == True:
             update_database(server, "Level_System", False)
             embed = discord.Embed(
@@ -571,7 +708,7 @@ async def cmds(ctx):
 async def dmwarn(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    current = check_database(server, "DMWarn")
+    current = check_setting(server, "DMWarn")
     if author.server_permissions.administrator:
         if current == True:
             update_database(server, "DMWarn", False)
@@ -871,10 +1008,8 @@ async def mutetime(ctx, lenght = None):
 async def jointoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-    current_toggle = check_database_multiple(conn, server, "JoinToggle")
-    join_role = check_database_multiple(conn, server, "Join_Role")
-    conn.close()
+    current_toggle = check_setting(server, "JoinToggle")
+    join_role = check_setting(server, "Join_Role")
     if author.server_permissions.administrator:
         if current_toggle == False:
             if join_role == "None":
@@ -921,10 +1056,8 @@ async def nsfwtoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-        current_toggle = check_database_multiple(conn, server, "NSFW_toggle")
-        nsfw_role = check_database_multiple(conn, server, "NSFW_role")
-        conn.close()
+        current_toggle = check_setting(server, "NSFW_toggle")
+        nsfw_role = check_setting(server, "NSFW_role")
         if current_toggle == False:
             if nsfw_role == "None":
                 embed = discord.Embed(
@@ -934,6 +1067,22 @@ async def nsfwtoggle(ctx):
                 await client.say(embed=embed)
             else:
                 update_database(server, "NSFW_toggle", True)
+                if not os.path.exists("servers/{}".format(server.id)):
+                    os.makedirs("servers/{}".format(server.id))
+
+                path = "servers/{}/nsfw_toggle.json".format(server.id)
+                if os.path.exists(path):
+                    with open(path, "r") as f:
+                        json_data = json.load(f)
+                        json_data["Toggle"] = 1
+                        with open(path, "w") as f:
+                            json.dump(json_data, f)
+                else:
+                    with open(path, "w+") as f:
+                        json_data = {}
+                        json_data["Toggle"] = 1
+                        json.dump(json_data, f)
+
                 embed = discord.Embed(
                     description="NSFW has been set to **True**",
                     color=0x00FF00
@@ -941,6 +1090,22 @@ async def nsfwtoggle(ctx):
                 await client.say(embed=embed)
         elif current_toggle == True:
             update_database(server, "NSFW_toggle", False)
+            if not os.path.exists("servers/{}".format(server.id)):
+                os.makedirs("servers/{}".format(server.id))
+
+            path = "servers/{}/nsfw_toggle.json".format(server.id)
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    json_data = json.load(f)
+                    json_data["Toggle"] = 1
+                    with open(path, "w") as f:
+                        json.dump(json_data, f)
+            else:
+                with open(path, "w+") as f:
+                    json_data = {}
+                    json_data["Toggle"] = 1
+                    json.dump(json_data, f)
+
             embed = discord.Embed(
                 description="NSFW has been set to **False**",
                 color=0x00FF00
@@ -965,7 +1130,7 @@ async def funtoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
-        current_toggle = check_database(server, "FunToggle")
+        current_toggle = check_setting(server, "FunToggle")
         if current_toggle == False:
             update_database(server, "FunToggle", True)
             embed = discord.Embed(
@@ -999,7 +1164,7 @@ async def sweartoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
-        current_toggle = check_database(server, "Profanity_Filter")
+        current_toggle = check_setting(server, "Profanity_Filter")
         if current_toggle == False:
             update_database(server, "Profanity_Filter", True)
             if not os.path.exists("servers/{}".format(server.id)):
@@ -1065,7 +1230,7 @@ async def customwords(ctx):
     author = ctx.message.author
     server = ctx.message.server
     if author.server_permissions.administrator:
-        current_toggle = check_database(server, "Custom_Words")
+        current_toggle = check_setting(server, "Custom_Words")
         if current_toggle == False:
             update_database(server, "Custom_Words", True)
             if not os.path.exists("servers/{}".format(server.id)):
@@ -1139,7 +1304,7 @@ async def mod(ctx, user: discord.Member = None):
             await client.say(embed=embed)
             return
 
-        modrole = check_database(server, "Mod_Role")
+        modrole = check_setting(server, "Mod_Role")
         if discord.utils.get(user.roles, name=modrole):
             role = discord.utils.get(server.roles, name=modrole)
             try:
@@ -1203,7 +1368,7 @@ async def admin(ctx, user: discord.Member = None):
             color=0xFF0000
             )
             await client.say(embed=embed)
-        adminrole = check_database(server, "Admin_Role")
+        adminrole = check_setting(server, "Admin_Role")
         if discord.utils.get(user.roles, name=adminrole):
             role = discord.utils.get(server.roles, name=adminrole)
             try:
@@ -1901,7 +2066,9 @@ if __name__ == "__main__":
 
     client.loop.create_task(change_status())
     client.loop.create_task(autosave_economy())
+    client.loop.create_task(autosave_settings())
     for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
         signal(sig, save_economy)
+        signal(sig, save_settings)
 
     client.run(TOKEN)

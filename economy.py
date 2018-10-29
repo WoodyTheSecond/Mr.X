@@ -28,35 +28,16 @@ class Economy:
         conn.commit()
         conn.close()
 
-    def check_database(self, server, setting):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-        c = conn.cursor()
-        sql = "SELECT {} from `Economy_Settings` WHERE serverid = {}".format(setting, str(server.id))
-        c.execute(sql)
-        conn.commit()
-        data = c.fetchone()
-        conn.close()
-        for row in data:
-            if row == 1:
+    def check_setting(self, server, setting):
+        settingspath = "servers/{}/settings.json".format(server.id)
+        with open(settingspath, "r") as f:
+            json_data = json.load(f)
+            if json_data[setting] == 1:
                 return True
-            elif row == 0:
+            elif json_data[setting] == 0:
                 return False
             else:
-                return row
-
-    def check_database_multiple(self, conn, server, setting):
-        c = conn.cursor()
-        sql = "SELECT {} from `Economy_Settings` WHERE serverid = {}".format(setting, str(server.id))
-        c.execute(sql)
-        conn.commit()
-        data = c.fetchone()
-        for row in data:
-            if row == 1:
-                return True
-            elif row == 0:
-                return False
-            else:
-                return row
+                return json_data[setting]
 
     def update_database(self, server, setting, value):
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
@@ -113,12 +94,10 @@ class Economy:
             if not server.id in economy_array:
                 self.make_settings(server)
                 economy_array[server.id] = {}
-                conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-                economy_array[server.id]["max_work_amount"] = int(self.check_database_multiple(conn, server, "max_work_amount"))
-                economy_array[server.id]["min_work_amount"] = int(self.check_database_multiple(conn, server, "min_work_amount"))
-                economy_array[server.id]["max_slut_amount"] = int(self.check_database_multiple(conn, server, "max_slut_amount"))
-                economy_array[server.id]["min_slut_amount"] = int(self.check_database_multiple(conn, server, "min_slut_amount"))
-                conn.close()
+                economy_array[server.id]["max_work_amount"] = int(self.check_setting(server, "max_work_amount"))
+                economy_array[server.id]["min_work_amount"] = int(self.check_setting(server, "min_work_amount"))
+                economy_array[server.id]["max_slut_amount"] = int(self.check_setting(server, "max_slut_amount"))
+                economy_array[server.id]["min_slut_amount"] = int(self.check_setting(server, "min_slut_amount"))
             #Actual Work Code
             path = "eco/{}.json".format(author.id)
             if not os.path.exists(path):
@@ -763,7 +742,7 @@ class Economy:
             setting = setting.lower()
             amount = int(amount)
             if setting == "work":
-                min_amount = int(self.check_database(server, "min_work_amount"))
+                min_amount = int(self.check_setting(server, "min_work_amount"))
                 if amount < min_amount:
                     embed = discord.Embed(
                         description = "The maximum amount can't be lower than the minimum amount",
@@ -781,7 +760,7 @@ class Economy:
                     economy_array[server.id]["max_work_amount"] = amount
 
             elif setting == "slut":
-                min_amount = int(self.check_database(server, "min_slut_amount"))
+                min_amount = int(self.check_setting(server, "min_slut_amount"))
                 if amount < min_amount:
                     embed = discord.Embed(
                         description = "The maximum amount can't be lower than the minimum amount",
@@ -850,7 +829,7 @@ class Economy:
             setting = setting.lower()
             amount = int(amount)
             if setting == "work":
-                max_amount = int(self.check_database(server, "max_work_amount"))
+                max_amount = int(self.check_setting(server, "max_work_amount"))
                 if amount > max_amount:
                     embed = discord.Embed(
                         description = "The minimum amount can't be higher than the maximum amount",
@@ -868,7 +847,7 @@ class Economy:
                     economy_array[server.id]["min_work_amount"] = amount
 
             elif setting == "slut":
-                max_amount = int(self.check_database(server, "max_slut_amount"))
+                max_amount = int(self.check_setting(server, "max_slut_amount"))
                 if amount > max_amount:
                     embed = discord.Embed(
                         description = "The minimum amount can't be higher than the maximum amount",

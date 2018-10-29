@@ -57,39 +57,19 @@ class Admin:
         conn.commit()
         conn.close()
 
-    def check_database_multiple(self, conn, server, setting):
-        c = conn.cursor()
-        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(setting, str(server.id))
-        c.execute(sql)
-        conn.commit()
-        data = c.fetchone()
-        for row in data:
-            if row == 1:
+    def check_setting(self, server, setting):
+        settingspath = "servers/{}/settings.json".format(server.id)
+        with open(settingspath, "r") as f:
+            json_data = json.load(f)
+            if json_data[setting] == 1:
                 return True
-            elif row == 0:
+            elif json_data[setting] == 0:
                 return False
             else:
-                return row
-
-    def check_database(self, server, setting):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-        c = conn.cursor()
-        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(
-            setting, str(server.id))
-        c.execute(sql)
-        conn.commit()
-        data = c.fetchone()
-        conn.close()
-        for row in data:
-            if row == 1:
-                return True
-            elif row == 0:
-                return False
-            else:
-                return row
+                return json_data[setting]
 
     def is_allowed_by_hierarchy(self, server, mod, user):
-        setting = self.check_database(server, "Ignore_Hierarchy")
+        setting = self.check_setting(server, "Ignore_Hierarchy")
         toggle = setting
         if toggle == False:
             if mod.top_role.position > user.top_role.position:
@@ -100,14 +80,14 @@ class Admin:
             return True
 
     def is_mod_or_perms(self, server, mod):
-        t_modrole = self.check_database(server, "Mod_Role")
+        t_modrole = self.check_setting(server, "Mod_Role")
         if discord.utils.get(mod.roles, name=t_modrole) or mod.server_permissions.administrator or mod.id == '164068466129633280' or mod.id == '142002197998206976' or discord.utils.get(mod.roles, name=t_modrole):
             return True
         else:
             return False
 
     def is_admin_or_perms(self, server, mod):
-        t_adminrole = self.check_database(server, "Admin_Role")
+        t_adminrole = self.check_setting(server, "Admin_Role")
         if discord.utils.get(mod.roles, name=t_adminrole) or mod.server_permissions.administrator or mod.id == '164068466129633280' or mod.id == '142002197998206976':
             return True
         else:
@@ -158,7 +138,7 @@ class Admin:
                 for d in data:
                     warn_type = d[3]
                 if warn_type == "mute":
-                    mute_lenght = self.check_database(server, "WarnMute")
+                    mute_lenght = self.check_setting(server, "WarnMute")
                     if "m" in mute_lenght:
                         t_time = mute_lenght.replace("m", "")
                         time_type = "m"
@@ -177,7 +157,7 @@ class Admin:
                     else:
                         time_type = "h"
                         time = 7200
-                    get_role = self.check_database(server, "Mute_Role")
+                    get_role = self.check_setting(server, "Mute_Role")
                     mutedrole = discord.utils.get(server.roles, name=get_role)
                     if mutedrole == None:
                         await self.client.say("Tried to mute user for reaching warning threshold, but found no muterole")
@@ -209,7 +189,7 @@ class Admin:
                                 color=0x00FF00
                             )
                             await self.client.say(embed=embed)
-                            if self.check_database(server, "DMWarn") == True:
+                            if self.check_setting(server, "DMWarn") == True:
                                 embed = discord.Embed(
                                     description="You have been muted for **{}** minute(s) for reaching the warning threshold in {}".format(t_time, server.name),
                                     color=0x00FF00
@@ -241,7 +221,7 @@ class Admin:
                                 color=0x00FF00
                             )
                             await self.client.say(embed=embed)
-                            if self.check_database(server, "DMWarn") == True:
+                            if self.check_setting(server, "DMWarn") == True:
                                 embed = discord.Embed(
                                     description="You have been muted for **{}** hour(s) for reaching the warning threshold in {}".format(t_time, server.name),
                                     color=0x00FF00
@@ -274,7 +254,7 @@ class Admin:
                             color=0x00FF00
                         )
                         await self.client.say(embed=embed)
-                        if self.check_database(server, "DMWarn") == True:
+                        if self.check_setting(server, "DMWarn") == True:
                             embed = discord.Embed(
                                 description="You have been kicked for reaching the warning threshold in {}".format(server.name),
                                 color=0x00FF00
@@ -295,7 +275,7 @@ class Admin:
                             color=0x00FF00
                         )
                         await self.client.say(embed=embed)
-                        if self.check_database(server, "DMWarn") == True:
+                        if self.check_setting(server, "DMWarn") == True:
                             embed = discord.Embed(
                                 description="You have been banned for reaching the warning threshold in {}".format(server.name),
                                 color=0x00FF00
@@ -318,7 +298,7 @@ class Admin:
 
                     await self.client.say(embed=embed)
                     
-                    if self.check_database(server, "DMWarn") == True:
+                    if self.check_setting(server, "DMWarn") == True:
                         embed = discord.Embed(
                             description="You have been warned in `{}`".format(server.name),
                             color=0x00FF00
@@ -331,7 +311,7 @@ class Admin:
                         color=0x00FF00
                     )
 
-                    if self.check_database(server, "DMWarn") == True:
+                    if self.check_setting(server, "DMWarn") == True:
                         await self.client.say(embed=embed)
                         embed = discord.Embed(
                             description="You have been warned with the reason **{}** in `{}`".format(reason, server.name),
@@ -464,7 +444,7 @@ class Admin:
         author = ctx.message.author
         server = author.server
         if self.is_admin_or_perms(server, author):
-            verifyrole_name = self.check_database(server, "Verify_Role")
+            verifyrole_name = self.check_setting(server, "Verify_Role")
             verifyrole = discord.utils.get(server.roles, name=verifyrole_name)
             if role_name == None:
                 if verifyrole != None:
@@ -760,7 +740,7 @@ class Admin:
             await self.client.say("Please type a message")
             return
 
-        ModAllowed = self.check_database(server, "CanModAnnounce")
+        ModAllowed = self.check_setting(server, "CanModAnnounce")
         if ModAllowed == False:
             if self.is_mod_or_perms(server, author):
                 embed = discord.Embed(
@@ -1038,7 +1018,7 @@ class Admin:
             else:
                 await self.client.say("Please use minutes or hours, example: -mute @user 20m")
                 return
-            get_role = self.check_database(server, "Mute_Role")
+            get_role = self.check_setting(server, "Mute_Role")
             mutedrole = discord.utils.get(server.roles, name=get_role)
             if mutedrole == None:
                 await self.client.say("No mute role is set, please use >muterole ROLE_NAME")
@@ -1148,7 +1128,7 @@ class Admin:
             else:
                 await self.client.say("Please use minutes or hours, example: -mute userID 20m")
                 return
-            get_role = self.check_database(server, "Mute_Role")
+            get_role = self.check_setting(server, "Mute_Role")
             mutedrole = discord.utils.get(server.roles, name=get_role)
             if mutedrole == None:
                 await self.client.say("No mute role is set, please use >muterole ROLE_NAME")
@@ -1233,7 +1213,7 @@ class Admin:
         author = ctx.message.author
         server = author.server
         if self.is_mod_or_perms(server, author):
-            setting = self.check_database(server, "Mute_Role")
+            setting = self.check_setting(server, "Mute_Role")
             mutedrole = discord.utils.get(server.roles, name=setting)
             if mutedrole == None:
                 await self.client.say("There is no mute role yet, please use **-muterole ROLE_NAME** to set it.")
@@ -1275,7 +1255,7 @@ class Admin:
         server = author.server
         user = server.get_member(userID)
         if self.is_mod_or_perms(server, author):
-            setting = self.check_database(server, "Mute_Role")
+            setting = self.check_setting(server, "Mute_Role")
             mutedrole = discord.utils.get(server.roles, name=setting)
             if mutedrole == None:
                 await self.client.say("There is no mute role yet, please use **-muterole ROLE_NAME** to set it.")

@@ -23,22 +23,16 @@ class NSFW:
         channeldata = [d for d in data if d['id'] == channel.id][0]
         return channeldata['nsfw']
 
-    def check_database(self, server, setting):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-        c = conn.cursor()
-        sql = "SELECT {} from `Server_Settings` WHERE serverid = {}".format(
-            setting, str(server.id))
-        c.execute(sql)
-        conn.commit()
-        data = c.fetchone()
-        conn.close()
-        for row in data:
-            if row == 1:
+    def check_setting(self, server, setting):
+        settingspath = "servers/{}/settings.json".format(server.id)
+        with open(settingspath, "r") as f:
+            json_data = json.load(f)
+            if json_data[setting] == 1:
                 return True
-            elif row == 0:
+            elif json_data[setting] == 0:
                 return False
             else:
-                return row
+                return json_data[setting]
 
     def check_blacklist(self, setting, server, user):
         path = "blacklist/" + str(user.id) + ".json"
@@ -53,6 +47,19 @@ class NSFW:
                         return True
                     else:
                         return False
+                else:
+                    return False
+
+    def check_nsfwtoggle(self, server):
+        path = "servers/{}/nsfw_toggle.json".format(server.id)
+        if not os.path.exists(path):
+            return False
+        else:
+            with open(path, 'r') as f:
+                nsfwtogglecheck = json.load(f)
+                current = nsfwtogglecheck["Toggle"]
+                if current == 1:
+                    return True
                 else:
                     return False
 
@@ -76,6 +83,8 @@ class NSFW:
 
         parser = MyHTMLParser()
         parser.feed(message)
+
+        images = images[12:]
         image = []
         if len(images) == 0:
             return None
@@ -97,7 +106,7 @@ class NSFW:
         author = ctx.message.author
         server = author.server
 
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_nsfwtoggle(server)
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -121,7 +130,7 @@ class NSFW:
                 image = self.getPornImage("https://www.sex.com/gifs/?sort=popular&sub=all")
                 if image == None:
                     embed = discord.Embed(
-                        description="I couldn't find any image with that search result",
+                        description="I couldn't find any image for your query",
                         color=0xFF0000
                     )
 
@@ -140,7 +149,7 @@ class NSFW:
                 image = self.getPornImage("https://www.sex.com/search/gifs?query={}".format(searchValue))
                 if image == None:
                     embed = discord.Embed(
-                        description="I couldn't find any image with that search result",
+                        description="I couldn't find any image for your query",
                         color=0xFF0000
                     )
 
@@ -169,7 +178,7 @@ class NSFW:
         author = ctx.message.author
         server = author.server
 
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_nsfwtoggle(server)
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -193,7 +202,7 @@ class NSFW:
                 image = self.getPornImage("https://www.sex.com/pics/?sort=popular&sub=all")
                 if image == None:
                     embed = discord.Embed(
-                        description="I couldn't find any image with that search result",
+                        description="I couldn't find any image for your query",
                         color=0xFF0000
                     )
 
@@ -212,7 +221,7 @@ class NSFW:
                 image = self.getPornImage("https://www.sex.com/search/pics?query={}".format(searchValue))
                 if image == None:
                     embed = discord.Embed(
-                        description="I couldn't find any image with that search result",
+                        description="I couldn't find any image for your query",
                         color=0xFF0000
                     )
 
@@ -240,7 +249,7 @@ class NSFW:
     async def fourk(self, ctx):
         author = ctx.message.author
         server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -284,7 +293,7 @@ class NSFW:
     async def gonewild(self, ctx):
         author = ctx.message.author
         server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -328,7 +337,7 @@ class NSFW:
     async def lewdneko(self, ctx):
         author = ctx.message.author
         server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -372,7 +381,7 @@ class NSFW:
     async def holo(self, ctx):
         author = ctx.message.author
         server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -416,7 +425,7 @@ class NSFW:
     async def gasm(self, ctx):
         author = ctx.message.author
         server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -460,7 +469,7 @@ class NSFW:
     async def lewdkitsune(self, ctx):
         author = ctx.message.author
         server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -504,7 +513,7 @@ class NSFW:
     async def furry(self, ctx):
         author = ctx.message.author
         server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -553,7 +562,7 @@ class NSFW:
     async def tentai(self, ctx):
         author = ctx.message.author
         server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -602,7 +611,7 @@ class NSFW:
     async def rule34(self, ctx, tag = None):
         author = ctx.message.author
         server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -671,7 +680,7 @@ class NSFW:
     async def e621(self, ctx, tag = None):
         author = ctx.message.author
         server = author.server
-        nsfw_toggle = self.check_database(server, "NSFW_toggle")
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
