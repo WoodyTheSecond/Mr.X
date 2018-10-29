@@ -79,8 +79,13 @@ class NSFW:
         image = []
         while True:
             image = random.choice(images)
-            if len(image) == 2:
+            if len(image) == 2 or len(images) == 0:
                 break
+            else:
+                images.remove(image)
+
+        if len(images) == 0:
+            return None
 
         return image
 
@@ -111,6 +116,15 @@ class NSFW:
         if await self.is_nsfw(ctx.message.channel):
             if searchValue == None:
                 image = self.getPornImage("https://www.sex.com/gifs/?sort=popular&sub=all")
+                if image == None:
+                    embed = discord.Embed(
+                        description="I couldn't find any image with that search result",
+                        color=0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
+                    return
+
                 embed = discord.Embed(
                     title = "Popular search result",
                     description = image[1],
@@ -121,6 +135,15 @@ class NSFW:
                 await self.client.say(embed=embed)
             else:
                 image = self.getPornImage("https://www.sex.com/search/gifs?query={}".format(searchValue))
+                if image == None:
+                    embed = discord.Embed(
+                        description="I couldn't find any image with that search result",
+                        color=0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
+                    return
+
                 embed = discord.Embed(
                     title = "{} search result".format(searchValue),
                     description = image[1],
@@ -165,6 +188,15 @@ class NSFW:
         if await self.is_nsfw(ctx.message.channel):
             if searchValue == None:
                 image = self.getPornImage("https://www.sex.com/pics/?sort=popular&sub=all")
+                if image == None:
+                    embed = discord.Embed(
+                        description="I couldn't find any image with that search result",
+                        color=0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
+                    return
+
                 embed = discord.Embed(
                     title = "Popular search result",
                     description = image[1],
@@ -175,6 +207,15 @@ class NSFW:
                 await self.client.say(embed=embed)
             else:
                 image = self.getPornImage("https://www.sex.com/search/pics?query={}".format(searchValue))
+                if image == None:
+                    embed = discord.Embed(
+                        description="I couldn't find any image with that search result",
+                        color=0xFF0000
+                    )
+
+                    await self.client.say(embed=embed)
+                    return
+
                 embed = discord.Embed(
                     title = "{} search result".format(searchValue),
                     description = image[1],
