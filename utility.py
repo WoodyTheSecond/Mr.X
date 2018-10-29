@@ -265,8 +265,8 @@ class Utility:
                 color=0x0000FF
             )
             embed.set_author(name="NSFW Module")
-            embed.add_field(name="porngif [category]", value="Posts a porn gif", inline=False)
-            embed.add_field(name="pornimg [category]", value="Posts a porn image", inline=False)
+            embed.add_field(name="porn [search]", value="Posts a porn image", inline=False)
+            embed.add_field(name="porng [search]", value="Posts a porn GIF image", inline=False)
             embed.add_field(name="fourk", value="Posts a 4k image", inline=False)
             embed.add_field(name="gonewild", value="Posts a gone wild image", inline=False)
             embed.add_field(name="lewdneko", value="Posts a lewd neko NSFW image", inline=False)

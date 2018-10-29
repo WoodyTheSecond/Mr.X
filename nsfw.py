@@ -84,83 +84,10 @@ class NSFW:
 
         return image
 
-    def ValidInt(self, s):
-        try:
-            int(s)
-            return True
-        except ValueError:
-            return False
-
-    def getPornTypes(self):
-        porntypes = [
-            "popular",
-            "amateur",
-            "anal",
-            "asian",
-            "ass",
-            "babes",
-            "bbw",
-            "bdsm",
-            "big-tits",
-            "blonde",
-            "blowjob",
-            "brunette",
-            "celebrity",
-            "college",
-            "creampie",
-            "cumshots",
-            "double-penetration",
-            "ebony",
-            "emo",
-            "female-ejaculation",
-            "fisting",
-            "footjob",
-            "gang-bang",
-            "gay",
-            "girlfriend",
-            "group-sex",
-            "hairy",
-            "handjob",
-            "hardcore",
-            "hentai",
-            "indian",
-            "interracial",
-            "latina",
-            "lesbian",
-            "lingerie",
-            "masturbation",
-            "mature",
-            "milf",
-            "non-dude",
-            "panties",
-            "penis",
-            "pornstar",
-            "public-sex",
-            "pussy",
-            "redhead",
-            "selfshot",
-            "shemale",
-            "teen",
-            "threesome",
-            "toys"
-        ]
-        return porntypes
-
     @commands.command(pass_context=True)
-    async def porngif(self, ctx, porntype = None):
-        porntypes = self.getPornTypes()
+    async def porng(self, ctx, *, searchValue = None):
         author = ctx.message.author
         server = author.server
-        channel = ctx.message.channel
-        porntypestxt = None
-        numoftype = 1
-        for porn in porntypes:
-            if porntypestxt == None:
-                porntypestxt = "{}. {}".format(numoftype, porn)
-            else:
-                porntypestxt += "\n{}. {}".format(numoftype, porn)
-
-            numoftype += 1
 
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
@@ -182,110 +109,26 @@ class NSFW:
             return
 
         if await self.is_nsfw(ctx.message.channel):
-            if porntype == None:
+            if searchValue == None:
+                image = self.getPornImage("https://www.sex.com/gifs/?sort=popular&sub=all")
                 embed = discord.Embed(
-                    title = "Which category do you want?",
-                    description = porntypestxt,
+                    title = "Popular search result",
+                    description = image[1],
                     color = 0x800080
                 )
+                embed.set_image(url=image[0])
+
                 await self.client.say(embed=embed)
-                user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
-                user_response = user_response.clean_content.lower()
-                if self.ValidInt(user_response):
-                    if int(user_response) == 1:
-                        image = self.getPornImage("https://www.sex.com/gifs/?sort=popular&sub=all")
-                        embed = discord.Embed(
-                            title = image[1],
-                            color = 0x800080
-                        )
-                        embed.set_image(url=image[0])
-
-                        await self.client.say(embed=embed)
-                    else:
-                        pickedType = int(user_response) - 1
-                        if int(user_response) > len(porntypes):
-                            embed = discord.Embed(
-                                description="Invalid category",
-                                color=0xFF0000
-                            )
-
-                            await self.client.say(embed=embed)
-                            return
-
-                        image = self.getPornImage("https://www.sex.com/gifs/{}/".format(porntypes[pickedType]))
-                        embed = discord.Embed(
-                            title = image[1],
-                            color = 0x800080
-                        )
-                        embed.set_image(url=image[0])
-
-                        await self.client.say(embed=embed)
-                else:
-                    pickedType = None
-                    for porn in porntypes:
-                        if porn == user_response:
-                            pickedType = porntypes.index(porn)
-
-                    if pickedType == None:
-                        embed = discord.Embed(
-                            description="Invalid category",
-                            color=0xFF0000
-                        )
-
-                        await self.client.say(embed=embed)
-                        return
-
-                    if user_response == "popular":
-                        image = self.getPornImage("https://www.sex.com/gifs/?sort=popular&sub=all")
-                        embed = discord.Embed(
-                            title = image[1],
-                            color = 0x800080
-                        )
-                        embed.set_image(url=image[0])
-
-                        await self.client.say(embed=embed)
-                    else:
-                        image = self.getPornImage("https://www.sex.com/gifs/{}/".format(porntypes[pickedType]))
-                        embed = discord.Embed(
-                            title = image[1],
-                            color = 0x800080
-                        )
-                        embed.set_image(url=image[0])
-
-                        await self.client.say(embed=embed)
             else:
-                pickedType = None
-                for porn in porntypes:
-                    if porn == porntype:
-                        pickedType = porntypes.index(porn)
+                image = self.getPornImage("https://www.sex.com/search/gifs?query={}".format(searchValue))
+                embed = discord.Embed(
+                    title = "{} search result".format(searchValue),
+                    description = image[1],
+                    color = 0x800080
+                )
+                embed.set_image(url=image[0])
 
-                if pickedType == None:
-                    embed = discord.Embed(
-                        description="Invalid category",
-                        color=0xFF0000
-                    )
-
-                    await self.client.say(embed=embed)
-                    return
-
-                if porntype == "popular":
-                    image = self.getPornImage("https://www.sex.com/gifs/?sort=popular&sub=all")
-                    embed = discord.Embed(
-                        title = image[1],
-                        color = 0x800080
-                    )
-                    embed.set_image(url=image[0])
-
-                    await self.client.say(embed=embed)
-                else:
-                    image = self.getPornImage("https://www.sex.com/gifs/{}/".format(porntypes[pickedType]))
-                    embed = discord.Embed(
-                        title = image[1],
-                        color = 0x800080
-                    )
-                    embed.set_image(url=image[0])
-
-                    await self.client.say(embed=embed)
+                await self.client.say(embed=embed)
 
         else:
             embed = discord.Embed(
@@ -296,20 +139,9 @@ class NSFW:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def pornimg(self, ctx, porntype = None):
-        porntypes = self.getPornTypes()
+    async def porn(self, ctx, *, searchValue = None):
         author = ctx.message.author
         server = author.server
-        channel = ctx.message.channel
-        porntypestxt = None
-        numoftype = 1
-        for porn in porntypes:
-            if porntypestxt == None:
-                porntypestxt = "{}. {}".format(numoftype, porn)
-            else:
-                porntypestxt += "\n{}. {}".format(numoftype, porn)
-
-            numoftype += 1
 
         nsfw_toggle = self.check_database(server, "NSFW_toggle")
         if nsfw_toggle == False:
@@ -331,110 +163,26 @@ class NSFW:
             return
 
         if await self.is_nsfw(ctx.message.channel):
-            if porntype == None:
+            if searchValue == None:
+                image = self.getPornImage("https://www.sex.com/pics/?sort=popular&sub=all")
                 embed = discord.Embed(
-                    title = "Which category do you want?",
-                    description = porntypestxt,
+                    title = "Popular search result",
+                    description = image[1],
                     color = 0x800080
                 )
+                embed.set_image(url=image[0])
+
                 await self.client.say(embed=embed)
-                user_response = await self.client.wait_for_message(timeout=30, channel=channel, author=author)
-                user_response = user_response.clean_content.lower()
-                if self.ValidInt(user_response):
-                    if int(user_response) == 1:
-                        image = self.getPornImage("https://www.sex.com/pics/?sort=popular&sub=all")
-                        embed = discord.Embed(
-                            title = image[1],
-                            color = 0x800080
-                        )
-                        embed.set_image(url=image[0])
-
-                        await self.client.say(embed=embed)
-                    else:
-                        pickedType = int(user_response) - 1
-                        if int(user_response) > len(porntypes):
-                            embed = discord.Embed(
-                                description="Invalid category",
-                                color=0xFF0000
-                            )
-
-                            await self.client.say(embed=embed)
-                            return
-
-                        image = self.getPornImage("https://www.sex.com/pics/{}/".format(porntypes[pickedType]))
-                        embed = discord.Embed(
-                            title = image[1],
-                            color = 0x800080
-                        )
-                        embed.set_image(url=image[0])
-
-                        await self.client.say(embed=embed)
-                else:
-                    pickedType = None
-                    for porn in porntypes:
-                        if porn == user_response:
-                            pickedType = porntypes.index(porn)
-
-                    if pickedType == None:
-                        embed = discord.Embed(
-                            description="Invalid category",
-                            color=0xFF0000
-                        )
-
-                        await self.client.say(embed=embed)
-                        return
-
-                    if user_response == "popular":
-                        image = self.getPornImage("https://www.sex.com/pics/?sort=popular&sub=all")
-                        embed = discord.Embed(
-                            title = image[1],
-                            color = 0x800080
-                        )
-                        embed.set_image(url=image[0])
-
-                        await self.client.say(embed=embed)
-                    else:
-                        image = self.getPornImage("https://www.sex.com/pics/{}/".format(porntypes[pickedType]))
-                        embed = discord.Embed(
-                            title = image[1],
-                            color = 0x800080
-                        )
-                        embed.set_image(url=image[0])
-
-                        await self.client.say(embed=embed)
             else:
-                pickedType = None
-                for porn in porntypes:
-                    if porn == porntype:
-                        pickedType = porntypes.index(porn)
+                image = self.getPornImage("https://www.sex.com/search/pics?query={}".format(searchValue))
+                embed = discord.Embed(
+                    title = "{} search result".format(searchValue),
+                    description = image[1],
+                    color = 0x800080
+                )
+                embed.set_image(url=image[0])
 
-                if pickedType == None:
-                    embed = discord.Embed(
-                        description="Invalid category",
-                        color=0xFF0000
-                    )
-
-                    await self.client.say(embed=embed)
-                    return
-
-                if porntype == "popular":
-                    image = self.getPornImage("https://www.sex.com/pics/?sort=popular&sub=all")
-                    embed = discord.Embed(
-                        title = image[1],
-                        color = 0x800080
-                    )
-                    embed.set_image(url=image[0])
-
-                    await self.client.say(embed=embed)
-                else:
-                    image = self.getPornImage("https://www.sex.com/pics/{}/".format(porntypes[pickedType]))
-                    embed = discord.Embed(
-                        title = image[1],
-                        color = 0x800080
-                    )
-                    embed.set_image(url=image[0])
-
-                    await self.client.say(embed=embed)
+                await self.client.say(embed=embed)
 
         else:
             embed = discord.Embed(
