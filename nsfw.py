@@ -77,6 +77,9 @@ class NSFW:
         parser = MyHTMLParser()
         parser.feed(message)
         image = []
+        if len(images) == 0:
+            return None
+
         while True:
             image = random.choice(images)
             if len(image) == 2 or len(images) == 0:
