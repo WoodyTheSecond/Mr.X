@@ -337,6 +337,7 @@ async def on_ready():
         profanity_filter = d[17]
         customwords_toggle = d[18]
         earn_cooldown = d[19]
+        marriage_toggle = d[20]
         if not os.path.exists("servers/{}".format(serverid)):
             os.makedirs("servers/{}".format(serverid))
 
@@ -362,6 +363,7 @@ async def on_ready():
                 json_data["Profanity_Filter"] = profanity_filter
                 json_data["Custom_Words"] = customwords_toggle
                 json_data["earn_cooldown"] = earn_cooldown
+                json_data["Marriage_Toggle"] = marriage_toggle
                 with open(settingspath, "w") as f:
                     json.dump(json_data, f)
         else:
@@ -385,6 +387,7 @@ async def on_ready():
                 json_data["Profanity_Filter"] = profanity_filter
                 json_data["Custom_Words"] = customwords_toggle
                 json_data["earn_cooldown"] = earn_cooldown
+                json_data["Marriage_Toggle"] = marriage_toggle
                 json.dump(json_data, f)
 
     sql = "SELECT * FROM `Banned_Words`"
