@@ -104,7 +104,8 @@ async def autosave_settings():
                         profanity_filter = settings["Profanity_Filter"]
                         customwords_toggle = settings["Custom_Words"]
                         earn_cooldown = settings["earn_cooldown"]
-                        sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, str(server_id))
+                        marriage_toggle = settings["Marriage_Toggle"]
+                        sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}', Marriage_Toggle = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, marriage_toggle, str(server_id))
                         c.execute(sql)
                         conn.commit()
 
@@ -189,7 +190,8 @@ def save_settings(*args):
                     profanity_filter = settings["Profanity_Filter"]
                     customwords_toggle = settings["Custom_Words"]
                     earn_cooldown = settings["earn_cooldown"]
-                    sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, str(server_id))
+                    marriage_toggle = settings["Marriage_Toggle"]
+                    sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}', Marriage_Toggle = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, marriage_toggle, str(server_id))
                     c.execute(sql)
                     conn.commit()
 
@@ -249,6 +251,34 @@ def make_settings(server):
     conn.commit()
     data = c.fetchone()
     conn.close()
+    settingspath = "servers/{}/settings.json".format(server.id)
+    if not os.path.exists("servers/{}".format(server.id)):
+        os.makedirs("servers/{}".format(server.id))
+
+    if os.path.exists(settingspath):
+        with open(settingspath, "w+") as f:
+            json_data = {}
+            json_data["Join_Role"] = "None"
+            json_data["DMWarn"] = 0
+            json_data["Verify_Role"] = "None"
+            json_data["Mod_Role"] = "None"
+            json_data["Admin_Role"] = "None"
+            json_data["Mute_Role"] = "None"
+            json_data["WarnMute"] = "0"
+            json_data["JoinToggle"] = 0
+            json_data["CanModAnnounce"] = 0
+            json_data["Level_System"] = 0
+            json_data["Chat_Filter"] = 0
+            json_data["Ignore_Hierarchy"] = 0
+            json_data["NSFW_role"] = "None"
+            json_data["NSFW_toggle"] = 0
+            json_data["FunToggle"] = 0
+            json_data["Profanity_Filter"] = 0
+            json_data["Custom_Words"] = 0
+            json_data["earn_cooldown"] = ""
+            json_data["Marriage_Toggle"] = 0
+            json.dump(json_data, f)
+
     if data == None:
         create_database(server)
         return True
@@ -645,7 +675,8 @@ async def ssettings(ctx):
                         profanity_filter = settings["Profanity_Filter"]
                         customwords_toggle = settings["Custom_Words"]
                         earn_cooldown = settings["earn_cooldown"]
-                        sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, str(server_id))
+                        marriage_toggle = settings["Marriage_Toggle"]
+                        sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}', Marriage_Toggle = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, marriage_toggle, str(server_id))
                         c.execute(sql)
                         conn.commit()
 
@@ -1207,6 +1238,40 @@ async def customwords(ctx):
             update_setting(server, "Custom_Words", False)
             embed = discord.Embed(
                 description="The custom words filter has been **Disabled**",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="Error",
+                color=0xFF0000
+            )
+            await client.say(embed=embed)
+
+    else:
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
+        await client.say(embed=embed)
+
+@client.command(pass_context=True)
+async def marrytoggle(ctx):
+    author = ctx.message.author
+    server = ctx.message.server
+    if author.server_permissions.administrator:
+        current_toggle = check_setting(server, "Marriage_Toggle")
+        if current_toggle == False:
+            update_setting(server, "Marriage_Toggle", True)
+            embed = discord.Embed(
+                description="Marriage has been **Enabled**",
+                color=0x00FF00
+            )
+            await client.say(embed=embed)
+        elif current_toggle == True:
+            update_setting(server, "Marriage_Toggle", False)
+            embed = discord.Embed(
+                description="Marriage has been **Disabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
