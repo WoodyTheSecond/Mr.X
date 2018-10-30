@@ -24,7 +24,6 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
 extensions = ["admin", "utility", "swarm", "nsfw", "fun", "economy", "marriage", "otaku"]
 
-
 async def change_status():
     await client.wait_until_ready()
     msgs = cycle(status)
@@ -61,6 +60,44 @@ async def autosave_economy():
         conn.close()
         print("The economy has been saved")
 
+async def autosave_settings():
+    await client.wait_until_ready()
+
+    while not client.is_closed:
+        await asyncio.sleep(3600)
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        c = conn.cursor()
+        for server in os.listdir("servers"):
+            server_id = os.fsdecode(server)
+            filepath = "servers/{}/settings.json".format(str(server_id))
+            with open(filepath, "r") as f:
+                settings = json.load(f)
+                for server in settings:
+                    join_role = settings["Join_Role"]
+                    dmwarn = settings["DMWarn"]
+                    verify_role = settings["Verify_Role"]
+                    mod_role = settings["Mod_Role"]
+                    admin_role = settings["Admin_Role"]
+                    mute_role = settings["Mute_Role"]
+                    warn_mute = settings["WarnMute"]
+                    join_toggle = settings["JoinToggle"]
+                    can_mod_announce = settings["CanModAnnounce"]
+                    level_system = settings["Level_System"]
+                    chat_filter = settings["Chat_Filter"]
+                    ignore_hierarchy = settings["Ignore_Hierarchy"]
+                    nsfw_role = settings["NSFW_role"]
+                    nsfw_toggle = settings["NSFW_toggle"]
+                    fun_toggle = settings["FunToggle"]
+                    profanity_filter = settings["Profanity_Filter"]
+                    customwords_toggle = settings["Custom_Words"]
+                    earn_cooldown = settings["earn_cooldown"]
+                    sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, str(server_id))
+                    c.execute(sql)
+                    conn.commit()
+
+        conn.close()
+        print("The settings has been saved")
+
 def save_economy(*args):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
@@ -83,56 +120,13 @@ def save_economy(*args):
 
     conn.close()
     print("The economy has been saved")
-    sys.exit(0)
-
-async def autosave_settings():
-    await client.wait_until_ready()
-
-    while not client.is_closed:
-        await asyncio.sleep(3600)
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-        c = conn.cursor()
-        directory = "servers"
-        for file in os.listdir(directory):
-            filename = os.fsdecode(file)
-            server_id = os.fsdecode(file).replace(".json", "")
-            filepath = "servers/{}/{}".format(str(server_id), str(filename))
-            with open(filepath, "r") as f:
-                settings = json.load(f)
-                for server in settings:
-                    join_role = settings["Join_Role"]
-                    dmwarn = settings["DMWarn"]
-                    verify_role = settings["Verify_Role"]
-                    mod_role = settings["Mod_Role"]
-                    admin_role = settings["Admin_Role"]
-                    mute_role = settings["Mute_Role"]
-                    warn_mute = settings["WarnMute"]
-                    join_toggle = settings["JoinToggle"]
-                    can_mod_announce = settings["CanModAnnounce"]
-                    level_system = settings["Level_System"]
-                    chat_filter = settings["Chat_Filter"]
-                    ignore_hierarchy = settings["Ignore_Hierarchy"]
-                    nsfw_role = settings["NSFW_role"]
-                    nsfw_toggle = settings["NSFW_toggle"]
-                    fun_toggle = settings["FunToggle"]
-                    profanity_filter = settings["Profanity_Filter"]
-                    customwords_toggle = settings["Custom_Words"]
-                    earn_cooldown = settings["earn_cooldown"]
-                    sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, server)
-                    c.execute(sql)
-                    conn.commit()
-
-        conn.close()
-        print("The settings has been saved")
 
 def save_settings(*args):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
-    directory = "servers"
-    for file in os.listdir(directory):
-        filename = os.fsdecode(file)
-        server_id = os.fsdecode(file).replace(".json", "")
-        filepath = "servers/{}/{}".format(str(server_id), str(filename))
+    for server in os.listdir("servers"):
+        server_id = os.fsdecode(server)
+        filepath = "servers/{}/settings.json".format(str(server_id))
         with open(filepath, "r") as f:
             settings = json.load(f)
             for server in settings:
@@ -154,12 +148,16 @@ def save_settings(*args):
                 profanity_filter = settings["Profanity_Filter"]
                 customwords_toggle = settings["Custom_Words"]
                 earn_cooldown = settings["earn_cooldown"]
-                sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, server)
+                sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, str(server_id))
                 c.execute(sql)
                 conn.commit()
 
     conn.close()
     print("The settings has been saved")
+
+def save(*args):
+    save_economy()
+    save_settings()
     sys.exit(0)
 
 def create_database(server):
@@ -170,51 +168,63 @@ def create_database(server):
     conn.commit()
     conn.close()
 
-def update_database(server, setting, value):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-    c = conn.cursor()
-    if setting == "Join_Role":
-        sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
-    elif setting == "DMWarn":
-        sql = "UPDATE `Server_Settings` SET DMWarn = %s where serverid = %s"
-    elif setting == "Verify_Role":
-        sql = "UPDATE `Server_Settings` SET Verify_Role = %s where serverid = %s"
-    elif setting == "Mod_Role":
-        sql = "UPDATE `Server_Settings` SET Mod_Role = %s where serverid = %s"
-    elif setting == "Admin_Role":
-        sql = "UPDATE `Server_Settings` SET Admin_Role = %s where serverid = %s"
-    elif setting == "Mute_Role":
-        sql = "UPDATE `Server_Settings` SET Mute_Role = %s where serverid = %s"
-    elif setting == "WarnMute":
-        sql = "UPDATE `Server_Settings` SET WarnMute = %s where serverid = %s"
-    elif setting == "JoinToggle":
-        sql = "UPDATE `Server_Settings` SET JoinToggle = %s where serverid = %s"
-    elif setting == "CanModAnnounce":
-        sql = "UPDATE `Server_Settings` SET CanModAnnounce = %s where serverid = %s"
-    elif setting == "Level_System":
-        sql = "UPDATE `Server_Settings` SET Level_System = %s where serverid = %s"
-    elif setting == "Chat_Filter":
-        sql = "UPDATE `Server_Settings` SET Chat_Filter = %s where serverid = %s"
-    elif setting == "Ignore_Hierarchy":
-        sql = "UPDATE `Server_Settings` SET Ignore_Hierarchy = %s where serverid = %s"
-    elif setting == "FunToggle":
-        sql = "UPDATE `Server_Settings` SET FunToggle = %s where serverid = %s"
-    elif setting == "NSFW_role":
-        sql = "UPDATE `Server_Settings` SET NSFW_role = %s where serverid = %s"
-    elif setting == "NSFW_toggle":
-        sql = "UPDATE `Server_Settings` SET NSFW_toggle = %s where serverid = %s"
-    elif setting == "Profanity_Filter":
-        sql = "UPDATE `Server_Settings` SET Profanity_Filter = %s where serverid = %s"
-    elif setting == "Custom_Words":
-        sql = "UPDATE `Server_Settings` SET Custom_Words = %s where serverid = %s"
-    else:
-        print("No such setting found")
-        return
+def update_setting(server, setting, value):
+    settingspath = "servers/{}/settings.json".format(server.id)
+    with open(settingspath, "r") as f:
+        if value == True:
+            value = 1
+        elif value == False:
+            value = 0
 
-    t = (value, str(server.id))
-    c.execute(sql, t)
-    conn.commit()
-    conn.close()
+        json_data = json.load(f)
+        with open(settingspath, "w") as f:
+            json_data[setting] = value
+            json.dump(json_data, f)
+
+    # conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    # c = conn.cursor()
+    # if setting == "Join_Role":
+    #     sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
+    # elif setting == "DMWarn":
+    #     sql = "UPDATE `Server_Settings` SET DMWarn = %s where serverid = %s"
+    # elif setting == "Verify_Role":
+    #     sql = "UPDATE `Server_Settings` SET Verify_Role = %s where serverid = %s"
+    # elif setting == "Mod_Role":
+    #     sql = "UPDATE `Server_Settings` SET Mod_Role = %s where serverid = %s"
+    # elif setting == "Admin_Role":
+    #     sql = "UPDATE `Server_Settings` SET Admin_Role = %s where serverid = %s"
+    # elif setting == "Mute_Role":
+    #     sql = "UPDATE `Server_Settings` SET Mute_Role = %s where serverid = %s"
+    # elif setting == "WarnMute":
+    #     sql = "UPDATE `Server_Settings` SET WarnMute = %s where serverid = %s"
+    # elif setting == "JoinToggle":
+    #     sql = "UPDATE `Server_Settings` SET JoinToggle = %s where serverid = %s"
+    # elif setting == "CanModAnnounce":
+    #     sql = "UPDATE `Server_Settings` SET CanModAnnounce = %s where serverid = %s"
+    # elif setting == "Level_System":
+    #     sql = "UPDATE `Server_Settings` SET Level_System = %s where serverid = %s"
+    # elif setting == "Chat_Filter":
+    #     sql = "UPDATE `Server_Settings` SET Chat_Filter = %s where serverid = %s"
+    # elif setting == "Ignore_Hierarchy":
+    #     sql = "UPDATE `Server_Settings` SET Ignore_Hierarchy = %s where serverid = %s"
+    # elif setting == "FunToggle":
+    #     sql = "UPDATE `Server_Settings` SET FunToggle = %s where serverid = %s"
+    # elif setting == "NSFW_role":
+    #     sql = "UPDATE `Server_Settings` SET NSFW_role = %s where serverid = %s"
+    # elif setting == "NSFW_toggle":
+    #     sql = "UPDATE `Server_Settings` SET NSFW_toggle = %s where serverid = %s"
+    # elif setting == "Profanity_Filter":
+    #     sql = "UPDATE `Server_Settings` SET Profanity_Filter = %s where serverid = %s"
+    # elif setting == "Custom_Words":
+    #     sql = "UPDATE `Server_Settings` SET Custom_Words = %s where serverid = %s"
+    # else:
+    #     print("No such setting found")
+    #     return
+
+    # t = (value, str(server.id))
+    # c.execute(sql, t)
+    # conn.commit()
+    # conn.close()
 
 def check_setting(server, setting):
     settingspath = "servers/{}/settings.json".format(server.id)
@@ -676,7 +686,7 @@ async def togglelevel(ctx):
     if author == server.owner or author.id == 164068466129633280:
         toggle = check_setting(server, "Level_System")
         if toggle == True:
-            update_database(server, "Level_System", False)
+            update_setting(server, "Level_System", False)
             embed = discord.Embed(
                 title="Global Level System",
                 description='You have **disabled** the Level System on this server.',
@@ -684,7 +694,7 @@ async def togglelevel(ctx):
             )
             await client.say(embed=embed)
         elif toggle == False:
-            update_database(server, "Level_System", True)
+            update_setting(server, "Level_System", True)
             embed = discord.Embed(
                 title="Global Level System",
                 description="You have **enabled** the Level System on this server.",
@@ -711,7 +721,7 @@ async def dmwarn(ctx):
     current = check_setting(server, "DMWarn")
     if author.server_permissions.administrator:
         if current == True:
-            update_database(server, "DMWarn", False)
+            update_setting(server, "DMWarn", False)
             embed = discord.Embed(
                 title='DMWarn Setting',
                 description='Direct Message on warning has been set to **False**',
@@ -725,7 +735,7 @@ async def dmwarn(ctx):
                 color=0x00FF00
             )
             await client.say(embed=embed)
-            update_database(server, "DMWarn", True)
+            update_setting(server, "DMWarn", True)
     else:
         embed = discord.Embed(
             title="DMWarn",
@@ -750,7 +760,7 @@ async def modrole(ctx, *, role = None):
         try:
             rolename = discord.utils.get(server.roles, name=role)
             newrole = str(rolename)
-            update_database(server, "Mod_Role", newrole)
+            update_setting(server, "Mod_Role", newrole)
             embed = discord.Embed(
                 title="Moderator Role",
                 description="The Moderator Role has been set to **{}**".format(
@@ -783,7 +793,7 @@ async def adminrole(ctx, *, role = None):
         try:
             rolename = discord.utils.get(server.roles, name=role)
             newrole = str(rolename)
-            update_database(server, "Admin_Role", newrole)
+            update_setting(server, "Admin_Role", newrole)
             embed = discord.Embed(
                 title="Administrator Role",
                 description="The Administrator Role has been set to **{}**".format(
@@ -816,7 +826,7 @@ async def muterole(ctx, *, role = None):
         try:
             rolename = discord.utils.get(server.roles, name=role)
             newrole = str(rolename)
-            update_database(server, "Mute_Role", newrole)
+            update_setting(server, "Mute_Role", newrole)
             embed = discord.Embed(
                 title="Muted Role",
                 description="The Muted Role has been set to **{}**".format(
@@ -859,7 +869,7 @@ async def joinrole(ctx, *, role = None):
                 )
                 await client.say(embed=embed)
             else:
-                update_database(server, "Join_Role", newrole)
+                update_setting(server, "Join_Role", newrole)
                 embed = discord.Embed(
                     title="Join Role",
                     description="The Join Role has been set to **{}**".format(
@@ -899,7 +909,7 @@ async def nsfwrole(ctx, *, role = None):
                 )
                 await client.say(embed=embed)
             else:
-                update_database(server, "NSFW_role", newrole)
+                update_setting(server, "NSFW_role", newrole)
                 embed = discord.Embed(
                     description="The NSFW Role has been set to **{}**".format(
                         rolename),
@@ -940,7 +950,7 @@ async def verifyrole(ctx, *, role = None):
                 )
                 await client.say(embed=embed)
             else:
-                update_database(server, "Verify_Role", newrole)
+                update_setting(server, "Verify_Role", newrole)
                 embed = discord.Embed(
                     title="Verify Role",
                     description="The Verify Role has been set to **{}**".format(
@@ -974,7 +984,7 @@ async def mutetime(ctx, lenght = None):
 
         if "m" in lenght:
             t_time = lenght.replace("m", "")
-            update_database(server, "WarnMute", str(lenght))
+            update_setting(server, "WarnMute", str(lenght))
             embed = discord.Embed(
                 title="Mute Time",
                 description="Punish Mute has been set to **{}** minute(s)".format(
@@ -984,7 +994,7 @@ async def mutetime(ctx, lenght = None):
             await client.say(embed=embed)
         elif "h" in lenght:
             t_time = lenght.replace("h", "")
-            update_database(server, "WarnMute", str(lenght))
+            update_setting(server, "WarnMute", str(lenght))
             embed = discord.Embed(
                 title="Mute Time",
                 description="Punish Mute has been set to **{}** hour(s)".format(
@@ -1020,7 +1030,7 @@ async def jointoggle(ctx):
                 )
                 await client.say(embed=embed)
             else:
-                update_database(server, "JoinToggle", True)
+                update_setting(server, "JoinToggle", True)
                 embed = discord.Embed(
                     title="Join Toggle",
                     description="Auto role on join has been set to **True**",
@@ -1028,7 +1038,7 @@ async def jointoggle(ctx):
                 )
                 await client.say(embed=embed)
         elif current_toggle == True:
-            update_database(server, "JoinToggle", False)
+            update_setting(server, "JoinToggle", False)
             embed = discord.Embed(
                 title="Join Toggle",
                 description="Auto role on join has been set to **False**",
@@ -1066,7 +1076,7 @@ async def nsfwtoggle(ctx):
                 )
                 await client.say(embed=embed)
             else:
-                update_database(server, "NSFW_toggle", True)
+                update_setting(server, "NSFW_toggle", True)
                 if not os.path.exists("servers/{}".format(server.id)):
                     os.makedirs("servers/{}".format(server.id))
 
@@ -1089,7 +1099,7 @@ async def nsfwtoggle(ctx):
                 )
                 await client.say(embed=embed)
         elif current_toggle == True:
-            update_database(server, "NSFW_toggle", False)
+            update_setting(server, "NSFW_toggle", False)
             if not os.path.exists("servers/{}".format(server.id)):
                 os.makedirs("servers/{}".format(server.id))
 
@@ -1132,14 +1142,14 @@ async def funtoggle(ctx):
     if author.server_permissions.administrator:
         current_toggle = check_setting(server, "FunToggle")
         if current_toggle == False:
-            update_database(server, "FunToggle", True)
+            update_setting(server, "FunToggle", True)
             embed = discord.Embed(
                 description="Fun commands has been **Enabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
         elif current_toggle == True:
-            update_database(server, "FunToggle", False)
+            update_setting(server, "FunToggle", False)
             embed = discord.Embed(
                 description="Fun commands has been **Disabled**",
                 color=0x00FF00
@@ -1166,7 +1176,7 @@ async def sweartoggle(ctx):
     if author.server_permissions.administrator:
         current_toggle = check_setting(server, "Profanity_Filter")
         if current_toggle == False:
-            update_database(server, "Profanity_Filter", True)
+            update_setting(server, "Profanity_Filter", True)
             if not os.path.exists("servers/{}".format(server.id)):
                 os.makedirs("servers/{}".format(server.id))
 
@@ -1189,7 +1199,7 @@ async def sweartoggle(ctx):
             )
             await client.say(embed=embed)
         elif current_toggle == True:
-            update_database(server, "Profanity_Filter", False)
+            update_setting(server, "Profanity_Filter", False)
             if not os.path.exists("servers/{}".format(server.id)):
                 os.makedirs("servers/{}".format(server.id))
 
@@ -1232,7 +1242,7 @@ async def customwords(ctx):
     if author.server_permissions.administrator:
         current_toggle = check_setting(server, "Custom_Words")
         if current_toggle == False:
-            update_database(server, "Custom_Words", True)
+            update_setting(server, "Custom_Words", True)
             if not os.path.exists("servers/{}".format(server.id)):
                 os.makedirs("servers/{}".format(server.id))
 
@@ -1255,7 +1265,7 @@ async def customwords(ctx):
             )
             await client.say(embed=embed)
         elif current_toggle == True:
-            update_database(server, "Custom_Words", False)
+            update_setting(server, "Custom_Words", False)
             if not os.path.exists("servers/{}".format(server.id)):
                 os.makedirs("servers/{}".format(server.id))
 
@@ -2068,7 +2078,6 @@ if __name__ == "__main__":
     client.loop.create_task(autosave_economy())
     client.loop.create_task(autosave_settings())
     for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
-        signal(sig, save_economy)
-        signal(sig, save_settings)
+        signal(sig, save)
 
-    client.run(TOKEN)
+    client.run("NDcyODE3MDkwNzg1NzA1OTg1.Dj45QA.A3S3wwN0_lxlQbQCgkC44x-uJJg")
