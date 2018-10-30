@@ -25,6 +25,10 @@ class NSFW:
 
     def check_setting(self, server, setting):
         settingspath = "servers/{}/settings.json".format(server.id)
+        if not setting in open(settingspath, "r").read():
+            print("No such setting found")
+            return None
+
         with open(settingspath, "r") as f:
             json_data = json.load(f)
             if json_data[setting] == 1:
@@ -47,19 +51,6 @@ class NSFW:
                         return True
                     else:
                         return False
-                else:
-                    return False
-
-    def check_nsfwtoggle(self, server):
-        path = "servers/{}/nsfw_toggle.json".format(server.id)
-        if not os.path.exists(path):
-            return False
-        else:
-            with open(path, 'r') as f:
-                nsfwtogglecheck = json.load(f)
-                current = nsfwtogglecheck["Toggle"]
-                if current == 1:
-                    return True
                 else:
                     return False
 
@@ -106,7 +97,7 @@ class NSFW:
         author = ctx.message.author
         server = author.server
 
-        nsfw_toggle = self.check_nsfwtoggle(server)
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",
@@ -178,7 +169,7 @@ class NSFW:
         author = ctx.message.author
         server = author.server
 
-        nsfw_toggle = self.check_nsfwtoggle(server)
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
         if nsfw_toggle == False:
             embed = discord.Embed(
                 description="The NSFW commands is currently disabled",

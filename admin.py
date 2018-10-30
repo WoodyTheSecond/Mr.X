@@ -20,45 +20,29 @@ class Admin:
         except ValueError:
             return False
     
-    def update_database(self, server, setting, value):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-        c = conn.cursor()
-        if setting == "Join_Role":
-            sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
-        elif setting == "DMWarn":
-            sql = "UPDATE `Server_Settings` SET DMWarn = %s where serverid = %s"
-        elif setting == "Verify_Role":
-            sql = "UPDATE `Server_Settings` SET Verify_Role = %s where serverid = %s"
-        elif setting == "Mod_Role":
-            sql = "UPDATE `Server_Settings` SET Mod_Role = %s where serverid = %s"
-        elif setting == "Admin_Role":
-            sql = "UPDATE `Server_Settings` SET Admin_Role = %s where serverid = %s"
-        elif setting == "Mute_Role":
-            sql = "UPDATE `Server_Settings` SET Mute_Role = %s where serverid = %s"
-        elif setting == "WarnMute":
-            sql = "UPDATE `Server_Settings` SET WarnMute = %s where serverid = %s"
-        elif setting == "JoinToggle":
-            sql = "UPDATE `Server_Settings` SET JoinToggle = %s where serverid = %s"
-        elif setting == "CanModAnnounce":
-            sql = "UPDATE `Server_Settings` SET CanModAnnounce = %s where serverid = %s"
-        elif setting == "Level_System":
-            sql = "UPDATE `Server_Settings` SET Level_System = %s where serverid = %s"
-        elif setting == "Chat_Filter":
-            sql = "UPDATE `Server_Settings` SET Chat_Filter = %s where serverid = %s"
-        elif setting == "Ignore_Hierarchy":
-            sql = "UPDATE `Server_Settings` SET Ignore_Hierarchy = %s where serverid = %s"
-        elif setting == "FunToggle":
-            sql = "UPDATE `Server_Settings` SET FunToggle = %s where serverid = %s"
-        else:
+    def update_setting(self, server, setting, value):
+        settingspath = "servers/{}/settings.json".format(server.id)
+        if not setting in open(settingspath, "r").read():
             print("No such setting found")
-            return
-        t = (value, str(server.id))
-        c.execute(sql, t)
-        conn.commit()
-        conn.close()
+            return None
+
+        with open(settingspath, "r") as f:
+            if value == True:
+                value = 1
+            elif value == False:
+                value = 0
+
+            json_data = json.load(f)
+            with open(settingspath, "w") as f:
+                json_data[setting] = value
+                json.dump(json_data, f)
 
     def check_setting(self, server, setting):
         settingspath = "servers/{}/settings.json".format(server.id)
+        if not setting in open(settingspath, "r").read():
+            print("No such setting found")
+            return None
+
         with open(settingspath, "r") as f:
             json_data = json.load(f)
             if json_data[setting] == 1:

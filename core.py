@@ -40,11 +40,7 @@ async def autosave_economy():
         await asyncio.sleep(3600)
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
-        sql = "TRUNCATE `Economy`"
-        c.execute(sql)
-        conn.commit()
-        directory = os.fsencode("eco")
-        for file in os.listdir(directory):
+        for file in os.listdir("eco"):
             filename = os.fsdecode(file)
             user_id = os.fsdecode(file).replace(".json", "")
             filepath = "eco/{}".format(str(filename))
@@ -53,7 +49,21 @@ async def autosave_economy():
                 for server in economy:
                     current_money = economy[server]["Money"]
                     current_bank = economy[server]["Bank"]
-                    sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
+                    sql = "UPDATE `Economy` SET money = '{}', bank = '{}' WHERE serverid = '{}' AND userid = '{}'".format(current_money, current_bank, str(server), str(user_id))
+                    c.execute(sql)
+                    conn.commit()
+
+        for server in os.listdir("servers"):
+            server_id = os.fsdecode(server)
+            filepath = "servers/{}/economy_settings.json".format(str(server_id))
+            with open(filepath, "r") as f:
+                settings = json.load(f)
+                for srv in settings:
+                    max_work_amount = settings["max_work_amount"]
+                    min_work_amount = settings["min_work_amount"]
+                    max_slut_amount = settings["max_slut_amount"]
+                    min_slut_amount = settings["min_slut_amount"]
+                    sql = "UPDATE `Economy_Settings` SET max_work_amount = '{}', min_work_amount = '{}', max_slut_amount = '{}', min_slut_amount = '{}' WHERE serverid = '{}'".format(max_work_amount, min_work_amount, max_slut_amount, min_slut_amount, str(srv))
                     c.execute(sql)
                     conn.commit()
 
@@ -101,11 +111,7 @@ async def autosave_settings():
 def save_economy(*args):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
-    sql = "TRUNCATE `Economy`"
-    c.execute(sql)
-    conn.commit()
-    directory = os.fsencode("eco")
-    for file in os.listdir(directory):
+    for file in os.listdir("eco"):
         filename = os.fsdecode(file)
         user_id = os.fsdecode(file).replace(".json", "")
         filepath = "eco/{}".format(str(filename))
@@ -114,12 +120,27 @@ def save_economy(*args):
             for server in economy:
                 current_money = economy[server]["Money"]
                 current_bank = economy[server]["Bank"]
-                sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
+                sql = "UPDATE `Economy` SET money = '{}', bank = '{}' WHERE serverid = '{}' AND userid = '{}'".format(current_money, current_bank, str(server), str(user_id))
+                c.execute(sql)
+                conn.commit()
+
+    for server in os.listdir("servers"):
+        server_id = os.fsdecode(server)
+        filepath = "servers/{}/economy_settings.json".format(str(server_id))
+        with open(filepath, "r") as f:
+            settings = json.load(f)
+            for srv in settings:
+                max_work_amount = settings["max_work_amount"]
+                min_work_amount = settings["min_work_amount"]
+                max_slut_amount = settings["max_slut_amount"]
+                min_slut_amount = settings["min_slut_amount"]
+                sql = "UPDATE `Economy_Settings` SET max_work_amount = '{}', min_work_amount = '{}', max_slut_amount = '{}', min_slut_amount = '{}' WHERE serverid = '{}'".format(max_work_amount, min_work_amount, max_slut_amount, min_slut_amount, str(srv))
                 c.execute(sql)
                 conn.commit()
 
     conn.close()
     print("The economy has been saved")
+    return True
 
 def save_settings(*args):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
@@ -154,11 +175,11 @@ def save_settings(*args):
 
     conn.close()
     print("The settings has been saved")
+    return True
 
 def save(*args):
-    save_economy()
-    save_settings()
-    sys.exit(0)
+    if save_economy() == True and save_settings() == True:
+        sys.exit(0)
 
 def create_database(server):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
@@ -170,6 +191,10 @@ def create_database(server):
 
 def update_setting(server, setting, value):
     settingspath = "servers/{}/settings.json".format(server.id)
+    if not setting in open(settingspath, "r").read():
+        print("No such setting found")
+        return None
+
     with open(settingspath, "r") as f:
         if value == True:
             value = 1
@@ -181,53 +206,12 @@ def update_setting(server, setting, value):
             json_data[setting] = value
             json.dump(json_data, f)
 
-    # conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-    # c = conn.cursor()
-    # if setting == "Join_Role":
-    #     sql = "UPDATE `Server_Settings` SET Join_Role = %s where serverid = %s"
-    # elif setting == "DMWarn":
-    #     sql = "UPDATE `Server_Settings` SET DMWarn = %s where serverid = %s"
-    # elif setting == "Verify_Role":
-    #     sql = "UPDATE `Server_Settings` SET Verify_Role = %s where serverid = %s"
-    # elif setting == "Mod_Role":
-    #     sql = "UPDATE `Server_Settings` SET Mod_Role = %s where serverid = %s"
-    # elif setting == "Admin_Role":
-    #     sql = "UPDATE `Server_Settings` SET Admin_Role = %s where serverid = %s"
-    # elif setting == "Mute_Role":
-    #     sql = "UPDATE `Server_Settings` SET Mute_Role = %s where serverid = %s"
-    # elif setting == "WarnMute":
-    #     sql = "UPDATE `Server_Settings` SET WarnMute = %s where serverid = %s"
-    # elif setting == "JoinToggle":
-    #     sql = "UPDATE `Server_Settings` SET JoinToggle = %s where serverid = %s"
-    # elif setting == "CanModAnnounce":
-    #     sql = "UPDATE `Server_Settings` SET CanModAnnounce = %s where serverid = %s"
-    # elif setting == "Level_System":
-    #     sql = "UPDATE `Server_Settings` SET Level_System = %s where serverid = %s"
-    # elif setting == "Chat_Filter":
-    #     sql = "UPDATE `Server_Settings` SET Chat_Filter = %s where serverid = %s"
-    # elif setting == "Ignore_Hierarchy":
-    #     sql = "UPDATE `Server_Settings` SET Ignore_Hierarchy = %s where serverid = %s"
-    # elif setting == "FunToggle":
-    #     sql = "UPDATE `Server_Settings` SET FunToggle = %s where serverid = %s"
-    # elif setting == "NSFW_role":
-    #     sql = "UPDATE `Server_Settings` SET NSFW_role = %s where serverid = %s"
-    # elif setting == "NSFW_toggle":
-    #     sql = "UPDATE `Server_Settings` SET NSFW_toggle = %s where serverid = %s"
-    # elif setting == "Profanity_Filter":
-    #     sql = "UPDATE `Server_Settings` SET Profanity_Filter = %s where serverid = %s"
-    # elif setting == "Custom_Words":
-    #     sql = "UPDATE `Server_Settings` SET Custom_Words = %s where serverid = %s"
-    # else:
-    #     print("No such setting found")
-    #     return
-
-    # t = (value, str(server.id))
-    # c.execute(sql, t)
-    # conn.commit()
-    # conn.close()
-
 def check_setting(server, setting):
     settingspath = "servers/{}/settings.json".format(server.id)
+    if not setting in open(settingspath, "r").read():
+        print("No such setting found")
+        return None
+
     with open(settingspath, "r") as f:
         json_data = json.load(f)
         if json_data[setting] == 1:
@@ -377,7 +361,6 @@ async def on_ready():
     c.execute(sql)
     conn.commit()
     data = c.fetchall()
-    conn.close()
     for d in data:
         serverid = d[1]
         userid = d[2]
@@ -397,6 +380,36 @@ async def on_ready():
                 json_data[serverid] = {}
                 json_data[serverid]["Money"] = money
                 json_data[serverid]["Bank"] = bank
+                with open(path, 'w') as f:
+                    json.dump(json_data, f)
+
+    sql = "SELECT * FROM `Economy_Settings`"
+    c.execute(sql)
+    conn.commit()
+    data = c.fetchall()
+    conn.close()
+    for d in data:
+        serverid = d[1]
+        max_work_amount = d[2]
+        min_work_amount = d[3]
+        max_slut_amount = d[4]
+        min_slut_amount = d[5]
+        path = "servers/{}/economy_settings.json".format(serverid)
+        if not os.path.exists(path):
+            with open(path, 'w+') as f:
+                json_data = {}
+                json_data["max_work_amount"] = max_work_amount
+                json_data["min_work_amount"] = min_work_amount
+                json_data["max_slut_amount"] = max_slut_amount
+                json_data["min_slut_amount"] = min_slut_amount
+                json.dump(json_data, f)
+        else:
+            with open(path, 'r') as f:
+                json_data = json.load(f)
+                json_data["max_work_amount"] = max_work_amount
+                json_data["min_work_amount"] = min_work_amount
+                json_data["max_slut_amount"] = max_slut_amount
+                json_data["min_slut_amount"] = min_slut_amount
                 with open(path, 'w') as f:
                     json.dump(json_data, f)
 
@@ -426,36 +439,11 @@ async def on_message(message):
     if author.bot == False:
         channel = message.channel
         server = author.server
-        togglepath = "servers/{}/profanity_filter.json".format(str(server.id))
-        customfilterpath = "servers/{}/custom_filter.json".format(str(server.id))
         c_path = "servers/{}/banned_words.txt".format(str(server.id))
-        toggle = False
-        customfiltertoggle = False
-        if os.path.exists(togglepath):
-            with open(togglepath, "r") as f:
-                json_data = json.load(f)
-                toggle = json_data["Toggle"]
-                if toggle == 1:
-                    toggle = True
-        else:
-            with open(togglepath, "w+") as f:
-                json_data = {}
-                json_data["Toggle"] = 0
-                json.dump(json_data, f)
+        sweartoggle = check_setting(server, "Profanity_Filter")
+        customfiltertoggle = check_setting(server, "Custom_Words")
 
-        if os.path.exists(customfilterpath):
-            with open(customfilterpath, "r") as f:
-                json_data = json.load(f)
-                customfiltertoggle = json_data["Toggle"]
-                if customfiltertoggle == 1:
-                    customfiltertoggle = True
-        else:
-            with open(customfilterpath, "w+") as f:
-                json_data = {}
-                json_data["Toggle"] = 0
-                json.dump(json_data, f)
-
-        if toggle == True and is_owner(author) == False and author != server.owner:
+        if sweartoggle == True and is_owner(author) == False and author != server.owner:
             if profanity.contains_profanity(message.clean_content) == True:
                  await client.delete_message(message)
                  msg = await client.send_message(channel, "{}, Watch your language!".format(author.mention))
@@ -561,20 +549,30 @@ async def seconomy(ctx):
     if is_owner(author):
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
-        sql = "TRUNCATE `Economy`"
-        c.execute(sql)
-        conn.commit()
-        directory = os.fsencode("eco")
-        for file in os.listdir(directory):
+        for file in os.listdir("eco"):
             filename = os.fsdecode(file)
             user_id = os.fsdecode(file).replace(".json", "")
-            filepath = "eco/{}".format(str(filename))            
+            filepath = "eco/{}".format(str(filename))
             with open(filepath, "r") as f:
                 economy = json.load(f)
                 for server in economy:
                     current_money = economy[server]["Money"]
                     current_bank = economy[server]["Bank"]
-                    sql = "INSERT INTO `Economy` (serverid, userid, money, bank) VALUES ('{}', '{}', '{}', '{}')".format(str(server), str(user_id), str(current_money), str(current_bank))
+                    sql = "UPDATE `Economy` SET money = '{}', bank = '{}' WHERE serverid = '{}' AND userid = '{}'".format(current_money, current_bank, str(server), str(user_id))
+                    c.execute(sql)
+                    conn.commit()
+
+        for server in os.listdir("servers"):
+            server_id = os.fsdecode(server)
+            filepath = "servers/{}/economy_settings.json".format(str(server_id))
+            with open(filepath, "r") as f:
+                settings = json.load(f)
+                for srv in settings:
+                    max_work_amount = settings["max_work_amount"]
+                    min_work_amount = settings["min_work_amount"]
+                    max_slut_amount = settings["max_slut_amount"]
+                    min_slut_amount = settings["min_slut_amount"]
+                    sql = "UPDATE `Economy_Settings` SET max_work_amount = '{}', min_work_amount = '{}', max_slut_amount = '{}', min_slut_amount = '{}' WHERE serverid = '{}'".format(max_work_amount, min_work_amount, max_slut_amount, min_slut_amount, str(srv))
                     c.execute(sql)
                     conn.commit()
 
@@ -600,11 +598,9 @@ async def ssettings(ctx):
     if is_owner(author):
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
-        directory = "servers"
-        for file in os.listdir(directory):
-            filename = os.fsdecode(file)
-            server_id = os.fsdecode(file).replace(".json", "")
-            filepath = "servers/{}/{}".format(str(server_id), str(filename))
+        for server in os.listdir("servers"):
+            server_id = os.fsdecode(server)
+            filepath = "servers/{}/settings.json".format(str(server_id))
             with open(filepath, "r") as f:
                 settings = json.load(f)
                 for server in settings:
@@ -626,7 +622,7 @@ async def ssettings(ctx):
                     profanity_filter = settings["Profanity_Filter"]
                     customwords_toggle = settings["Custom_Words"]
                     earn_cooldown = settings["earn_cooldown"]
-                    sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, server)
+                    sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, str(server_id))
                     c.execute(sql)
                     conn.commit()
 
@@ -1077,22 +1073,6 @@ async def nsfwtoggle(ctx):
                 await client.say(embed=embed)
             else:
                 update_setting(server, "NSFW_toggle", True)
-                if not os.path.exists("servers/{}".format(server.id)):
-                    os.makedirs("servers/{}".format(server.id))
-
-                path = "servers/{}/nsfw_toggle.json".format(server.id)
-                if os.path.exists(path):
-                    with open(path, "r") as f:
-                        json_data = json.load(f)
-                        json_data["Toggle"] = 1
-                        with open(path, "w") as f:
-                            json.dump(json_data, f)
-                else:
-                    with open(path, "w+") as f:
-                        json_data = {}
-                        json_data["Toggle"] = 1
-                        json.dump(json_data, f)
-
                 embed = discord.Embed(
                     description="NSFW has been set to **True**",
                     color=0x00FF00
@@ -1100,22 +1080,6 @@ async def nsfwtoggle(ctx):
                 await client.say(embed=embed)
         elif current_toggle == True:
             update_setting(server, "NSFW_toggle", False)
-            if not os.path.exists("servers/{}".format(server.id)):
-                os.makedirs("servers/{}".format(server.id))
-
-            path = "servers/{}/nsfw_toggle.json".format(server.id)
-            if os.path.exists(path):
-                with open(path, "r") as f:
-                    json_data = json.load(f)
-                    json_data["Toggle"] = 1
-                    with open(path, "w") as f:
-                        json.dump(json_data, f)
-            else:
-                with open(path, "w+") as f:
-                    json_data = {}
-                    json_data["Toggle"] = 1
-                    json.dump(json_data, f)
-
             embed = discord.Embed(
                 description="NSFW has been set to **False**",
                 color=0x00FF00
@@ -1177,22 +1141,6 @@ async def sweartoggle(ctx):
         current_toggle = check_setting(server, "Profanity_Filter")
         if current_toggle == False:
             update_setting(server, "Profanity_Filter", True)
-            if not os.path.exists("servers/{}".format(server.id)):
-                os.makedirs("servers/{}".format(server.id))
-
-            path = "servers/{}/profanity_filter.json".format(server.id)
-            if os.path.exists(path):
-                with open(path, "r") as f:
-                    json_data = json.load(f)
-                    json_data["Toggle"] = 1
-                    with open(path, "w") as f:
-                        json.dump(json_data, f)
-            else:
-                with open(path, "w+") as f:
-                    json_data = {}
-                    json_data["Toggle"] = 1
-                    json.dump(json_data, f)
-                    
             embed = discord.Embed(
                 description="The swear filter has been **Enabled**",
                 color=0x00FF00
@@ -1200,22 +1148,6 @@ async def sweartoggle(ctx):
             await client.say(embed=embed)
         elif current_toggle == True:
             update_setting(server, "Profanity_Filter", False)
-            if not os.path.exists("servers/{}".format(server.id)):
-                os.makedirs("servers/{}".format(server.id))
-
-            path = "servers/{}/profanity_filter.json".format(server.id)
-            if os.path.exists(path):
-                with open(path, "r") as f:
-                    json_data = json.load(f)
-                    json_data["Toggle"] = 0
-                    with open(path, "w") as f:
-                        json.dump(json_data, f)
-            else:
-                with open(path, "w+") as f:
-                    json_data = {}
-                    json_data["Toggle"] = 0
-                    json.dump(json_data, f)
-
             embed = discord.Embed(
                 description="The swear filter has been **Disabled**",
                 color=0x00FF00
@@ -1243,22 +1175,6 @@ async def customwords(ctx):
         current_toggle = check_setting(server, "Custom_Words")
         if current_toggle == False:
             update_setting(server, "Custom_Words", True)
-            if not os.path.exists("servers/{}".format(server.id)):
-                os.makedirs("servers/{}".format(server.id))
-
-            path = "servers/{}/custom_filter.json".format(server.id)
-            if os.path.exists(path):
-                with open(path, "r") as f:
-                    json_data = json.load(f)
-                    json_data["Toggle"] = 1
-                    with open(path, "w") as f:
-                        json.dump(json_data, f)
-            else:
-                with open(path, "w+") as f:
-                    json_data = {}
-                    json_data["Toggle"] = 1
-                    json.dump(json_data, f)
-                    
             embed = discord.Embed(
                 description="The custom words filter has been **Enabled**",
                 color=0x00FF00
@@ -1266,22 +1182,6 @@ async def customwords(ctx):
             await client.say(embed=embed)
         elif current_toggle == True:
             update_setting(server, "Custom_Words", False)
-            if not os.path.exists("servers/{}".format(server.id)):
-                os.makedirs("servers/{}".format(server.id))
-
-            path = "servers/{}/custom_filter.json".format(server.id)
-            if os.path.exists(path):
-                with open(path, "r") as f:
-                    json_data = json.load(f)
-                    json_data["Toggle"] = 0
-                    with open(path, "w") as f:
-                        json.dump(json_data, f)
-            else:
-                with open(path, "w+") as f:
-                    json_data = {}
-                    json_data["Toggle"] = 0
-                    json.dump(json_data, f)
-
             embed = discord.Embed(
                 description="The custom words filter has been **Disabled**",
                 color=0x00FF00
@@ -2080,4 +1980,4 @@ if __name__ == "__main__":
     for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
         signal(sig, save)
 
-    client.run("NDcyODE3MDkwNzg1NzA1OTg1.Dj45QA.A3S3wwN0_lxlQbQCgkC44x-uJJg")
+    client.run(TOKEN)

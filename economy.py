@@ -28,8 +28,29 @@ class Economy:
         conn.commit()
         conn.close()
 
+    def update_setting(self, server, setting, value):
+        settingspath = "servers/{}/economy_settings.json".format(server.id)
+        if not setting in open(settingspath, "r").read():
+            print("No such setting found")
+            return None
+
+        with open(settingspath, "r") as f:
+            if value == True:
+                value = 1
+            elif value == False:
+                value = 0
+
+            json_data = json.load(f)
+            with open(settingspath, "w") as f:
+                json_data[setting] = value
+                json.dump(json_data, f)
+
     def check_setting(self, server, setting):
-        settingspath = "servers/{}/settings.json".format(server.id)
+        settingspath = "servers/{}/economy_settings.json".format(server.id)
+        if not setting in open(settingspath, "r").read():
+            print("No such setting found")
+            return None
+
         with open(settingspath, "r") as f:
             json_data = json.load(f)
             if json_data[setting] == 1:
@@ -38,25 +59,6 @@ class Economy:
                 return False
             else:
                 return json_data[setting]
-
-    def update_database(self, server, setting, value):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
-        c = conn.cursor()
-        if setting == "max_work_amount":
-            sql = "UPDATE `Economy_Settings` SET max_work_amount = %s where serverid = %s"
-        elif setting == "min_work_amount":
-            sql = "UPDATE `Economy_Settings` SET min_work_amount = %s where serverid = %s"
-        elif setting == "max_slut_amount":
-            sql = "UPDATE `Economy_Settings` SET max_slut_amount = %s where serverid = %s"
-        elif setting == "min_slut_amount":
-            sql = "UPDATE `Economy_Settings` SET min_slut_amount = %s where serverid = %s"
-        else:
-            print("No such setting found")
-            return
-        t = (value, str(server.id))
-        c.execute(sql, t)
-        conn.commit()
-        conn.close()
 
     def make_settings(self, server):
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
@@ -752,7 +754,7 @@ class Economy:
                     await self.client.say(embed=embed)
                     return
 
-                self.update_database(server, "max_work_amount", amount)
+                self.update_setting(server, "max_work_amount", amount)
                 if not server.id in economy_array:
                     economy_array[server.id] = {}
                     economy_array[server.id]["max_work_amount"] = amount
@@ -770,7 +772,7 @@ class Economy:
                     await self.client.say(embed=embed)
                     return
 
-                self.update_database(server, "max_slut_amount", amount)
+                self.update_setting(server, "max_slut_amount", amount)
                 if not server.id in economy_array:
                     economy_array[server.id] = {}
                     economy_array[server.id]["max_slut_amount"] = amount
@@ -839,7 +841,7 @@ class Economy:
                     await self.client.say(embed=embed)
                     return
 
-                self.update_database(server, "min_work_amount", amount)
+                self.update_setting(server, "min_work_amount", amount)
                 if not server.id in economy_array:
                     economy_array[server.id] = {}
                     economy_array[server.id]["min_work_amount"] = amount
@@ -857,7 +859,7 @@ class Economy:
                     await self.client.say(embed=embed)
                     return
 
-                self.update_database(server, "min_slut_amount", amount)
+                self.update_setting(server, "min_slut_amount", amount)
                 if not server.id in economy_array:
                     economy_array[server.id] = {}
                     economy_array[server.id]["min_slut_amount"] = amount
