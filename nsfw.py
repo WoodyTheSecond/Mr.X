@@ -121,7 +121,7 @@ class NSFW:
                 image = self.getPornImage("https://www.sex.com/gifs/?sort=popular&sub=all")
                 if image == None:
                     embed = discord.Embed(
-                        description="I couldn't find any image for your query",
+                        description="I couldn't find any gif image for your query",
                         color=0xFF0000
                     )
 
@@ -140,7 +140,7 @@ class NSFW:
                 image = self.getPornImage("https://www.sex.com/search/gifs?query={}".format(searchValue))
                 if image == None:
                     embed = discord.Embed(
-                        description="I couldn't find any image for your query",
+                        description="I couldn't find any gif image for your query",
                         color=0xFF0000
                     )
 

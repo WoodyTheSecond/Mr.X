@@ -200,8 +200,9 @@ def save_settings(*args):
     return True
 
 def save(*args):
-    if save_economy() == True and save_settings() == True:
-        sys.exit(0)
+    save_economy()
+    save_settings()
+    sys.exit(0)
 
 def create_database(server):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
