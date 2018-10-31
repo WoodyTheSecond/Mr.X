@@ -183,15 +183,15 @@ def save(*args):
     save_settings()
     sys.exit(0)
 
-def create_database(settingstype, server):
+def create_database(settingstype, serverid):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     if settingstype == "server":
-        sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle, earn_cooldown) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0', '0')".format(str(server.id))
+        sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle, earn_cooldown) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0', '0')".format(serverid)
         c.execute(sql)
         conn.commit()
     elif settingstype == "economy":
-        sql = "INSERT INTO `Economy_Settings` (serverid, max_work_amount, min_work_amount, max_slut_amount, min_slut_amount) VALUES ('{}', '1000', '500', '1000', '500')".format(str(server.id))
+        sql = "INSERT INTO `Economy_Settings` (serverid, max_work_amount, min_work_amount, max_slut_amount, min_slut_amount) VALUES ('{}', '1000', '500', '1000', '500')".format(serverid)
         c.execute(sql)
         conn.commit()
 
@@ -229,22 +229,22 @@ def check_setting(server, setting):
         else:
             return json_data[setting]
 
-def make_settings(server):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+def make_settings(serverid, conn = None):
+    if conn == None:
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+
+    settingspath = "servers/{}/settings.json".format(serverid)
+    economy_settingspath = "servers/{}/economy_settings.json".format(serverid)
+    if not os.path.exists("servers/{}".format(serverid)):
+        os.makedirs("servers/{}".format(serverid))
+
     c = conn.cursor()
-    sql = "SELECT * FROM `Server_Settings` WHERE serverid = {}".format(server.id)
+    sql = "SELECT * FROM `Server_Settings` WHERE serverid = {}".format(serverid)
     c.execute(sql)
     conn.commit()
     data = c.fetchone()
-    print("server {}".format(data))
     if data == None:
-        create_database("server", server)
-
-    settingspath = "servers/{}/settings.json".format(server.id)
-    if not os.path.exists("servers/{}".format(server.id)):
-        os.makedirs("servers/{}".format(server.id))
-
-    if not os.path.exists(settingspath):
+        create_database("server", serverid)
         with open(settingspath, "w+") as f:
             json_data = {}
             json_data["Join_Role"] = "None"
@@ -267,27 +267,77 @@ def make_settings(server):
             json_data["earn_cooldown"] = ""
             json_data["Marriage_Toggle"] = 0
             json.dump(json_data, f)
+    else:
+        if not os.path.exists(settingspath):
+            join_role = data[2]
+            dmwarn = data[3]
+            verify_role = data[4]
+            mod_role = data[5]
+            admin_role = data[6]
+            mute_role = data[7]
+            warn_mute = data[8]
+            join_toggle = data[9]
+            can_mod_announce = data[10]
+            level_system = data[11]
+            chat_filter = data[12]
+            ignore_hierarchy = data[13]
+            nsfw_role = data[14]
+            nsfw_toggle = data[15]
+            fun_toggle = data[16]
+            profanity_filter = data[17]
+            customwords_toggle = data[18]
+            earn_cooldown = data[19]
+            marriage_toggle = data[20]
+            with open(settingspath, "w+") as f:
+                json_data = {}
+                json_data["Join_Role"] = join_role
+                json_data["DMWarn"] = dmwarn
+                json_data["Verify_Role"] = verify_role
+                json_data["Mod_Role"] = mod_role
+                json_data["Admin_Role"] = admin_role
+                json_data["Mute_Role"] = mute_role
+                json_data["WarnMute"] = warn_mute
+                json_data["JoinToggle"] = join_toggle
+                json_data["CanModAnnounce"] = can_mod_announce
+                json_data["Level_System"] = level_system
+                json_data["Chat_Filter"] = chat_filter
+                json_data["Ignore_Hierarchy"] = ignore_hierarchy
+                json_data["NSFW_role"] = nsfw_role
+                json_data["NSFW_toggle"] = nsfw_toggle
+                json_data["FunToggle"] = fun_toggle
+                json_data["Profanity_Filter"] = profanity_filter
+                json_data["Custom_Words"] = customwords_toggle
+                json_data["earn_cooldown"] = earn_cooldown
+                json_data["Marriage_Toggle"] = marriage_toggle
+                json.dump(json_data, f)
 
-    sql = "SELECT * FROM `Economy_Settings` WHERE serverid = {}".format(server.id)
+    sql = "SELECT * FROM `Economy_Settings` WHERE serverid = {}".format(serverid)
     c.execute(sql)
     conn.commit()
     data = c.fetchone()
-    print("economy {}".format(data))
     if data == None:
-        create_database("economy", server)
-
-    economy_settingspath = "servers/{}/economy_settings.json".format(server.id)
-    if not os.path.exists("servers/{}".format(server.id)):
-        os.makedirs("servers/{}".format(server.id))
-
-    if not os.path.exists(economy_settingspath):
-        with open(economy_settingspath, "w+") as f:
-            json_data = {}
-            json_data["max_work_amount"] = 1000
-            json_data["min_work_amount"] = 500
-            json_data["max_slut_amount"] = 1000
-            json_data["min_slut_amount"] = 500
-            json.dump(json_data, f)
+        create_database("economy", serverid)
+        if not os.path.exists(economy_settingspath):
+            with open(economy_settingspath, "w+") as f:
+                json_data = {}
+                json_data["max_work_amount"] = 1000
+                json_data["min_work_amount"] = 500
+                json_data["max_slut_amount"] = 1000
+                json_data["min_slut_amount"] = 500
+                json.dump(json_data, f)
+    else:
+        if not os.path.exists(economy_settingspath):
+            max_work_amount = data[2]
+            min_work_amount = data[3]
+            max_slut_amount = data[4]
+            min_slut_amount = data[5]
+            with open(economy_settingspath, "w+") as f:
+                json_data = {}
+                json_data["max_work_amount"] = max_work_amount
+                json_data["min_work_amount"] = min_work_amount
+                json_data["max_slut_amount"] = max_slut_amount
+                json_data["min_slut_amount"] = min_slut_amount
+                json.dump(json_data, f)
 
 def is_owner(user):
     if user.id == "164068466129633280" or user.id == "142002197998206976" or user.id == "457516809940107264":
@@ -297,10 +347,8 @@ def is_owner(user):
 
 @client.event
 async def on_server_join(server):
-    if make_settings(server) == True:
-        print("The settings have been successfully created")
-    else:
-        print("The settings for this server already exists")
+    make_settings(str(server.id))
+    print("Settings for the server with the name {} and the id {} have been created".format(server.name, server.id))
 
 @client.event
 async def on_ready():
@@ -312,84 +360,12 @@ async def on_ready():
                 os.remove(file_path)
         except Exception as e:
             print(e)
-    
+
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+    for server in client.servers:
+        make_settings(str(server.id), conn)
+
     c = conn.cursor()
-    sql = "SELECT * FROM `Server_Settings`"
-    c.execute(sql)
-    conn.commit()
-    data = c.fetchall()
-    for d in data:
-        serverid = d[1]
-        join_role = d[2]
-        dmwarn = d[3]
-        verify_role = d[4]
-        mod_role = d[5]
-        admin_role = d[6]
-        mute_role = d[7]
-        warn_mute = d[8]
-        join_toggle = d[9]
-        can_mod_announce = d[10]
-        level_system = d[11]
-        chat_filter = d[12]
-        ignore_hierarchy = d[13]
-        nsfw_role = d[14]
-        nsfw_toggle = d[15]
-        fun_toggle = d[16]
-        profanity_filter = d[17]
-        customwords_toggle = d[18]
-        earn_cooldown = d[19]
-        marriage_toggle = d[20]
-        if not os.path.exists("servers/{}".format(serverid)):
-            os.makedirs("servers/{}".format(serverid))
-
-        settingspath = "servers/{}/settings.json".format(str(serverid))
-        with open(settingspath, "w+") as f:
-            json_data = {}
-            json_data["Join_Role"] = join_role
-            json_data["DMWarn"] = dmwarn
-            json_data["Verify_Role"] = verify_role
-            json_data["Mod_Role"] = mod_role
-            json_data["Admin_Role"] = admin_role
-            json_data["Mute_Role"] = mute_role
-            json_data["WarnMute"] = warn_mute
-            json_data["JoinToggle"] = join_toggle
-            json_data["CanModAnnounce"] = can_mod_announce
-            json_data["Level_System"] = level_system
-            json_data["Chat_Filter"] = chat_filter
-            json_data["Ignore_Hierarchy"] = ignore_hierarchy
-            json_data["NSFW_role"] = nsfw_role
-            json_data["NSFW_toggle"] = nsfw_toggle
-            json_data["FunToggle"] = fun_toggle
-            json_data["Profanity_Filter"] = profanity_filter
-            json_data["Custom_Words"] = customwords_toggle
-            json_data["earn_cooldown"] = earn_cooldown
-            json_data["Marriage_Toggle"] = marriage_toggle
-            json.dump(json_data, f)
-    
-    sql = "SELECT * FROM `Economy_Settings`"
-    c.execute(sql)
-    conn.commit()
-    data = c.fetchall()
-
-    for d in data:
-        serverid = d[1]
-        max_work_amount = d[2]
-        min_work_amount = d[3]
-        max_slut_amount = d[4]
-        min_slut_amount = d[5]
-        if not os.path.exists("servers/{}".format(serverid)):
-            os.makedirs("servers/{}".format(serverid))
-
-        settingspath = "servers/{}/economy_settings.json".format(str(serverid))
-        with open(settingspath, "w+") as f:
-            json_data = {}
-            json_data["max_work_amount"] = max_work_amount
-            json_data["min_work_amount"] = min_work_amount
-            json_data["max_slut_amount"] = max_slut_amount
-            json_data["min_slut_amount"] = min_slut_amount
-            json.dump(json_data, f)
-
     sql = "SELECT * FROM `Banned_Words`"
     c.execute(sql)
     conn.commit()
@@ -434,36 +410,6 @@ async def on_ready():
                 json_data[serverid] = {}
                 json_data[serverid]["Money"] = money
                 json_data[serverid]["Bank"] = bank
-                with open(path, 'w') as f:
-                    json.dump(json_data, f)
-
-    sql = "SELECT * FROM `Economy_Settings`"
-    c.execute(sql)
-    conn.commit()
-    data = c.fetchall()
-    conn.close()
-    for d in data:
-        serverid = d[1]
-        max_work_amount = d[2]
-        min_work_amount = d[3]
-        max_slut_amount = d[4]
-        min_slut_amount = d[5]
-        path = "servers/{}/economy_settings.json".format(serverid)
-        if not os.path.exists(path):
-            with open(path, 'w+') as f:
-                json_data = {}
-                json_data["max_work_amount"] = max_work_amount
-                json_data["min_work_amount"] = min_work_amount
-                json_data["max_slut_amount"] = max_slut_amount
-                json_data["min_slut_amount"] = min_slut_amount
-                json.dump(json_data, f)
-        else:
-            with open(path, 'r') as f:
-                json_data = json.load(f)
-                json_data["max_work_amount"] = max_work_amount
-                json_data["min_work_amount"] = min_work_amount
-                json_data["max_slut_amount"] = max_slut_amount
-                json_data["min_slut_amount"] = min_slut_amount
                 with open(path, 'w') as f:
                     json.dump(json_data, f)
 
@@ -637,7 +583,6 @@ async def seconomy(ctx):
 @client.command(pass_context=True)
 async def ssettings(ctx):
     author = ctx.message.author
-    server = author.server
     if is_owner(author):
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
@@ -646,36 +591,32 @@ async def ssettings(ctx):
             if str(server_id) != "placeholder":
                 settingspath = "servers/{}/settings.json".format(str(server_id))
                 econony_settingspath = "servers/{}/economy_settings.json".format(str(server_id))
-                if os.path.exists(settingspath):
-                    with open(settingspath, "r") as f:
-                        settings = json.load(f)
-                        for srv2 in settings:
-                            join_role = settings["Join_Role"]
-                            dmwarn = settings["DMWarn"]
-                            verify_role = settings["Verify_Role"]
-                            mod_role = settings["Mod_Role"]
-                            admin_role = settings["Admin_Role"]
-                            mute_role = settings["Mute_Role"]
-                            warn_mute = settings["WarnMute"]
-                            join_toggle = settings["JoinToggle"]
-                            can_mod_announce = settings["CanModAnnounce"]
-                            level_system = settings["Level_System"]
-                            chat_filter = settings["Chat_Filter"]
-                            ignore_hierarchy = settings["Ignore_Hierarchy"]
-                            nsfw_role = settings["NSFW_role"]
-                            nsfw_toggle = settings["NSFW_toggle"]
-                            fun_toggle = settings["FunToggle"]
-                            profanity_filter = settings["Profanity_Filter"]
-                            customwords_toggle = settings["Custom_Words"]
-                            earn_cooldown = settings["earn_cooldown"]
-                            marriage_toggle = settings["Marriage_Toggle"]
-                            sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}', Marriage_Toggle = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, marriage_toggle, str(srv2))
-                            c.execute(sql)
-                            conn.commit()
-                else:
-                    make_settings(server)
+                with open(settingspath, "r") as f:
+                    settings = json.load(f)
+                    for srv2 in settings:
+                        join_role = settings["Join_Role"]
+                        dmwarn = settings["DMWarn"]
+                        verify_role = settings["Verify_Role"]
+                        mod_role = settings["Mod_Role"]
+                        admin_role = settings["Admin_Role"]
+                        mute_role = settings["Mute_Role"]
+                        warn_mute = settings["WarnMute"]
+                        join_toggle = settings["JoinToggle"]
+                        can_mod_announce = settings["CanModAnnounce"]
+                        level_system = settings["Level_System"]
+                        chat_filter = settings["Chat_Filter"]
+                        ignore_hierarchy = settings["Ignore_Hierarchy"]
+                        nsfw_role = settings["NSFW_role"]
+                        nsfw_toggle = settings["NSFW_toggle"]
+                        fun_toggle = settings["FunToggle"]
+                        profanity_filter = settings["Profanity_Filter"]
+                        customwords_toggle = settings["Custom_Words"]
+                        earn_cooldown = settings["earn_cooldown"]
+                        marriage_toggle = settings["Marriage_Toggle"]
+                        sql = "UPDATE `Server_Settings` SET Join_Role = '{}', DMWarn = '{}', Verify_Role = '{}', Mod_Role = '{}', Admin_Role = '{}', Mute_Role = '{}', WarnMute = '{}', JoinToggle = '{}', CanModAnnounce = '{}', Level_System = '{}', Chat_Filter = '{}', Ignore_Hierarchy = '{}', NSFW_role = '{}', NSFW_toggle = '{}', FunToggle = '{}', Profanity_Filter = '{}', Custom_Words = '{}', earn_cooldown = '{}', Marriage_Toggle = '{}' WHERE serverid = '{}'".format(join_role, dmwarn, verify_role, mod_role, admin_role, mute_role, warn_mute, join_toggle, can_mod_announce, level_system, chat_filter, ignore_hierarchy, nsfw_role, nsfw_toggle, fun_toggle, profanity_filter, customwords_toggle, earn_cooldown, marriage_toggle, str(srv2))
+                        c.execute(sql)
+                        conn.commit()
 
-            if os.path.exists(econony_settingspath):
                 with open(econony_settingspath, "r") as f:
                     settings = json.load(f)
                     for srv2 in settings:
@@ -686,8 +627,6 @@ async def ssettings(ctx):
                         sql = "UPDATE `Economy_Settings` SET max_work_amount = '{}', min_work_amount = '{}', max_slut_amount = '{}', min_slut_amount = '{}' WHERE serverid = '{}'".format(max_work_amount, min_work_amount, max_slut_amount, min_slut_amount, str(srv2))
                         c.execute(sql)
                         conn.commit()
-            else:
-                make_settings(server)
 
         conn.close()
         embed = discord.Embed(
@@ -1626,7 +1565,7 @@ async def createsettings(ctx):
     author = ctx.message.author
     server = author.server
     if is_owner(author) == True:
-        make_settings(server)
+        make_settings(str(server.id))
         embed = discord.Embed(
             description="The settings have been successfully created",
             color=0x00FF00
@@ -2070,4 +2009,4 @@ if __name__ == "__main__":
     for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
         signal(sig, save)
 
-    client.run("NDcyODE3MDkwNzg1NzA1OTg1.Dj45QA.A3S3wwN0_lxlQbQCgkC44x-uJJg")
+    client.run(TOKEN)
