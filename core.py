@@ -183,12 +183,18 @@ def save(*args):
     save_settings()
     sys.exit(0)
 
-def create_database(server):
+def create_database(settingstype, server):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
-    sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle, earn_cooldown) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0', '0')".format(str(server.id))
-    c.execute(sql)
-    conn.commit()
+    if settingstype == "server":
+        sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle, earn_cooldown) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0', '0')".format(str(server.id))
+        c.execute(sql)
+        conn.commit()
+    elif settingstype == "economy":
+        sql = "INSERT INTO `Economy_Settings` (serverid, max_work_amount, min_work_amount, max_slut_amount, min_slut_amount) VALUES ('{}', '1000', '500', '1000', '500')".format(str(server.id))
+        c.execute(sql)
+        conn.commit()
+
     conn.close()
 
 def update_setting(server, setting, value):
@@ -230,12 +236,14 @@ def make_settings(server):
     c.execute(sql)
     conn.commit()
     data = c.fetchone()
-    conn.close()
+    if data == None:
+        create_database("server", server)
+
     settingspath = "servers/{}/settings.json".format(server.id)
     if not os.path.exists("servers/{}".format(server.id)):
         os.makedirs("servers/{}".format(server.id))
 
-    if os.path.exists(settingspath):
+    if not os.path.exists(settingspath):
         with open(settingspath, "w+") as f:
             json_data = {}
             json_data["Join_Role"] = "None"
@@ -259,11 +267,25 @@ def make_settings(server):
             json_data["Marriage_Toggle"] = 0
             json.dump(json_data, f)
 
+    sql = "SELECT * FROM `Economy_Settings` WHERE serverid = {}".format(str(server.id))
+    c.execute(sql)
+    conn.commit()
+    data = c.fetchone()
     if data == None:
-        create_database(server)
-        return True
-    else:
-        return False
+        create_database("economy", server)
+
+    economy_settingspath = "servers/{}/economy_settings.json".format(server.id)
+    if not os.path.exists("servers/{}".format(server.id)):
+        os.makedirs("servers/{}".format(server.id))
+
+    if not os.path.exists(economy_settingspath):
+        with open(economy_settingspath, "w+") as f:
+            json_data = {}
+            json_data["max_work_amount"] = 1000
+            json_data["min_work_amount"] = 500
+            json_data["max_slut_amount"] = 1000
+            json_data["min_slut_amount"] = 500
+            json.dump(json_data, f)
 
 def is_owner(user):
     if user.id == "164068466129633280" or user.id == "142002197998206976" or user.id == "457516809940107264":
@@ -2080,4 +2102,4 @@ if __name__ == "__main__":
     for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
         signal(sig, save)
 
-    client.run(TOKEN)
+    client.run("NDcyODE3MDkwNzg1NzA1OTg1.Dj45QA.A3S3wwN0_lxlQbQCgkC44x-uJJg")
