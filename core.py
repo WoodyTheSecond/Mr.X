@@ -342,53 +342,28 @@ async def on_ready():
             os.makedirs("servers/{}".format(serverid))
 
         settingspath = "servers/{}/settings.json".format(str(serverid))
-        if os.path.exists(settingspath):
-            with open(settingspath, "r") as f:
-                json_data = json.load(f)
-                json_data["Join_Role"] = join_role
-                json_data["DMWarn"] = dmwarn
-                json_data["Verify_Role"] = verify_role
-                json_data["Mod_Role"] = mod_role
-                json_data["Admin_Role"] = admin_role
-                json_data["Mute_Role"] = mute_role
-                json_data["WarnMute"] = warn_mute
-                json_data["JoinToggle"] = join_toggle
-                json_data["CanModAnnounce"] = can_mod_announce
-                json_data["Level_System"] = level_system
-                json_data["Chat_Filter"] = chat_filter
-                json_data["Ignore_Hierarchy"] = ignore_hierarchy
-                json_data["NSFW_role"] = nsfw_role
-                json_data["NSFW_toggle"] = nsfw_toggle
-                json_data["FunToggle"] = fun_toggle
-                json_data["Profanity_Filter"] = profanity_filter
-                json_data["Custom_Words"] = customwords_toggle
-                json_data["earn_cooldown"] = earn_cooldown
-                json_data["Marriage_Toggle"] = marriage_toggle
-                with open(settingspath, "w") as f:
-                    json.dump(json_data, f)
-        else:
-            with open(settingspath, "w+") as f:
-                json_data = {}
-                json_data["Join_Role"] = join_role
-                json_data["DMWarn"] = dmwarn
-                json_data["Verify_Role"] = verify_role
-                json_data["Mod_Role"] = mod_role
-                json_data["Admin_Role"] = admin_role
-                json_data["Mute_Role"] = mute_role
-                json_data["WarnMute"] = warn_mute
-                json_data["JoinToggle"] = join_toggle
-                json_data["CanModAnnounce"] = can_mod_announce
-                json_data["Level_System"] = level_system
-                json_data["Chat_Filter"] = chat_filter
-                json_data["Ignore_Hierarchy"] = ignore_hierarchy
-                json_data["NSFW_role"] = nsfw_role
-                json_data["NSFW_toggle"] = nsfw_toggle
-                json_data["FunToggle"] = fun_toggle
-                json_data["Profanity_Filter"] = profanity_filter
-                json_data["Custom_Words"] = customwords_toggle
-                json_data["earn_cooldown"] = earn_cooldown
-                json_data["Marriage_Toggle"] = marriage_toggle
-                json.dump(json_data, f)
+        with open(settingspath, "w+") as f:
+            json_data = {}
+            json_data["Join_Role"] = join_role
+            json_data["DMWarn"] = dmwarn
+            json_data["Verify_Role"] = verify_role
+            json_data["Mod_Role"] = mod_role
+            json_data["Admin_Role"] = admin_role
+            json_data["Mute_Role"] = mute_role
+            json_data["WarnMute"] = warn_mute
+            json_data["JoinToggle"] = join_toggle
+            json_data["CanModAnnounce"] = can_mod_announce
+            json_data["Level_System"] = level_system
+            json_data["Chat_Filter"] = chat_filter
+            json_data["Ignore_Hierarchy"] = ignore_hierarchy
+            json_data["NSFW_role"] = nsfw_role
+            json_data["NSFW_toggle"] = nsfw_toggle
+            json_data["FunToggle"] = fun_toggle
+            json_data["Profanity_Filter"] = profanity_filter
+            json_data["Custom_Words"] = customwords_toggle
+            json_data["earn_cooldown"] = earn_cooldown
+            json_data["Marriage_Toggle"] = marriage_toggle
+            json.dump(json_data, f)
     
     sql = "SELECT * FROM `Economy_Settings`"
     c.execute(sql)
@@ -404,23 +379,13 @@ async def on_ready():
             os.makedirs("servers/{}".format(serverid))
 
         settingspath = "servers/{}/economy_settings.json".format(str(serverid))
-        if os.path.exists(settingspath):
-            with open(settingspath, "r") as f:
-                json_data = json.load(f)
-                json_data["max_work_amount"] = max_work_amount
-                json_data["min_work_amount"] = min_work_amount
-                json_data["max_slut_amount"] = max_slut_amount
-                json_data["min_slut_amount"] = min_slut_amount
-                with open(settingspath, "w") as f:
-                    json.dump(json_data, f)
-        else:
-            with open(settingspath, "w+") as f:
-                json_data = {}
-                json_data["max_work_amount"] = max_work_amount
-                json_data["min_work_amount"] = min_work_amount
-                json_data["max_slut_amount"] = max_slut_amount
-                json_data["min_slut_amount"] = min_slut_amount
-                json.dump(json_data, f)
+        with open(settingspath, "w+") as f:
+            json_data = {}
+            json_data["max_work_amount"] = max_work_amount
+            json_data["min_work_amount"] = min_work_amount
+            json_data["max_slut_amount"] = max_slut_amount
+            json_data["min_slut_amount"] = min_slut_amount
+            json.dump(json_data, f)
 
     sql = "SELECT * FROM `Banned_Words`"
     c.execute(sql)
