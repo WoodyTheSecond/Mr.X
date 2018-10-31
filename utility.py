@@ -16,6 +16,10 @@ class Utility:
 
     def check_setting(self, server, setting):
         settingspath = "servers/{}/settings.json".format(server.id)
+        if not setting in open(settingspath, "r").read():
+            print("No such setting found")
+            return None
+
         with open(settingspath, "r") as f:
             json_data = json.load(f)
             if json_data[setting] == 1:
@@ -212,6 +216,7 @@ class Utility:
             embed.add_field(name="banword word", value="Bans the word/add the word to the swear filter", inline=False)
             embed.add_field(name="unbanword word", value="Unbans the word/removes the word from the swear filter", inline=False)
             embed.add_field(name="bannedwords", value="Sends you the list of banned words", inline=False)
+            embed.add_field(name="marrytoggle", value="Toggles the marriage commands", inline=False)
             embed.add_field(name="lockchannel [channel]", value="Locks the channel", inline=False)
             embed.add_field(name="unlockchannel [channel]", value="Unlocks the channel", inline=False)
             embed.add_field(name="kickbots", value="Kicks all the bots in the server", inline=False)
@@ -263,14 +268,9 @@ class Utility:
             embed.set_author(name="NSFW Module")
             embed.add_field(name="porn [search]", value="Posts a porn image", inline=False)
             embed.add_field(name="porng [search]", value="Posts a porn GIF image", inline=False)
-            embed.add_field(name="fourk", value="Posts a 4k image", inline=False)
-            embed.add_field(name="gonewild", value="Posts a gone wild image", inline=False)
             embed.add_field(name="lewdneko", value="Posts a lewd neko NSFW image", inline=False)
             embed.add_field(name="holo", value="Posts NSFW content of the anime character Holo", inline=False)
-            embed.add_field(name="gasm", value="Posts a image with someone having an orgasm", inline=False)
             embed.add_field(name="lewdkitsune", value="Posts neko NSFW content", inline=False)
-            embed.add_field(name="furry", value="Posts a random furry image from reddit", inline=False)
-            embed.add_field(name="tentai", value="Posts a random tentacle image from reddit", inline=False)
             embed.add_field(name="rule34 tag", value="Posts a rule34 image", inline=False)
             embed.add_field(name="e621 tag", value="Posts a e621 image", inline=False)
             await self.client.say(embed=embed)

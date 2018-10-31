@@ -15,6 +15,10 @@ class Otaku:
         
     def check_setting(self, server, setting):
         settingspath = "servers/{}/settings.json".format(server.id)
+        if not setting in open(settingspath, "r").read():
+            print("No such setting found")
+            return None
+
         with open(settingspath, "r") as f:
             json_data = json.load(f)
             if json_data[setting] == 1:

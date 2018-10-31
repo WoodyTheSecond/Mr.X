@@ -17,10 +17,35 @@ class Marriage:
         else:
             return False
 
+    def check_setting(self, server, setting):
+        settingspath = "servers/{}/settings.json".format(server.id)
+        if not setting in open(settingspath, "r").read():
+            print("No such setting found")
+            return None
+
+        with open(settingspath, "r") as f:
+            json_data = json.load(f)
+            if json_data[setting] == 1:
+                return True
+            elif json_data[setting] == 0:
+                return False
+            else:
+                return json_data[setting]
+
     @commands.command(pass_context=True)
     async def marriage(self, ctx, user: discord.Member = None):
         author = ctx.message.author
         server = author.server
+        marriage_toggle = self.check_setting(server, "Marriage_Toggle")
+        if marriage_toggle == False:
+            embed = discord.Embed(
+                description="Marriage is currently disabled",
+                color=0xFF0000
+            )
+            
+            await self.client.say(embed=embed)
+            return
+
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         if user == None:
@@ -65,6 +90,7 @@ class Marriage:
                     description="You are not married",
                     color=0xFF0000
                 )
+
                 await self.client.say(embed=embed)
             conn.close()
         else:
@@ -115,6 +141,16 @@ class Marriage:
         author = ctx.message.author
         server = ctx.message.server
         channel = ctx.message.channel
+        marriage_toggle = self.check_setting(server, "Marriage_Toggle")
+        if marriage_toggle == False:
+            embed = discord.Embed(
+                description="Marriage is currently disabled",
+                color=0xFF0000
+            )
+            
+            await self.client.say(embed=embed)
+            return
+
         conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
         c = conn.cursor()
         sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
@@ -177,7 +213,6 @@ class Marriage:
     @commands.command(pass_context=True)
     async def forcebreakup(self, ctx, user: discord.Member = None):
         author = ctx.message.author
-        server = ctx.message.server
         if self.is_owner(author):
             if user == None:
                 embed = discord.Embed(
@@ -240,6 +275,16 @@ class Marriage:
         author = ctx.message.author
         server = ctx.message.server
         channel = ctx.message.channel
+        marriage_toggle = self.check_setting(server, "Marriage_Toggle")
+        if marriage_toggle == False:
+            embed = discord.Embed(
+                description="Marriage is currently disabled",
+                color=0xFF0000
+            )
+            
+            await self.client.say(embed=embed)
+            return
+
         if user == None:
             embed = discord.Embed(
                 description="You have not tagged anyone",
@@ -327,9 +372,6 @@ class Marriage:
                 await self.client.say(embed=embed)
 
         conn.close()
-
-
-
 
 def setup(client):
     client.add_cog(Marriage(client))
