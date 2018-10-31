@@ -1651,20 +1651,13 @@ async def createsettings(ctx):
     author = ctx.message.author
     server = author.server
     if is_owner(author) == True:
-        if make_settings(server) == True:
-            embed = discord.Embed(
-                description="The settings have been successfully created",
-                color=0x00FF00
-            )
+        make_settings(server)
+        embed = discord.Embed(
+            description="The settings have been successfully created",
+            color=0x00FF00
+        )
 
-            await client.say(embed=embed)
-        else:
-            embed = discord.Embed(
-                description="The settings for this server already exists",
-                color=0xFF0000
-            )
-
-            await client.say(embed=embed)
+        await client.say(embed=embed)
     else:
         embed = discord.Embed(
             description="You don't have permission to use this command",
