@@ -206,6 +206,7 @@ class Utility:
             embed.add_field(name="funtoggle", value="Toggles the fun commands", inline=False)
             embed.add_field(name="nsfwrole ROLE_NAME", value="Sets the nsfw role", inline=False)
             embed.add_field(name="nsfwtoggle", value="Toggles the nsfw commands", inline=False)
+            embed.add_field(name="marrytoggle", value="Toggles the marriage commands", inline=False)
             embed.add_field(name="sweartoggle", value="Toggles the profanity filter (swear filter)", inline=False)
             embed.add_field(name="customwords", value="Toggles the custom words filter (banned words filter)", inline=False)
             embed.add_field(name="banword word", value="Bans the word/add the word to the swear filter", inline=False)
