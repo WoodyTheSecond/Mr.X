@@ -503,9 +503,11 @@ async def settings(ctx):
     NSFW_toggle = str(check_setting(server, "NSFW_toggle"))
     FunToggle = str(check_setting(server, "FunToggle"))
     Profanity_Filter = str(check_setting(server, "Profanity_Filter"))
+    Customwords_Toggle = str(check_setting(server, "Custom_Words"))
     CanModAnnounce = str(check_setting(server, "CanModAnnounce"))
     Level_System = str(check_setting(server, "Level_System"))
     earn_cooldown = str(check_setting(server, "earn_cooldown"))
+    Marriage_Toggle = str(check_setting(server, "Marriage_Toggle"))
 
     await client.say("Do you want the list **Inline** ? (Yes/No)")
     user_response = await client.wait_for_message(timeout=30, channel=channel, author=author)
@@ -539,9 +541,11 @@ async def settings(ctx):
     embed.add_field(name='NSFW commands', value=NSFW_toggle, inline=inline)
     embed.add_field(name='Fun commands', value=FunToggle, inline=inline)
     embed.add_field(name='Profanity filter (swear filter)', value=Profanity_Filter, inline=inline)
+    embed.add_field(name='Banned words filter', value=Customwords_Toggle, inline=inline)
     embed.add_field(name='Can moderator announce',value=CanModAnnounce, inline=inline)
     embed.add_field(name='Level system', value=Level_System, inline=inline)
     embed.add_field(name='Work cooldown', value=earn_cooldown, inline=inline)
+    embed.add_field(name='Marriage commands', value=Marriage_Toggle, inline=inline)
     await client.say(embed=embed)
 
 @client.command(pass_context=True)
