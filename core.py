@@ -440,6 +440,15 @@ async def on_message(message):
     if author.bot == False:
         channel = message.channel
         server = author.server
+        settingspath = "servers/{}/settings.json".format(server.id)
+        if not os.path.exists(settingspath):
+            print("Waiting for settings file")
+            return
+
+        if not "Profanity_Filter" in open(settingspath, "r").read() or not "Custom_Words" in open(settingspath, "r").read():
+            print("Waiting for profanity filter and custom filter settings")
+            return
+
         profanityfiltertoggle = check_setting(server, "Profanity_Filter")
         customfiltertoggle = check_setting(server, "Custom_Words")
         bannedwordspath = "servers/{}/banned_words.txt".format(str(server.id))
@@ -509,7 +518,7 @@ async def settings(ctx):
     earn_cooldown = str(check_setting(server, "earn_cooldown"))
     Marriage_Toggle = str(check_setting(server, "Marriage_Toggle"))
 
-    await client.say("Do you want the list **Inline** ? (Yes/No)")
+    await client.say("Do you want the list inline? (Yes/No)")
     user_response = await client.wait_for_message(timeout=30, channel=channel, author=author)
     user_response = user_response.clean_content.lower()
     if user_response == "yes":
@@ -521,13 +530,13 @@ async def settings(ctx):
         return
 
     embed = discord.Embed(
-        color=0x0000FF
+        title = "{} Server Settings".format(server.name),
+        color = 0x0000FF
     )
 
     if server.icon_url != "":
         embed.set_thumbnail(url=server.icon_url)
 
-    embed.set_author(name="{} Server Settings".format(server))
     embed.add_field(name="Ignore Hierarchy",value=Ignore_Hierarchy, inline=inline)
     embed.add_field(name="Direct message on warn", value=DMWarn, inline=inline)
     embed.add_field(name="Verify Role", value=Verify_Role, inline=inline)
