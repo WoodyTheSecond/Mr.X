@@ -434,7 +434,10 @@ async def on_member_unban(server, member):
 
 @client.event
 async def on_message(message):
-    await client.wait_until_ready()
+    if message.server == None:
+        await client.say("You can't use my commands in a direct message")
+        return
+
     await client.process_commands(message)
     author = message.author
     if author.bot == False:
@@ -2007,7 +2010,6 @@ async def unload(ctx, extension):
             await client.say(embed=embed)
         except Exception as error:
             print("{} can't be unloaded. [{}]".format(extension, error))
-
 
 if __name__ == "__main__":
     for extension in extensions:
