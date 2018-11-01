@@ -15,6 +15,7 @@ import atexit
 import shutil
 from signal import *
 from profanity import profanity
+import pyjokes
 
 TOKEN = os.getenv("TOKEN")
 client = commands.Bot(command_prefix="-")
@@ -495,22 +496,34 @@ async def on_member_unban(server, member):
 
 @client.event
 async def on_message(message):
-    if message.server == None:
-        embed = discord.Embed(
-            description = "You can't use my commands in a direct message",
-            color = 0xFF0000
-        )
-
-        try:
-            await client.send_message(message.author, embed=embed)
-        except discord.HTTPException:
-            print("I can't send any direct messages to {}".format(str(message.author)))
-            
-        return
-
-    await client.process_commands(message)
     author = message.author
     if author.bot == False:
+        if message.server == None:
+            if message.clean_content.startswith("-"):
+                embed = discord.Embed(
+                    description = "You can't use my commands in a direct message",
+                    color = 0xFF0000
+                )
+
+                try:
+                    await client.send_message(message.author, embed=embed)
+                except discord.HTTPException:
+                    print("I can't send any direct messages to {}".format(str(message.author)))
+            else:
+                joke = pyjokes.get_joke(category="all")
+                embed = discord.Embed(
+                    description = joke,
+                    color = 0x0000FF
+                )
+
+                try:
+                    await client.send_message(message.author, embed=embed)
+                except discord.HTTPException:
+                    print("I can't send any direct messages to {}".format(str(message.author)))
+                
+            return
+
+        await client.process_commands(message)
         channel = message.channel
         server = author.server
         settingspath = "servers/{}/settings.json".format(server.id)

@@ -5,3 +5,4 @@ youtube_dl
 PyNaCl
 praw
 profanity
+pyjokes
