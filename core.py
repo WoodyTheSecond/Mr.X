@@ -501,7 +501,11 @@ async def on_message(message):
             color = 0xFF0000
         )
 
-        await client.send_message(message.author, embed=embed)
+        try:
+            await client.send_message(message.author, embed=embed)
+        except discord.HTTPException:
+            print("I can't send any direct messages to {}".format(str(message.author)))
+            
         return
 
     await client.process_commands(message)
