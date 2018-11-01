@@ -521,13 +521,13 @@ async def settings(ctx):
         return
 
     embed = discord.Embed(
-        color=0x0000FF
+        title = "{} Server Settings".format(server.name),
+        color = 0x0000FF
     )
 
     if server.icon_url != "":
         embed.set_thumbnail(url=server.icon_url)
 
-    embed.set_author(name="{} Server Settings".format(server))
     embed.add_field(name="Ignore Hierarchy",value=Ignore_Hierarchy, inline=inline)
     embed.add_field(name="Direct message on warn", value=DMWarn, inline=inline)
     embed.add_field(name="Verify Role", value=Verify_Role, inline=inline)
@@ -1216,14 +1216,14 @@ async def marrytoggle(ctx):
         if current_toggle == False:
             update_setting(server, "Marriage_Toggle", True)
             embed = discord.Embed(
-                description="Marriage has been **Enabled**",
+                description="The marriage commands has been **Enabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
         elif current_toggle == True:
             update_setting(server, "Marriage_Toggle", False)
             embed = discord.Embed(
-                description="Marriage has been **Disabled**",
+                description="The marriage commands has been **Disabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
@@ -2013,4 +2013,4 @@ if __name__ == "__main__":
     for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
         signal(sig, save)
 
-    client.run(TOKEN)
+    client.run("NDcyODE3MDkwNzg1NzA1OTg1.Dj45QA.A3S3wwN0_lxlQbQCgkC44x-uJJg")

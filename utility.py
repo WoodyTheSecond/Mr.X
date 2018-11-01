@@ -216,7 +216,6 @@ class Utility:
             embed.add_field(name="banword word", value="Bans the word/add the word to the swear filter", inline=False)
             embed.add_field(name="unbanword word", value="Unbans the word/removes the word from the swear filter", inline=False)
             embed.add_field(name="bannedwords", value="Sends you the list of banned words", inline=False)
-            embed.add_field(name="marrytoggle", value="Toggles the marriage commands", inline=False)
             embed.add_field(name="lockchannel [channel]", value="Locks the channel", inline=False)
             embed.add_field(name="unlockchannel [channel]", value="Unlocks the channel", inline=False)
             embed.add_field(name="kickbots", value="Kicks all the bots in the server", inline=False)
