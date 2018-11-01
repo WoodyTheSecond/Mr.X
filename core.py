@@ -1225,14 +1225,14 @@ async def marrytoggle(ctx):
         if current_toggle == False:
             update_setting(server, "Marriage_Toggle", True)
             embed = discord.Embed(
-                description="Marriage has been **Enabled**",
+                description="The marriage commands has been **Enabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
         elif current_toggle == True:
             update_setting(server, "Marriage_Toggle", False)
             embed = discord.Embed(
-                description="Marriage has been **Disabled**",
+                description="The marriage commands has been **Disabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
@@ -2022,4 +2022,4 @@ if __name__ == "__main__":
     for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
         signal(sig, save)
 
-    client.run(TOKEN)
+    client.run("NDcyODE3MDkwNzg1NzA1OTg1.Dj45QA.A3S3wwN0_lxlQbQCgkC44x-uJJg")
