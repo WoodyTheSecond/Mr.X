@@ -2022,4 +2022,4 @@ if __name__ == "__main__":
     for sig in (SIGABRT, SIGILL, SIGINT, SIGSEGV, SIGTERM):
         signal(sig, save)
 
-    client.run("NDcyODE3MDkwNzg1NzA1OTg1.Dj45QA.A3S3wwN0_lxlQbQCgkC44x-uJJg")
+    client.run(TOKEN)
