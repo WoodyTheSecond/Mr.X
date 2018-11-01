@@ -435,7 +435,7 @@ async def on_member_unban(server, member):
 @client.event
 async def on_message(message):
     if message.server == None:
-        await client.say("You can't use my commands in a direct message")
+        await client.send_message(message.author, "You can't use my commands in a direct message")
         return
 
     await client.process_commands(message)
