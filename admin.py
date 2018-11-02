@@ -745,8 +745,7 @@ class Admin:
                             description="{}".format(str(message)),
                             color=0xFFA500
                         )
-                        embed.set_author(name=author.name,
-                                         icon_url=author.avatar_url)
+                        embed.set_author(name=author.name, icon_url=author.avatar_url)
                         await self.client.send_message(u_channel, "@everyone")
                         await self.client.send_message(u_channel, embed=embed)
                     elif user_response2.clean_content.lower() == "no":
@@ -767,8 +766,7 @@ class Admin:
                             description="{}".format(str(message)),
                             color=0xFFA500
                         )
-                        embed.set_author(name=author.name,
-                                         icon_url=author.avatar_url)
+                        embed.set_author(name=author.name, icon_url=author.avatar_url)
                         await self.client.send_message(u_channel, "@here")
                         await self.client.send_message(u_channel, embed=embed)
                     elif user_response2.clean_content.lower() == "no":
@@ -789,8 +787,7 @@ class Admin:
                             description="{}".format(str(message)),
                             color=0xFFA500
                         )
-                        embed.set_author(name=author.name,
-                                         icon_url=author.avatar_url)
+                        embed.set_author(name=author.name, icon_url=author.avatar_url)
                         await self.client.send_message(u_channel, embed=embed)
                     elif user_response2.clean_content.lower() == "no":
                         await self.client.send_message(u_channel, str(message))
@@ -843,7 +840,6 @@ class Admin:
                         title="User Kicked",
                         color=0x0000FF
                     )
-                    embed.set_author(name="Mr. X", icon_url="https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128")
                     embed.add_field(name="User", value=user, inline=False)
                     await self.client.say(embed=embed)
                     await self.client.send_message(user, "You have been kicked from **{}**".format(server))
@@ -852,7 +848,6 @@ class Admin:
                         title="User Kicked",
                         color=0x0000FF
                     )
-                    embed.set_author(name="Mr. X", icon_url="https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128")
                     embed.add_field(name="User", value=user, inline=False)
                     embed.add_field(name="Reason", value=reason, inline=False)
                     await self.client.say(embed=embed)
@@ -900,8 +895,6 @@ class Admin:
                         title="User Banned",
                         color=0x0000FF
                     )
-                    embed.set_author(
-                        name="Mr. X", icon_url="https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128")
                     embed.add_field(name="User", value=user, inline=False)
                     await self.client.say(embed=embed)
                     await self.client.send_message(user, "You have been banned from `{}`".format(server))
@@ -910,8 +903,6 @@ class Admin:
                         title="User Banned",
                         color=0x0000FF
                     )
-                    embed.set_author(
-                        name="Mr. X", icon_url="https://cdn.discordapp.com/avatars/472817090785705985/b5318faf95792ae0a80ddb2e117e7ab7.png?size=128")
                     embed.add_field(name="User", value=user, inline=False)
                     embed.add_field(name="Reason", value=reason, inline=False)
                     await self.client.say(embed=embed)
@@ -1039,12 +1030,6 @@ class Admin:
                            line = fp.readline()
                        fp.close()
                     await self.client.replace_roles(user, *roles_to_give)
-                    embed = discord.Embed(
-                    title = "",
-                    description = "{} Has been unmuted.".format(user.mention),
-                    colour = 0x00FF00
-                    )
-                    await self.client.say(embed=embed)
                     os.remove(path)
                 elif time_type == "h":
                     embed = discord.Embed(
@@ -1064,12 +1049,6 @@ class Admin:
                            line = fp.readline()
                        fp.close()
                     await self.client.replace_roles(user, *roles_to_give)
-                    embed = discord.Embed(
-                    title = "",
-                    description = "{} Has been unmuted.".format(user.mention),
-                    colour = 0x00FF00
-                    )
-                    await self.client.say(embed=embed)
                     os.remove(path)
 
             else:

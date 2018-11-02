@@ -67,18 +67,18 @@ class Utility:
 
         if user == None:
             embed = discord.Embed(
+                title = "Your Avatar",
                 color=0x00FF00
             )
 
             embed.set_image(url=self_image)
-            embed.set_author(name="Your Avatar")
         else:
             embed = discord.Embed(
+                title = "{}'s Avatar".format(str(user)),
                 color=0x00FF00
             )
 
             embed.set_image(url=user.avatar_url)
-            embed.set_author(name="{}'s Avatar".format(user))
 
             await self.client.say(embed=embed)
 
@@ -175,13 +175,13 @@ class Utility:
 
 
     @commands.command(pass_context=True)
-    async def help(self, ctx, module = None):
+    async def help(self, ctx, module = None, inline: bool = None):
         author = ctx.message.author
         channel = ctx.message.channel
         if module == None:
             await self.client.say("What module do you want help with?")
             embed = discord.Embed(
-                color=0x0000FF
+                color = 0x0000FF
             )
             embed.add_field(name="Primary Modules", value="Core, Admin, Utility, Creator", inline=False)
             embed.add_field(name="Secondary Modules",value="Fun, Music, Swarm, Level, Economy, NSFW, Marriage, Otaku", inline=False)
@@ -191,187 +191,204 @@ class Utility:
         else:
             user_response = module.lower()
 
+        if inline == None:
+            await self.client.say("Do you want the list inline? (yes/no)")
+            user_response2 = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
+            user_response2 = user_response2.clean_content.lower()
+            if user_response2 == "yes":
+                inline = True
+            else:
+                inline = False
+        else:
+            if inline != True and inline != False:
+                embed = discord.Embed(
+                    description = "The inline value must be true or false",
+                    color=0xFF000
+                )
+                await self.client.say(embed=embed)
+                return
+
         if user_response == "core":
             self.client.say("Core Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Core Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Core Module")
-            embed.add_field(name="dmwarn", value="Enable/Disable Direct Message On Warning", inline=False)
-            embed.add_field(name="jointoggle", value="Enable/Disable auto role on join", inline=False)
-            embed.add_field(name="joinrole ROLE_NAME",value="Set auto join role", inline=False)
-            embed.add_field(name="modrole ROLE_NAME",value="Set moderator role", inline=False)
-            embed.add_field(name="adminrole ROLE_NAME",value="Set administrator role", inline=False)
-            embed.add_field(name="mod user", value="Gives the user the moderator role", inline=False)
-            embed.add_field(name="admin user", value="Gives the user the administrator role", inline=False)
-            embed.add_field(name="muterole ROLE_NAME",value="Set mute role", inline=False)
-            embed.add_field(name="mutetime 1M/1H", value="Set the mute time for when users reach warning mute", inline=False)
-            embed.add_field(name="resetsetting SETTING_NAME",value="Resets the setting to default", inline=False)
-            embed.add_field(name="funtoggle", value="Toggles the fun commands", inline=False)
-            embed.add_field(name="nsfwrole ROLE_NAME", value="Sets the nsfw role", inline=False)
-            embed.add_field(name="nsfwtoggle", value="Toggles the nsfw commands", inline=False)
-            embed.add_field(name="marrytoggle", value="Toggles the marriage commands", inline=False)
-            embed.add_field(name="sweartoggle", value="Toggles the profanity filter (swear filter)", inline=False)
-            embed.add_field(name="customwords", value="Toggles the custom words filter (banned words filter)", inline=False)
-            embed.add_field(name="banword word", value="Bans the word/add the word to the swear filter", inline=False)
-            embed.add_field(name="unbanword word", value="Unbans the word/removes the word from the swear filter", inline=False)
-            embed.add_field(name="bannedwords", value="Sends you the list of banned words", inline=False)
-            embed.add_field(name="lockchannel [channel]", value="Locks the channel", inline=False)
-            embed.add_field(name="unlockchannel [channel]", value="Unlocks the channel", inline=False)
-            embed.add_field(name="kickbots", value="Kicks all the bots in the server", inline=False)
-            embed.add_field(name="botinfo", value="Shows the bot information", inline=False)
+            embed.add_field(name="dmwarn", value="Enable/Disable Direct Message On Warning", inline=inline)
+            embed.add_field(name="jointoggle", value="Enable/Disable auto role on join", inline=inline)
+            embed.add_field(name="joinrole ROLE_NAME",value="Set auto join role", inline=inline)
+            embed.add_field(name="modrole ROLE_NAME",value="Set moderator role", inline=inline)
+            embed.add_field(name="adminrole ROLE_NAME",value="Set administrator role", inline=inline)
+            embed.add_field(name="mod user", value="Gives the user the moderator role", inline=inline)
+            embed.add_field(name="admin user", value="Gives the user the administrator role", inline=inline)
+            embed.add_field(name="muterole ROLE_NAME",value="Set mute role", inline=inline)
+            embed.add_field(name="mutetime 1M/1H", value="Set the mute time for when users reach warning mute", inline=inline)
+            embed.add_field(name="resetsetting SETTING_NAME",value="Resets the setting to default", inline=inline)
+            embed.add_field(name="funtoggle", value="Toggles the fun commands", inline=inline)
+            embed.add_field(name="nsfwrole ROLE_NAME", value="Sets the nsfw role", inline=inline)
+            embed.add_field(name="nsfwtoggle", value="Toggles the nsfw commands", inline=inline)
+            embed.add_field(name="marrytoggle", value="Toggles the marriage commands", inline=inline)
+            embed.add_field(name="sweartoggle", value="Toggles the profanity filter (swear filter)", inline=inline)
+            embed.add_field(name="customwords", value="Toggles the custom words filter (banned words filter)", inline=inline)
+            embed.add_field(name="banword word", value="Bans the word/add the word to the swear filter", inline=inline)
+            embed.add_field(name="unbanword word", value="Unbans the word/removes the word from the swear filter", inline=inline)
+            embed.add_field(name="bannedwords", value="Sends you the list of banned words", inline=inline)
+            embed.add_field(name="lockchannel [channel]", value="Locks the channel", inline=inline)
+            embed.add_field(name="unlockchannel [channel]", value="Unlocks the channel", inline=inline)
+            embed.add_field(name="kickbots", value="Kicks all the bots in the server", inline=inline)
+            embed.add_field(name="botinfo", value="Shows the bot information", inline=inline)
             await self.client.say(embed=embed)
 
         elif user_response == "admin":
             self.client.say("Admin Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Admin Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Admin Module")
-            embed.add_field(name="kick user",value="Kicks the user", inline=False)
-            embed.add_field(name="ban user",value="Bans the user", inline=False)
-            embed.add_field(name="banid USER_ID",value="Bans the user with ID", inline=False)
-            embed.add_field(name="unban USER_ID",value="Unbans the user with ID", inline=False)
-            embed.add_field(name="mute user M/H", value="Mutes the user for the given time", inline=False)
-            embed.add_field(name="unmute user",value="Unmutes the user", inline=False)
-            embed.add_field(name="clear AMOUNT [user]", value="Clears the amount of messages given, if no amount is given it clears 100", inline=False)
-            embed.add_field(name="nickname user NAME",value="Nicknames the user with the given name", inline=False)
-            embed.add_field(name="removenick user",value="Removes the users nickname", inline=False)
-            embed.add_field(name="clearwarns user",value="Clears the users warnings", inline=False)
-            embed.add_field(name="warn user REASON",value="Warns the user with given warning", inline=False)
-            embed.add_field(name="warns user",value="Displays the users warnings", inline=False)
-            embed.add_field(name="setwarn number punishment(mute/kick/ban)",value="Sets the punishment for the given warn number", inline=False)
-            embed.add_field(name="removewarn number",value="Removes the punishment for the given number", inline=False)
-            embed.add_field(name="announce #channel MESSAGE",value="Announces the given message in given channel", inline=False)
-            embed.add_field(name="role user ROLE_NAME",value="Gives/removes the given role to/from the user", inline=False)
-            embed.add_field(name="verify user [ROLE_NAME]", value="Gives the user the verify role and if chosen also gives another role", inline=False)
-            embed.add_field(name="dinvites", value="Delete all of the invites", inline=False)
+            embed.add_field(name="kick user",value="Kicks the user", inline=inline)
+            embed.add_field(name="ban user",value="Bans the user", inline=inline)
+            embed.add_field(name="banid USER_ID",value="Bans the user with ID", inline=inline)
+            embed.add_field(name="unban USER_ID",value="Unbans the user with ID", inline=inline)
+            embed.add_field(name="mute user M/H", value="Mutes the user for the given time", inline=inline)
+            embed.add_field(name="unmute user",value="Unmutes the user", inline=inline)
+            embed.add_field(name="clear AMOUNT [user]", value="Clears the amount of messages given, if no amount is given it clears 100", inline=inline)
+            embed.add_field(name="nickname user NAME",value="Nicknames the user with the given name", inline=inline)
+            embed.add_field(name="removenick user",value="Removes the users nickname", inline=inline)
+            embed.add_field(name="clearwarns user",value="Clears the users warnings", inline=inline)
+            embed.add_field(name="warn user REASON",value="Warns the user with given warning", inline=inline)
+            embed.add_field(name="warns user",value="Displays the users warnings", inline=inline)
+            embed.add_field(name="setwarn number punishment(mute/kick/ban)",value="Sets the punishment for the given warn number", inline=inline)
+            embed.add_field(name="removewarn number",value="Removes the punishment for the given number", inline=inline)
+            embed.add_field(name="announce #channel MESSAGE",value="Announces the given message in given channel", inline=inline)
+            embed.add_field(name="role user ROLE_NAME",value="Gives/removes the given role to/from the user", inline=inline)
+            embed.add_field(name="verify user [ROLE_NAME]", value="Gives the user the verify role and if chosen also gives another role", inline=inline)
+            embed.add_field(name="dinvites", value="Delete all of the invites", inline=inline)
             await self.client.say(embed=embed)
 
         elif user_response == "fun":
             self.client.say("Fun Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Fun Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Fun Module")
-            embed.add_field(name="meme", value="Posts a random meme from reddit", inline=False)
-            embed.add_field(name="slap user", value="Slaps the user", inline=False)
-            embed.add_field(name="splat user", value="Splat out the user", inline=False)
+            embed.add_field(name="meme", value="Posts a random meme from reddit", inline=inline)
+            embed.add_field(name="slap user", value="Slaps the user", inline=inline)
+            embed.add_field(name="splat user", value="Splat out the user", inline=inline)
             await self.client.say(embed=embed)
 
         elif user_response == "nsfw":
             self.client.say("NSFW Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "NSFW Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="NSFW Module")
-            embed.add_field(name="porn [search]", value="Posts a porn image", inline=False)
-            embed.add_field(name="porng [search]", value="Posts a porn GIF image", inline=False)
-            embed.add_field(name="lewdneko", value="Posts a lewd neko NSFW image", inline=False)
-            embed.add_field(name="holo", value="Posts NSFW content of the anime character Holo", inline=False)
-            embed.add_field(name="lewdkitsune", value="Posts neko NSFW content", inline=False)
-            embed.add_field(name="rule34 tag", value="Posts a rule34 image", inline=False)
-            embed.add_field(name="e621 tag", value="Posts a e621 image", inline=False)
+            embed.add_field(name="porn [search]", value="Posts a porn image", inline=inline)
+            embed.add_field(name="porng [search]", value="Posts a porn GIF image", inline=inline)
+            embed.add_field(name="lewdneko", value="Posts a lewd neko NSFW image", inline=inline)
+            embed.add_field(name="holo", value="Posts NSFW content of the anime character Holo", inline=inline)
+            embed.add_field(name="lewdkitsune", value="Posts neko NSFW content", inline=inline)
+            embed.add_field(name="rule34 tag", value="Posts a rule34 image", inline=inline)
+            embed.add_field(name="e621 tag", value="Posts a e621 image", inline=inline)
             await self.client.say(embed=embed)
 
         elif user_response == "level":
             self.client.say("Level Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Level Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Level Module")
-            embed.add_field(name="mylevel", value="Displays your level", inline=False)
-            embed.add_field(name="togglelevel", value="Disables the global level system on this server", inline=False)
+            embed.add_field(name="mylevel", value="Displays your level", inline=inline)
+            embed.add_field(name="togglelevel", value="Disables the global level system on this server", inline=inline)
             await self.client.say(embed=embed)
 
         elif user_response == "creator":
             self.client.say("Creator Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Creator Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Creator Module")
-            embed.add_field(name="whitelist Server_ID",value="Whitelists the server so the bot can join", inline=False)
-            embed.add_field(name="gannounce MESSAGE",value="Global announces a message to all servers", inline=False)
-            embed.add_field(name="autoban user", value="Bans the user and adds the user to the autoban list", inline=False)
-            embed.add_field(name="unautoban id", value="Unbans the id and removed the id from the autoban list", inline=False)
-            embed.add_field(name="leave server", value="Leaves the given server", inline=False)
+            embed.add_field(name="whitelist Server_ID",value="Whitelists the server so the bot can join", inline=inline)
+            embed.add_field(name="gannounce MESSAGE",value="Global announces a message to all servers", inline=inline)
+            embed.add_field(name="autoban user", value="Bans the user and adds the user to the autoban list", inline=inline)
+            embed.add_field(name="unautoban id", value="Unbans the id and removed the id from the autoban list", inline=inline)
+            embed.add_field(name="leave server", value="Leaves the given server", inline=inline)
             await self.client.say(embed=embed)
 
         elif user_response == "music":
             self.client.say("Music Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Music Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Music Module")
-            embed.add_field(name="W.I.P", value="This module is still in progress", inline=False)
+            embed.add_field(name="W.I.P", value="This module is still in progress", inline=inline)
             await self.client.say(embed=embed)
 
         elif user_response == "swarm":
             self.client.say("Swarm Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Swarm Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Swarm Module")
-            embed.add_field(name="swarm", value="Shows brood information, or starts the creation process if you have none", inline=False)
-            embed.add_field(name="spawneggs AMOUNT",value="Spawns the amount of eggs given if possible.", inline=False)
-            embed.add_field(name="collect", value="Sends drones out to collect Organic Biomaterials", inline=False)
+            embed.add_field(name="swarm", value="Shows brood information, or starts the creation process if you have none", inline=inline)
+            embed.add_field(name="spawneggs AMOUNT",value="Spawns the amount of eggs given if possible.", inline=inline)
+            embed.add_field(name="collect", value="Sends drones out to collect Organic Biomaterials", inline=inline)
             await self.client.say(embed=embed)
 
         elif user_response == "utility":
             self.client.say("Utility Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Utility Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Utility Module")
-            embed.add_field(name="help [module]", value="Shows list of modules and command list", inline=False)
-            embed.add_field(name="avatar [user]", value="Shows your own avatar or the given users avatar", inline=False)
-            embed.add_field(name="mywarns", value="Displays your warnings", inline=False)
-            embed.add_field(name="flipcoin", value="Flips a coin and will either land on Heads or Tails", inline=False)
-            embed.add_field(name="rolldice", value="Rolls a dice and will land on a number between 1 - 6", inline=False)
-            embed.add_field(name="members", value="Shows member count", inline=False)
-            embed.add_field(name="userid user",value="Shows the users UserID", inline=False)
-            embed.add_field(name="userinfo [user]", value="Shows info for yourself or the given user", inline=False)
-            embed.add_field(name="nsfw", value="Gives/removes the nsfw role", inline=False)
+            embed.add_field(name="help [module]", value="Shows list of modules and command list", inline=inline)
+            embed.add_field(name="avatar [user]", value="Shows your own avatar or the given users avatar", inline=inline)
+            embed.add_field(name="mywarns", value="Displays your warnings", inline=inline)
+            embed.add_field(name="flipcoin", value="Flips a coin and will either land on Heads or Tails", inline=inline)
+            embed.add_field(name="rolldice", value="Rolls a dice and will land on a number between 1 - 6", inline=inline)
+            embed.add_field(name="members", value="Shows member count", inline=inline)
+            embed.add_field(name="userid user",value="Shows the users UserID", inline=inline)
+            embed.add_field(name="userinfo [user]", value="Shows info for yourself or the given user", inline=inline)
+            embed.add_field(name="nsfw", value="Gives/removes the nsfw role", inline=inline)
             await self.client.say(embed=embed)
         elif user_response == "economy":
             self.client.say("Economy Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Economy Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Economy Module")
-            embed.add_field(name="work", value="Earn money the legal way", inline=False)
-            embed.add_field(name="bal", value="Posts your balance", inline=False)
-            embed.add_field(name="withdraw amount", value="Withdraw money from your bank", inline=False)
-            embed.add_field(name="dep amount", value="Deposit money into your bank", inline=False)
-            embed.add_field(name="give user amount", value="Give money to a user", inline=False)
-            embed.add_field(name="setmoney amount [user]", value="Sets the money for yourself or the given user", inline=False)
-            embed.add_field(name="setbank amount [user]", value="Sets the bank money for yourself or the given user", inline=False)
-            embed.add_field(name="setmax setting value", value="Set the settings maximum amount", inline=False)
-            embed.add_field(name="setmin setting value", value="Set the settings minimum amount", inline=False)
+            embed.add_field(name="work", value="Earn money the legal way", inline=inline)
+            embed.add_field(name="bal", value="Posts your balance", inline=inline)
+            embed.add_field(name="withdraw amount", value="Withdraw money from your bank", inline=inline)
+            embed.add_field(name="dep amount", value="Deposit money into your bank", inline=inline)
+            embed.add_field(name="give user amount", value="Give money to a user", inline=inline)
+            embed.add_field(name="setmoney amount [user]", value="Sets the money for yourself or the given user", inline=inline)
+            embed.add_field(name="setbank amount [user]", value="Sets the bank money for yourself or the given user", inline=inline)
+            embed.add_field(name="setmax setting value", value="Set the settings maximum amount", inline=inline)
+            embed.add_field(name="setmin setting value", value="Set the settings minimum amount", inline=inline)
             await self.client.say(embed=embed)
         elif user_response == "marriage":
             self.client.say("Marriage Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Marriage Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Marriage Module")
-            embed.add_field(name="propose user", value="Propose to the user", inline=False)
-            embed.add_field(name="marriage", value="Shows who you are married to", inline=False)
-            embed.add_field(name="divorce", value="Breaks up with the on you are married to", inline=False)
+            embed.add_field(name="propose user", value="Propose to the user", inline=inline)
+            embed.add_field(name="marriage", value="Shows who you are married to", inline=inline)
+            embed.add_field(name="divorce", value="Breaks up with the on you are married to", inline=inline)
             await self.client.say(embed=embed)
         elif user_response == "otaku":
             self.client.say("Otaku Module Command List")
             embed = discord.Embed(
-                color=0x0000FF
+                title = "Otaku Module",
+                color = 0x0000FF
             )
-            embed.set_author(name="Otaku Module")
-            embed.add_field(name="shiki", value="Shows information about the King of Siscon", inline=False)
-            embed.add_field(name="hdude", value="Shows information about the rapper Hentai Dude", inline=False)
-            embed.add_field(name="imotou", value="Display a random image from reddit with a cute imotou", inline=False)
-            embed.add_field(name="oniisong", value="Shows a random song from either hdude or shiki", inline=False)
-            embed.add_field(name="loli", value="Display a random image from reddit with a cute loli", inline=False)
-            embed.add_field(name="neko", value="Display a random image from reddit with a cute neko", inline=False)
-            embed.add_field(name="catgirl", value="Posts a link to the catgirl website", inline=False)
+            embed.add_field(name="shiki", value="Shows information about the King of Siscon", inline=inline)
+            embed.add_field(name="hdude", value="Shows information about the rapper Hentai Dude", inline=inline)
+            embed.add_field(name="imotou", value="Display a random image from reddit with a cute imotou", inline=inline)
+            embed.add_field(name="oniisong", value="Shows a random song from either hdude or shiki", inline=inline)
+            embed.add_field(name="loli", value="Display a random image from reddit with a cute loli", inline=inline)
+            embed.add_field(name="neko", value="Display a random image from reddit with a cute neko", inline=inline)
+            embed.add_field(name="catgirl", value="Posts a link to the catgirl website", inline=inline)
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(

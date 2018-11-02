@@ -560,6 +560,7 @@ async def on_message(message):
 @client.command()
 async def botinfo():
     embed = discord.Embed(
+        title = "Information",
         colour=0x00d2ff
     )
     embed.set_footer(text="Guess who?")
@@ -573,7 +574,6 @@ async def botinfo():
     else:
         embed.set_image(url='https://johnjohns1.fjcdn.com/large/pictures/de/e0/dee0cc_6114906.jpg')
 
-    embed.set_author(name='Information')
     embed.add_field(name='Creator', value='Woody#3599 | C0mpl3X#8366', inline=False)
     embed.add_field(name='Artist', value='CSLucaris | https://www.deviantart.com/cslucaris', inline=False)
     embed.add_field(name='Version', value='0.5', inline=False)
