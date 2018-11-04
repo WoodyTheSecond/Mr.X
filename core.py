@@ -584,64 +584,71 @@ async def settings(ctx):
     author = ctx.message.author
     server = author.server
     channel = ctx.message.channel
+    if is_owner(author) == True or author == server.owner or author.server_permissions.administrator:
+        Ignore_Hierarchy = str(check_setting(server, "Ignore_Hierarchy"))
+        DMWarn = check_setting(server, "DMWarn")
+        Verify_Role = check_setting(server, "Verify_Role")
+        Mod_Role = check_setting(server, "Mod_Role")
+        Join_Role = check_setting(server, "Join_Role")
+        Admin_Role = check_setting(server, "Admin_Role")
+        Mute_Role = check_setting(server, "Mute_Role")
+        NSFW_role = check_setting(server, "NSFW_role")
+        WarnMute = check_setting(server, "WarnMute")
+        JoinToggle = str(check_setting(server, "JoinToggle"))
+        NSFW_toggle = str(check_setting(server, "NSFW_toggle"))
+        FunToggle = str(check_setting(server, "FunToggle"))
+        Profanity_Filter = str(check_setting(server, "Profanity_Filter"))
+        Customwords_Toggle = str(check_setting(server, "Custom_Words"))
+        CanModAnnounce = str(check_setting(server, "CanModAnnounce"))
+        Level_System = str(check_setting(server, "Level_System"))
+        earn_cooldown = str(check_setting(server, "earn_cooldown"))
+        Marriage_Toggle = str(check_setting(server, "Marriage_Toggle"))
 
-    Ignore_Hierarchy = str(check_setting(server, "Ignore_Hierarchy"))
-    DMWarn = check_setting(server, "DMWarn")
-    Verify_Role = check_setting(server, "Verify_Role")
-    Mod_Role = check_setting(server, "Mod_Role")
-    Join_Role = check_setting(server, "Join_Role")
-    Admin_Role = check_setting(server, "Admin_Role")
-    Mute_Role = check_setting(server, "Mute_Role")
-    NSFW_role = check_setting(server, "NSFW_role")
-    WarnMute = check_setting(server, "WarnMute")
-    JoinToggle = str(check_setting(server, "JoinToggle"))
-    NSFW_toggle = str(check_setting(server, "NSFW_toggle"))
-    FunToggle = str(check_setting(server, "FunToggle"))
-    Profanity_Filter = str(check_setting(server, "Profanity_Filter"))
-    Customwords_Toggle = str(check_setting(server, "Custom_Words"))
-    CanModAnnounce = str(check_setting(server, "CanModAnnounce"))
-    Level_System = str(check_setting(server, "Level_System"))
-    earn_cooldown = str(check_setting(server, "earn_cooldown"))
-    Marriage_Toggle = str(check_setting(server, "Marriage_Toggle"))
+        await client.say("Do you want the list inline? (Yes/No)")
+        user_response = await client.wait_for_message(timeout=30, channel=channel, author=author)
+        user_response = user_response.clean_content.lower()
+        if user_response == "yes":
+            inline = True
+        elif user_response == "no":
+            inline = False
+        else:
+            await client.say("Invalid.")
+            return
 
-    await client.say("Do you want the list inline? (Yes/No)")
-    user_response = await client.wait_for_message(timeout=30, channel=channel, author=author)
-    user_response = user_response.clean_content.lower()
-    if user_response == "yes":
-        inline = True
-    elif user_response == "no":
-        inline = False
+        embed = discord.Embed(
+            title = "{} Server Settings".format(server.name),
+            color = 0x0000FF
+        )
+
+        if server.icon_url != "":
+            embed.set_thumbnail(url=server.icon_url)
+
+        embed.add_field(name="Ignore Hierarchy",value=Ignore_Hierarchy, inline=inline)
+        embed.add_field(name="Direct message on warn", value=DMWarn, inline=inline)
+        embed.add_field(name="Verify Role", value=Verify_Role, inline=inline)
+        embed.add_field(name="Moderator Role", value=Mod_Role, inline=inline)
+        embed.add_field(name="Join Role", value=Join_Role, inline=inline)
+        embed.add_field(name="Administrator Role", value=Admin_Role, inline=inline)
+        embed.add_field(name="Mute Role", value=Mute_Role, inline=inline)
+        embed.add_field(name="NSFW Role", value=NSFW_role, inline=inline)
+        embed.add_field(name="Warning mute time", value=WarnMute, inline=inline)
+        embed.add_field(name="Auto role on join", value=JoinToggle, inline=inline)
+        embed.add_field(name="NSFW commands", value=NSFW_toggle, inline=inline)
+        embed.add_field(name="Fun commands", value=FunToggle, inline=inline)
+        embed.add_field(name="Profanity filter (swear filter)", value=Profanity_Filter, inline=inline)
+        embed.add_field(name="Banned words filter", value=Customwords_Toggle, inline=inline)
+        embed.add_field(name="Can moderator announce",value=CanModAnnounce, inline=inline)
+        embed.add_field(name="Level system", value=Level_System, inline=inline)
+        embed.add_field(name="Work cooldown", value=earn_cooldown, inline=inline)
+        embed.add_field(name="Marriage commands", value=Marriage_Toggle, inline=inline)
+        await client.say(embed=embed)
     else:
-        await client.say("Invalid.")
-        return
+        embed = discord.Embed(
+            description="You don't have permission to use this command",
+            color=0xFF0000
+        )
 
-    embed = discord.Embed(
-        title = "{} Server Settings".format(server.name),
-        color = 0x0000FF
-    )
-
-    if server.icon_url != "":
-        embed.set_thumbnail(url=server.icon_url)
-
-    embed.add_field(name="Ignore Hierarchy",value=Ignore_Hierarchy, inline=inline)
-    embed.add_field(name="Direct message on warn", value=DMWarn, inline=inline)
-    embed.add_field(name="Verify Role", value=Verify_Role, inline=inline)
-    embed.add_field(name="Moderator Role", value=Mod_Role, inline=inline)
-    embed.add_field(name="Join Role", value=Join_Role, inline=inline)
-    embed.add_field(name="Administrator Role", value=Admin_Role, inline=inline)
-    embed.add_field(name="Mute Role", value=Mute_Role, inline=inline)
-    embed.add_field(name="NSFW Role", value=NSFW_role, inline=inline)
-    embed.add_field(name="Warning mute time", value=WarnMute, inline=inline)
-    embed.add_field(name="Auto role on join", value=JoinToggle, inline=inline)
-    embed.add_field(name="NSFW commands", value=NSFW_toggle, inline=inline)
-    embed.add_field(name="Fun commands", value=FunToggle, inline=inline)
-    embed.add_field(name="Profanity filter (swear filter)", value=Profanity_Filter, inline=inline)
-    embed.add_field(name="Banned words filter", value=Customwords_Toggle, inline=inline)
-    embed.add_field(name="Can moderator announce",value=CanModAnnounce, inline=inline)
-    embed.add_field(name="Level system", value=Level_System, inline=inline)
-    embed.add_field(name="Work cooldown", value=earn_cooldown, inline=inline)
-    embed.add_field(name="Marriage commands", value=Marriage_Toggle, inline=inline)
-    await client.say(embed=embed)
+        await client.say(embed=embed)
 
 @client.command(pass_context=True)
 async def seconomy(ctx):
@@ -816,7 +823,7 @@ async def dmwarn(ctx):
     author = ctx.message.author
     server = ctx.message.server
     current = check_setting(server, "DMWarn")
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         if current == True:
             update_setting(server, "DMWarn", False)
             embed = discord.Embed(
@@ -845,7 +852,7 @@ async def dmwarn(ctx):
 async def modrole(ctx, *, role = None):
     author = ctx.message.author
     server = ctx.message.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         if role == None:
             embed = discord.Embed(
                 description="You have not entered a role name",
@@ -879,7 +886,7 @@ async def modrole(ctx, *, role = None):
 async def adminrole(ctx, *, role = None):
     author = ctx.message.author
     server = author.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         if role == None:
             embed = discord.Embed(
                 description="You have not entered a role name",
@@ -912,7 +919,7 @@ async def adminrole(ctx, *, role = None):
 async def muterole(ctx, *, role = None):
     author = ctx.message.author
     server = ctx.message.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         if role == None:
                 embed = discord.Embed(
                     description="You have not entered a role name",
@@ -947,7 +954,7 @@ async def muterole(ctx, *, role = None):
 async def joinrole(ctx, *, role = None):
     author = ctx.message.author
     server = ctx.message.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         if role == None:
                 embed = discord.Embed(
                     description="You have not entered a role name",
@@ -988,7 +995,7 @@ async def joinrole(ctx, *, role = None):
 async def nsfwrole(ctx, *, role = None):
     author = ctx.message.author
     server = ctx.message.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         if role == None:
                 embed = discord.Embed(
                     description="You have not entered a role name",
@@ -1028,7 +1035,7 @@ async def nsfwrole(ctx, *, role = None):
 async def verifyrole(ctx, *, role = None):
     author = ctx.message.author
     server = ctx.message.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         if role == None:
                 embed = discord.Embed(
                     description="You have not entered a role name",
@@ -1070,7 +1077,7 @@ async def verifyrole(ctx, *, role = None):
 async def mutetime(ctx, lenght = None):
     author = ctx.message.author
     server = author.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         if lenght == None:
             embed = discord.Embed(
             description="You have not entered a lenght",
@@ -1117,7 +1124,7 @@ async def jointoggle(ctx):
     server = ctx.message.server
     current_toggle = check_setting(server, "JoinToggle")
     join_role = check_setting(server, "Join_Role")
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         if current_toggle == False:
             if join_role == "None":
                 embed = discord.Embed(
@@ -1162,7 +1169,7 @@ async def jointoggle(ctx):
 async def nsfwtoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         current_toggle = check_setting(server, "NSFW_toggle")
         nsfw_role = check_setting(server, "NSFW_role")
         if current_toggle == False:
@@ -1204,7 +1211,7 @@ async def nsfwtoggle(ctx):
 async def funtoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         current_toggle = check_setting(server, "FunToggle")
         if current_toggle == False:
             update_setting(server, "FunToggle", True)
@@ -1238,7 +1245,7 @@ async def funtoggle(ctx):
 async def sweartoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         current_toggle = check_setting(server, "Profanity_Filter")
         if current_toggle == False:
             update_setting(server, "Profanity_Filter", True)
@@ -1272,7 +1279,7 @@ async def sweartoggle(ctx):
 async def customwords(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         current_toggle = check_setting(server, "Custom_Words")
         if current_toggle == False:
             update_setting(server, "Custom_Words", True)
@@ -1306,7 +1313,7 @@ async def customwords(ctx):
 async def marrytoggle(ctx):
     author = ctx.message.author
     server = ctx.message.server
-    if author.server_permissions.administrator:
+    if is_owner(author) == True or author == server.owner:
         current_toggle = check_setting(server, "Marriage_Toggle")
         if current_toggle == False:
             update_setting(server, "Marriage_Toggle", True)
@@ -1405,8 +1412,7 @@ async def mod(ctx, user: discord.Member = None):
 async def admin(ctx, user: discord.Member = None):
     author = ctx.message.author
     server = ctx.message.server
-    owner = server.owner
-    if author.id == "164068466129633280" or author.id == "142002197998206976" or author.id == "457516809940107264" or author.id == owner.id:
+    if is_owner(author) == True or author == server.owner:
         if user == None:
             embed = discord.Embed(
             description="You have not tagged any user",
@@ -1634,7 +1640,8 @@ async def unautoban(ctx, id):
 @client.command(pass_context=True)
 async def resetsetting(ctx, setting=None):
     author = ctx.message.author
-    if author.server_permissions.administrator:
+    server = author.server
+    if is_owner(author) == True or author == server.owner:
         if setting != None:
             if setting == "setwarn":
                 print("Reset Setwarn")
