@@ -401,9 +401,9 @@ def make_settings(serverid, conn = None):
                 json_data["min_slut_amount"] = min_slut_amount
                 json.dump(json_data, f)
 
-    toReturn = []
-    toReturn[0] = data
-    toReturn[1] = data2
+    toReturn = {}
+    toReturn["settings"] = data
+    toReturn["economy_settings"] = data2
     return toReturn
 
 def is_owner(user):
@@ -415,11 +415,11 @@ def is_owner(user):
 @client.event
 async def on_server_join(server):
     settings = make_settings(str(server.id))
-    if settings[0] == None and settings[1] == None:
+    if settings["settings"] == None and settings["economy_settings"] == None:
         print("The settings and economy settings for the server {} | {} has been created".format(server.name, server.id))
-    elif settings[0] == None:
+    elif settings["settings"] == None:
         print("The settings for the server {} | {} has been created".format(server.name, server.id))
-    elif settings[1] == None:
+    elif settings["economy_settings"] == None:
         print("The economy settings for the server {} | {} has been created".format(server.name, server.id))
     else:
         print("The settings and economy settings for the server {} | {} already exists".format(server.name, server.id))
@@ -1684,21 +1684,21 @@ async def createsettings(ctx):
     server = author.server
     if is_owner(author) == True:
         settings = make_settings(str(server.id))
-        if settings[0] == None and settings[1] == None:
+        if settings["settings"] == None and settings["economy_settings"] == None:
             embed = discord.Embed(
                 description="The settings and economy settings has been created",
                 color=0x00FF00
             )
 
             await client.say(embed=embed)
-        elif settings[0] == None:
+        elif settings["settings"] == None:
             embed = discord.Embed(
                 description="The settings has been created",
                 color=0x00FF00
             )
 
             await client.say(embed=embed)
-        elif settings[1] == None:
+        elif settings["economy_settings"] == None:
             embed = discord.Embed(
                 description="The economy settings has been created",
                 color=0x00FF00
