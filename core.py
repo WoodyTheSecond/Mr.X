@@ -401,6 +401,8 @@ def make_settings(serverid, conn = None):
                 json_data["min_slut_amount"] = min_slut_amount
                 json.dump(json_data, f)
 
+    return True
+
 def is_owner(user):
     if user.id == "164068466129633280" or user.id == "142002197998206976" or user.id == "457516809940107264":
         return True
@@ -409,8 +411,8 @@ def is_owner(user):
 
 @client.event
 async def on_server_join(server):
-    make_settings(str(server.id))
-    print("Settings for the server with the name {} and the id {} have been created".format(server.name, server.id))
+    if make_settings(str(server.id)) == True:
+        print("Settings for the server {} | {} has been created".format(server.name, server.id))
 
 @client.event
 async def on_ready():
