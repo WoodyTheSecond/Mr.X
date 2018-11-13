@@ -376,8 +376,8 @@ def make_settings(serverid, conn = None):
     sql = "SELECT * FROM `Economy_Settings` WHERE serverid = {}".format(serverid)
     c.execute(sql)
     conn.commit()
-    data = c.fetchone()
-    if data == None:
+    data2 = c.fetchone()
+    if data2 == None:
         create_database("economy", serverid)
         if not os.path.exists(economy_settingspath):
             with open(economy_settingspath, "w+") as f:
@@ -389,10 +389,10 @@ def make_settings(serverid, conn = None):
                 json.dump(json_data, f)
     else:
         if not os.path.exists(economy_settingspath):
-            max_work_amount = data[2]
-            min_work_amount = data[3]
-            max_slut_amount = data[4]
-            min_slut_amount = data[5]
+            max_work_amount = data2[2]
+            min_work_amount = data2[3]
+            max_slut_amount = data2[4]
+            min_slut_amount = data2[5]
             with open(economy_settingspath, "w+") as f:
                 json_data = {}
                 json_data["max_work_amount"] = max_work_amount
@@ -400,6 +400,11 @@ def make_settings(serverid, conn = None):
                 json_data["max_slut_amount"] = max_slut_amount
                 json_data["min_slut_amount"] = min_slut_amount
                 json.dump(json_data, f)
+
+    toReturn = {}
+    toReturn["settings"] = data
+    toReturn["economy_settings"] = data2
+    return toReturn
 
 def is_owner(user):
     if user.id == "164068466129633280" or user.id == "142002197998206976" or user.id == "457516809940107264":
@@ -409,8 +414,15 @@ def is_owner(user):
 
 @client.event
 async def on_server_join(server):
-    make_settings(str(server.id))
-    print("Settings for the server with the name {} and the id {} have been created".format(server.name, server.id))
+    settings = make_settings(str(server.id))
+    if settings["settings"] == None and settings["economy_settings"] == None:
+        print("The settings and economy settings for the server {} | {} has been created".format(server.name, server.id))
+    elif settings["settings"] == None:
+        print("The settings for the server {} | {} has been created".format(server.name, server.id))
+    elif settings["economy_settings"] == None:
+        print("The economy settings for the server {} | {} has been created".format(server.name, server.id))
+    else:
+        print("The settings and economy settings for the server {} | {} already exists".format(server.name, server.id))
 
 @client.event
 async def on_ready():
@@ -1671,13 +1683,35 @@ async def createsettings(ctx):
     author = ctx.message.author
     server = author.server
     if is_owner(author) == True:
-        make_settings(str(server.id))
-        embed = discord.Embed(
-            description="The settings have been successfully created",
-            color=0x00FF00
-        )
+        settings = make_settings(str(server.id))
+        if settings["settings"] == None and settings["economy_settings"] == None:
+            embed = discord.Embed(
+                description="The settings and economy settings has been created",
+                color=0x00FF00
+            )
 
-        await client.say(embed=embed)
+            await client.say(embed=embed)
+        elif settings["settings"] == None:
+            embed = discord.Embed(
+                description="The settings has been created",
+                color=0x00FF00
+            )
+
+            await client.say(embed=embed)
+        elif settings["economy_settings"] == None:
+            embed = discord.Embed(
+                description="The economy settings has been created",
+                color=0x00FF00
+            )
+
+            await client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="The settings and economy settings already exists",
+                color=0xFF0000
+            )
+
+            await client.say(embed=embed)
     else:
         embed = discord.Embed(
             description="You don't have permission to use this command",
