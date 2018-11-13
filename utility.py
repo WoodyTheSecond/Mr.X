@@ -638,7 +638,7 @@ class Utility:
                     role = discord.utils.get(server.roles, name=nsfw_role)
                     await self.client.add_roles(author, role)
                     embed = discord.Embed(
-                        description="You have been given the designated NSFW role",
+                        description="You've been given the designated NSFW role",
                         color=0x00FF00
                     )
 
