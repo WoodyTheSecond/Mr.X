@@ -837,7 +837,6 @@ class Admin:
                 await self.client.kick(user)
                 if reason == None:
                     embed = discord.Embed(
-                        title="User Kicked",
                         color=0x0000FF
                     )
                     embed.add_field(name="User", value=user, inline=False)
@@ -845,7 +844,6 @@ class Admin:
                     await self.client.send_message(user, "You have been kicked from **{}**".format(server))
                 else:
                     embed = discord.Embed(
-                        title="User Kicked",
                         color=0x0000FF
                     )
                     embed.add_field(name="User", value=user, inline=False)
@@ -858,8 +856,6 @@ class Admin:
                     color=0xFF0000
                 )
                 await self.client.say(embed=embed)
-            except Exception as e:
-                print(e)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",
@@ -913,8 +909,6 @@ class Admin:
                     color=0xFF0000
                 )
                 await self.client.say(embed=embed)
-            except Exception as e:
-                print(e)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",

@@ -175,7 +175,7 @@ class Utility:
 
 
     @commands.command(pass_context=True)
-    async def help(self, ctx, module = None):
+    async def help(self, ctx, module: str = None):
         author = ctx.message.author
         channel = ctx.message.channel
         if module == None:
@@ -375,7 +375,7 @@ class Utility:
             await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
-                description = "Module `{}` doesn't exist".format(module),
+                description = "The module `{}` doesn't exist".format(module),
                 color = 0xFF0000
             )
             await self.client.say(embed=embed)
@@ -525,7 +525,6 @@ class Utility:
             roles = None
             joindate = author.joined_at.strftime("%b %e, %Y %-I:%M %p")
             registerdate = author.created_at.strftime("%b %e, %Y %-I:%M %p")
-            currentdate = datetime.datetime.now().strftime("%b %e, %Y %-I:%M %p")
             name = str(author.name)
             nickname = str(author.display_name)
             if str(author.status) == "online":
@@ -557,7 +556,7 @@ class Utility:
                 embed.add_field(name="Nickname", value="{}".format(nickname), inline=True)
 
             embed.add_field(name="Roles [{}]".format(rolecount), value="{}".format(roles), inline=False)
-            embed.set_footer(text="ID: {} • {}".format(author.id, currentdate))
+            embed.set_footer(text="ID: {}".format(author.id))
             await self.client.say(embed=embed)
         else:
             status = None

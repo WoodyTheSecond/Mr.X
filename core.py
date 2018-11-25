@@ -249,7 +249,7 @@ def create_database(settingstype, serverid):
     conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
     c = conn.cursor()
     if settingstype == "server":
-        sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, DMWarn, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, JoinToggle, CanModAnnounce, Level_System, Chat_Filter, Ignore_Hierarchy, NSFW_role, NSFW_toggle, FunToggle, earn_cooldown) VALUES ('{}', 'None', '0', 'None', 'None', 'None', 'None', '0', '0', '0', '0', '0', '0', 'None', '0', '0', '0')".format(serverid)
+        sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, NSFW_role, earn_cooldown) VALUES ('{}', 'None', 'None', 'None', 'None', 'None', '0', 'None', '0')".format(serverid)
         c.execute(sql)
         conn.commit()
     elif settingstype == "economy":
@@ -840,14 +840,14 @@ async def dmwarn(ctx):
             update_setting(server, "DMWarn", False)
             embed = discord.Embed(
                 title='DMWarn Setting',
-                description='Direct Message on warning has been set to **False**',
+                description='Direct Message on warning has been **Disabled**',
                 color=0x00FF00
             )
             await client.say(embed=embed)
         else:
             embed = discord.Embed(
                 title='DMWarn Setting',
-                description='Direct Message on warning has been set to **True**',
+                description='Direct Message on warning has been **Enabled**',
                 color=0x00FF00
             )
             await client.say(embed=embed)
@@ -1149,7 +1149,7 @@ async def jointoggle(ctx):
                 update_setting(server, "JoinToggle", True)
                 embed = discord.Embed(
                     title="Join Toggle",
-                    description="Auto role on join has been set to **True**",
+                    description="Auto role on join has been **Enabled**",
                     color=0x00FF00
                 )
                 await client.say(embed=embed)
@@ -1157,7 +1157,7 @@ async def jointoggle(ctx):
             update_setting(server, "JoinToggle", False)
             embed = discord.Embed(
                 title="Join Toggle",
-                description="Auto role on join has been set to **False**",
+                description="Auto role on join has been **Disabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
@@ -1194,14 +1194,14 @@ async def nsfwtoggle(ctx):
             else:
                 update_setting(server, "NSFW_toggle", True)
                 embed = discord.Embed(
-                    description="NSFW has been set to **True**",
+                    description="The nsfw commands has been **Enabled**",
                     color=0x00FF00
                 )
                 await client.say(embed=embed)
         elif current_toggle == True:
             update_setting(server, "NSFW_toggle", False)
             embed = discord.Embed(
-                description="NSFW has been set to **False**",
+                description="The nsfw commands has been **Disabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
@@ -1228,14 +1228,14 @@ async def funtoggle(ctx):
         if current_toggle == False:
             update_setting(server, "FunToggle", True)
             embed = discord.Embed(
-                description="Fun commands has been **Enabled**",
+                description="The fun commands has been **Enabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
         elif current_toggle == True:
             update_setting(server, "FunToggle", False)
             embed = discord.Embed(
-                description="Fun commands has been **Disabled**",
+                description="The fun commands has been **Disabled**",
                 color=0x00FF00
             )
             await client.say(embed=embed)
@@ -1375,8 +1375,7 @@ async def mod(ctx, user: discord.Member = None):
                 await client.remove_roles(user, role)
                 embed = discord.Embed(
                     title="Moderator",
-                    description="Moderator role was removed from {}".format(
-                        user.mention),
+                    description="Moderator role was removed from {}".format(user.mention),
                     color=0x00FF00
                 )
                 await client.say(embed=embed)
@@ -1390,7 +1389,7 @@ async def mod(ctx, user: discord.Member = None):
             if modrole == "none":
                 embed = discord.Embed(
                     title="Moderator",
-                    description="The Moderator role has not been set, please use **>modrole ROLE**",
+                    description="The Moderator role has not been set, please use **-modrole ROLE**",
                     color=0xFF0000
                 )
                 await client.say(embed=embed)
@@ -1438,8 +1437,7 @@ async def admin(ctx, user: discord.Member = None):
                 await client.remove_roles(user, role)
                 embed = discord.Embed(
                     title="Administrator",
-                    description="Administrator role was removed from {}".format(
-                        user.mention),
+                    description="Administrator role was removed from {}".format(user.mention),
                     color=0x00FF00
                 )
                 await client.say(embed=embed)
@@ -1453,7 +1451,7 @@ async def admin(ctx, user: discord.Member = None):
             if adminrole == "none":
                 embed = discord.Embed(
                     title="Administrator",
-                    description="The Administrator role has not been set, please use **>adminrole ROLE**",
+                    description="The Administrator role has not been set, please use **-adminrole ROLE**",
                     color=0xFF0000
                 )
                 await client.say(embed=embed)
