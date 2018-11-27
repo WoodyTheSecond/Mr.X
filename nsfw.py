@@ -138,6 +138,7 @@ class NSFW:
 
                 await self.client.say(embed=embed)
             else:
+                searchValue = searchValue.replace(" ", "+")
                 image = self.getPornImage("https://www.sex.com/search/gifs?query={}".format(searchValue))
                 if image == None:
                     embed = discord.Embed(
@@ -167,7 +168,7 @@ class NSFW:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def porn(self, ctx, *, searchValue = None):
+    async def porn(self, ctx, *, searchValue: str = None):
         author = ctx.message.author
         server = author.server
 
@@ -211,6 +212,7 @@ class NSFW:
 
                 await self.client.say(embed=embed)
             else:
+                searchValue = searchValue.replace(" ", "+")
                 image = self.getPornImage("https://www.sex.com/search/pics?query={}".format(searchValue))
                 if image == None:
                     embed = discord.Embed(
