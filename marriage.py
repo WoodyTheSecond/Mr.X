@@ -46,7 +46,7 @@ class Marriage:
             await self.client.say(embed=embed)
             return
 
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
         c = conn.cursor()
         if user == None:
             sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
@@ -151,7 +151,7 @@ class Marriage:
             await self.client.say(embed=embed)
             return
 
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
         c = conn.cursor()
         sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
         c.execute(sql)
@@ -223,7 +223,7 @@ class Marriage:
                 return
             else:
                 #breakup
-                conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+                conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
                 c = conn.cursor()
                 sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(user.id), str(user.id))
                 c.execute(sql)
@@ -299,7 +299,7 @@ class Marriage:
             )
             await self.client.say(embed=embed)
             return
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
         c = conn.cursor()
         sql = "SELECT * FROM `Marriage_Table` WHERE user1 = '{}' OR user2 = '{}'".format(str(author.id), str(author.id))
         c.execute(sql)

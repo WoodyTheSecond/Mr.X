@@ -21,7 +21,7 @@ class Economy:
             return False
 
     def create_database(self, server):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
         c = conn.cursor()
         sql = "INSERT INTO `Economy_Settings` (serverid, max_work_amount, min_work_amount, max_slut_amount, min_slut_amount) VALUES ('{}', '200', '100', '1000', '500')".format(str(server.id))
         c.execute(sql)
@@ -61,7 +61,7 @@ class Economy:
                 return json_data[setting]
 
     def make_settings(self, server):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
         c = conn.cursor()
         sql = "SELECT * FROM `Economy_Settings` WHERE serverid = {}".format(server.id)
         c.execute(sql)

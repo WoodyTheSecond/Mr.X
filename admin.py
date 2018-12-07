@@ -102,7 +102,7 @@ class Admin:
                 await self.client.say(embed=embed)
                 return
             #User Warn Uploaded To Database
-            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
             c = conn.cursor()
             sql = "INSERT INTO `Warn_Table` (serverid, userid, reason) VALUES ('{}', '{}', '{}')".format(str(server.id), str(user.id), reason)
             c.execute(sql)
@@ -322,7 +322,7 @@ class Admin:
         author = ctx.message.author
         server = author.server
 
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
         c = conn.cursor()
 
         if user == None:
@@ -404,7 +404,7 @@ class Admin:
                 await self.client.say(embed=embed)
                 return
 
-            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
             c = conn.cursor()
             sql = "DELETE FROM `Warn_Table` WHERE serverid = '{}' AND userid = '{}'".format(server.id, user.id)
             c.execute(sql)
@@ -519,7 +519,7 @@ class Admin:
                 return
 
             else:
-                conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+                conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
                 c = conn.cursor()
                 sql = "SELECT * FROM `Punishment_Table` WHERE serverid = '{}' AND warn_number = '{}'".format(str(server.id), str(warn_number))
                 c.execute(sql)
@@ -580,7 +580,7 @@ class Admin:
                 await self.client.say(embed=embed)
                 return
 
-            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7257339", password="yakm4fsd4T", db="sql7257339")
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
             c = conn.cursor()
             sql = "DELETE FROM `Punishment_Table` WHERE serverid = '{}' AND warn_number = '{}'".format(server.id, number)
             c.execute(sql)
@@ -929,20 +929,12 @@ class Admin:
                 is_id = False
 
             if is_id:
-                if author.server_permissions.ban_members:
-                    await self.client.ban(server.get_member(id))
-                    embed = discord.Embed(
-                        description="The user with the id **{}** has been banned".format(
-                            id),
-                        color=0x00FF00
-                    )
-                    await self.client.say(embed=embed)
-                else:
-                    embed = discord.Embed(
-                        description="You do not have the required permissions",
-                        color=0x00FF00
-                    )
-                    await self.client.say(embed=embed)
+                await self.client.ban(server.get_member(id))
+                embed = discord.Embed(
+                    description="The user with the id **{}** has been banned".format(id),
+                    color=0x00FF00
+                )
+                await self.client.say(embed=embed)
             else:
                 embed = discord.Embed(
                     description="Please enter a userID",
@@ -987,15 +979,18 @@ class Admin:
             else:
                 await self.client.say("Please use minutes or hours, example: -mute @user 20m")
                 return
+
             get_role = self.check_setting(server, "Mute_Role")
             mutedrole = discord.utils.get(server.roles, name=get_role)
             if mutedrole == None:
-                await self.client.say("No mute role is set, please use >muterole ROLE_NAME")
+                await self.client.say("No mute role is set, please use -muterole ROLE_NAME")
                 return
+
             userroles = user.roles
-            path = "servers/" + str(server.id) + "/muted/"
+            path = "servers/{}/muted/".format(server.id)
             if not os.path.exists(path):
                 os.makedirs(path)
+
             mutepath = path + str(user.id) + ".txt"
             f = open(mutepath, "w+")
             for role in userroles:
@@ -1003,18 +998,18 @@ class Admin:
                     usrole = str(role)
                     write = usrole + "\n"
                     f.write(write)
+
             f.close()
             await self.client.replace_roles(user, mutedrole)
             if time != 0:
                 if time_type == "m":
                     embed = discord.Embed(
-                    title = "",
-                    description = "{} Has been muted for {} minute(s)".format(user.mention, str(t_time)),
-                    colour = 0x00FF00
+                        description = "{} has been muted for {} minute(s)".format(user.mention, str(t_time)),
+                        colour = 0x00FF00
                     )
                     await self.client.say(embed=embed)
                     await asyncio.sleep(time)
-                    path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
+                    path = "servers/{}/muted/{}.txt".format(server.id, user.id)
                     with open(path) as fp:
                        line = fp.readline()
                        roles_to_give = []
@@ -1022,18 +1017,19 @@ class Admin:
                            role = discord.utils.get(server.roles, name=line.strip())
                            roles_to_give.append(role)
                            line = fp.readline()
+                           
                        fp.close()
+
                     await self.client.replace_roles(user, *roles_to_give)
                     os.remove(path)
                 elif time_type == "h":
                     embed = discord.Embed(
-                    title = "",
-                    description = "{} Has been muted for {} hour(s)".format(user.mention, str(t_time)),
-                    colour = 0x00FF00
+                        description = "{} has been muted for {} hour(s)".format(user.mention, str(t_time)),
+                        colour = 0x00FF00
                     )
                     await self.client.say(embed=embed)
                     await asyncio.sleep(time)
-                    path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
+                    path = "servers/{}/muted/{}.txt".format(server.id, user.id)
                     with open(path) as fp:
                        line = fp.readline()
                        roles_to_give = []
@@ -1041,22 +1037,21 @@ class Admin:
                            role = discord.utils.get(server.roles, name=line.strip())
                            roles_to_give.append(role)
                            line = fp.readline()
+
                        fp.close()
+
                     await self.client.replace_roles(user, *roles_to_give)
                     os.remove(path)
-
             else:
                 embed = discord.Embed(
-                title = "",
-                description = "{} Has been muted.".format(user.mention),
-                colour = 0x00FF00
+                    description = "{} has been muted.".format(user.mention),
+                    colour = 0x00FF00
                 )
                 await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
-            title = "",
-            description = "You don't have permission to use this command",
-            colour = 0xFF0000
+                description = "You don't have permission to use this command",
+                colour = 0xFF0000
             )
             await self.client.say(embed=embed)
 
@@ -1085,15 +1080,18 @@ class Admin:
             else:
                 await self.client.say("Please use minutes or hours, example: -mute userID 20m")
                 return
+
             get_role = self.check_setting(server, "Mute_Role")
             mutedrole = discord.utils.get(server.roles, name=get_role)
             if mutedrole == None:
-                await self.client.say("No mute role is set, please use >muterole ROLE_NAME")
+                await self.client.say("No mute role is set, please use -muterole ROLE_NAME")
                 return
+
             userroles = user.roles
-            path = "servers/" + str(server.id) + "/muted/"
+            path = "servers/{}/muted/".format(server.id)
             if not os.path.exists(path):
                 os.makedirs(path)
+
             mutepath = path + str(user.id) + ".txt"
             f = open(mutepath, "w+")
             for role in userroles:
@@ -1101,17 +1099,18 @@ class Admin:
                     usrole = str(role)
                     write = usrole + "\n"
                     f.write(write)
+
             f.close()
             await self.client.replace_roles(user, mutedrole)
             if time != 0:
                 if time_type == "m":
                     embed = discord.Embed(
-                        description = "{} Has been muted for {} minute(s)".format(user.mention, str(t_time)),
+                        description = "{} has been muted for {} minute(s)".format(user.mention, str(t_time)),
                         colour = 0x00FF00
                     )
                     await self.client.say(embed=embed)
                     await asyncio.sleep(time)
-                    path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
+                    path = "servers/{}/muted/{}.txt".format(server.id, user.id)
                     with open(path) as fp:
                        line = fp.readline()
                        roles_to_give = []
@@ -1119,22 +1118,24 @@ class Admin:
                            role = discord.utils.get(server.roles, name=line.strip())
                            roles_to_give.append(role)
                            line = fp.readline()
+
                        fp.close()
+
                     await self.client.replace_roles(user, *roles_to_give)
                     embed = discord.Embed(
-                        description = "{} Has been unmuted.".format(user.mention),
+                        description = "{} has been unmuted.".format(user.mention),
                         colour = 0x00FF00
                     )
                     await self.client.say(embed=embed)
                     os.remove(path)
                 elif time_type == "h":
                     embed = discord.Embed(
-                        description = "{} Has been muted for {} hour(s)".format(user.mention, str(t_time)),
+                        description = "{} has been muted for {} hour(s)".format(user.mention, str(t_time)),
                         colour = 0x00FF00
                     )
                     await self.client.say(embed=embed)
                     await asyncio.sleep(time)
-                    path = "servers/" + str(server.id) + "/muted/" + str(user.id) + ".txt"
+                    path = "servers/{}/muted/{}.txt".format(server.id, user.id).format(server.id, user.id)
                     with open(path) as fp:
                        line = fp.readline()
                        roles_to_give = []
@@ -1142,18 +1143,19 @@ class Admin:
                            role = discord.utils.get(server.roles, name=line.strip())
                            roles_to_give.append(role)
                            line = fp.readline()
+
                        fp.close()
+
                     await self.client.replace_roles(user, *roles_to_give)
                     embed = discord.Embed(
-                        description = "{} Has been unmuted.".format(user.mention),
+                        description = "{} has been unmuted.".format(user.mention),
                         colour = 0x00FF00
                     )
                     await self.client.say(embed=embed)
                     os.remove(path)
-
             else:
                 embed = discord.Embed(
-                    description = "{} Has been muted.".format(user.mention),
+                    description = "{} has been muted.".format(user.mention),
                     colour = 0x00FF00
                 )
                 await self.client.say(embed=embed)
@@ -1176,11 +1178,10 @@ class Admin:
                 await self.client.say("There is no mute role yet, please use **-muterole ROLE_NAME** to set it.")
                 return
             else:
-                path = "servers/" + str(server.id) + \
-                    "/muted/" + str(user.id) + ".txt"
+                path = "servers/{}/muted/{}.txt".format(server.id, user.id)
+                    
                 if os.path.exists(path):
-                    path = "servers/" + str(server.id) + \
-                        "/muted/" + str(user.id) + ".txt"
+                    path = "servers/{}/muted/{}.txt".format(server.id, user.id)
                     with open(path) as fp:
                         line = fp.readline()
                         roles_to_give = []
@@ -1189,7 +1190,9 @@ class Admin:
                                 server.roles, name=line.strip())
                             roles_to_give.append(role)
                             line = fp.readline()
+
                         fp.close()
+
                     await self.client.replace_roles(user, *roles_to_give)
                     embed = discord.Embed(
                         description="{} has been unmuted".format(user.mention),
@@ -1198,7 +1201,11 @@ class Admin:
                     await self.client.say(embed=embed)
                     os.remove(path)
                 else:
-                    print("This user is not muted")
+                    embed = discord.Embed(
+                        description="{} is not muted".format(user.mention),
+                        color=0xFF0000
+                    )
+                    await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",
@@ -1218,11 +1225,9 @@ class Admin:
                 await self.client.say("There is no mute role yet, please use **-muterole ROLE_NAME** to set it.")
                 return
             else:
-                path = "servers/" + str(server.id) + \
-                    "/muted/" + str(user.id) + ".txt"
+                path = "servers/{}/muted/{}.txt".format(server.id, user.id)
                 if os.path.exists(path):
-                    path = "servers/" + str(server.id) + \
-                        "/muted/" + str(user.id) + ".txt"
+                    path = "servers/{}/muted/{}.txt".format(server.id, user.id)
                     with open(path) as fp:
                         line = fp.readline()
                         roles_to_give = []
@@ -1231,7 +1236,9 @@ class Admin:
                                 server.roles, name=line.strip())
                             roles_to_give.append(role)
                             line = fp.readline()
+
                         fp.close()
+
                     await self.client.replace_roles(user, *roles_to_give)
                     embed = discord.Embed(
                         description="{} has been unmuted".format(user.mention),
@@ -1240,7 +1247,11 @@ class Admin:
                     await self.client.say(embed=embed)
                     os.remove(path)
                 else:
-                    print("This user is not muted")
+                    embed = discord.Embed(
+                        description="{} is not muted".format(user.mention),
+                        color=0xFF0000
+                    )
+                    await self.client.say(embed=embed)
         else:
             embed = discord.Embed(
                 description="You don't have permission to use this command",
@@ -1256,14 +1267,12 @@ class Admin:
             channel = ctx.message.channel
             if amount < 2:
                 embed = discord.Embed(
-                    title="Clear",
                     description="The amount can't be less than 2",
                     color=0xFF0000
                 )
                 await self.client.say(embed=embed)
             elif amount > 100:
                 embed = discord.Embed(
-                    title="Clear",
                     description="You can't clear more than 100 messages.",
                     color=0xFF0000
                 )
