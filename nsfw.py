@@ -23,6 +23,18 @@ class NSFW:
         channeldata = [d for d in data if d['id'] == channel.id][0]
         return channeldata['nsfw']
 
+    def is_owner(self, user):
+        if user.id == "164068466129633280" or user.id == "142002197998206976" or user.id == "457516809940107264":
+            return True
+        else:
+            return False
+
+    def is_serverowner(self, server, user):
+        if user.id == server.owner.id:
+            return True
+        else:
+            return False
+
     def check_setting(self, server, setting):
         settingspath = "servers/{}/settings.json".format(server.id)
         if not setting in open(settingspath, "r").read():
@@ -239,6 +251,99 @@ class NSFW:
             )
 
             await self.client.say(embed=embed)
+
+    @commands.command(pass_context=True)
+    async def hentai(self, ctx):
+        author = ctx.message.author
+        server = author.server
+        nsfw_toggle = self.check_setting(server, "NSFW_toggle")
+        if nsfw_toggle == False:
+            embed = discord.Embed(
+                description="The NSFW commands is currently disabled",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+        
+        if self.check_blacklist("NSFW", server, author) == True:
+            embed = discord.Embed(
+                description="You are blacklisted",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+            return
+
+        if await self.is_nsfw(ctx.message.channel):
+            req = urllib.request.Request("https://nekobot.xyz/api/image?type=hentai", headers={"User-Agent": "Mozilla/5.0"})
+            fp = urllib.request.urlopen(req)
+            mybytes = fp.read()
+            message = mybytes.decode("utf8")
+            fp.close()
+            res = json.loads(message)
+            embed = discord.Embed(
+                color=0x800080
+            )
+            embed.set_image(url=res["message"])
+
+            await self.client.say(embed=embed)
+        else:
+            embed = discord.Embed(
+                description="This is not an NSFW channel",
+                color=0xFF0000
+            )
+
+            await self.client.say(embed=embed)
+
+    # @commands.command(pass_context=True)
+    # async def hanal(self, ctx):
+    #     author = ctx.message.author
+    #     server = author.server
+    #     nsfw_toggle = self.check_setting(server, "NSFW_toggle")
+    #     if nsfw_toggle == False:
+    #         embed = discord.Embed(
+    #             description="The NSFW commands is currently disabled",
+    #             color=0xFF0000
+    #         )
+
+    #         await self.client.say(embed=embed)
+    #         return
+        
+    #     if self.check_blacklist("NSFW", server, author) == True:
+    #         embed = discord.Embed(
+    #             description="You are blacklisted",
+    #             color=0xFF0000
+    #         )
+
+    #         await self.client.say(embed=embed)
+    #         return
+
+    #     if await self.is_nsfw(ctx.message.channel):
+    #         reddit = praw.Reddit(
+    #             client_id="G9hlJ0OTkWFNhw",
+    #             client_secret="Ps8h_yI1QbNGR0RUreP93_COsFE",
+    #             password="RE9!bE5fCQy8BWTdNOdw77r!W9KCuJ",
+    #             user_agent="Alice discord bot",
+    #             username="WoodyTheSecond"
+    #         )
+    #         memes_submissions = reddit.subreddit("memes").hot()
+    #         post_to_pick = random.randint(1, 50)
+    #         for i in range(0, post_to_pick):
+    #             submission = next(x for x in memes_submissions if not x.stickied)
+
+    #         embed = discord.Embed(
+    #             color=0x00FF00
+    #         )
+    #         embed.set_image(url=submission.url)
+    #         await self.client.say(embed=embed)
+    #     else:
+    #         embed = discord.Embed(
+    #             description="This is not an NSFW channel",
+    #             color=0xFF0000
+    #         )
+
+    #         await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
     async def lewdneko(self, ctx):

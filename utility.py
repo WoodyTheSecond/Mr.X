@@ -267,6 +267,7 @@ class Utility:
             )
             embed.add_field(name="porn [search]", value="Posts a porn image", inline=False)
             embed.add_field(name="porng [search]", value="Posts a porn GIF image", inline=False)
+            embed.add_field(name="hentai", value="Posts a hentai image", inline=False)
             embed.add_field(name="lewdneko", value="Posts a lewd neko NSFW image", inline=False)
             embed.add_field(name="holo", value="Posts NSFW content of the anime character Holo", inline=False)
             embed.add_field(name="lewdkitsune", value="Posts neko NSFW content", inline=False)
