@@ -23,7 +23,7 @@ client.remove_command("help")
 status = ["Commands: -help", "Watching you"]
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
-extensions = ["admin", "utility", "swarm", "nsfw", "fun", "economy", "marriage", "otaku"]
+extensions = ["admin", "utility", "nsfw", "fun", "economy", "marriage", "otaku"]
 
 async def change_status():
     await client.wait_until_ready()
