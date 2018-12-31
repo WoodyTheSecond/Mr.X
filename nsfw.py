@@ -105,7 +105,7 @@ class NSFW:
         return image
 
     @commands.command(pass_context=True)
-    async def porng(self, ctx, *, searchValue = None):
+    async def porng(self, ctx, *, searchValue: str = None):
         author = ctx.message.author
         server = author.server
 
@@ -478,7 +478,7 @@ class NSFW:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def rule34(self, ctx, tag = None):
+    async def rule34(self, ctx, *, tag: str = None):
         author = ctx.message.author
         server = author.server
         nsfw_toggle = self.check_setting(server, "NSFW_toggle")
@@ -547,7 +547,7 @@ class NSFW:
             await self.client.say(embed=embed)
 
     @commands.command(pass_context=True)
-    async def e621(self, ctx, tag = None):
+    async def e621(self, ctx, *, tag: str = None):
         author = ctx.message.author
         server = author.server
         nsfw_toggle = self.check_setting(server, "NSFW_toggle")
