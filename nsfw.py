@@ -511,6 +511,7 @@ class NSFW:
                 return
 
             try:
+                tag = tag.replace(" ", "+")
                 async with aiohttp.ClientSession() as cs:
                     async with cs.get(f"https://rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&tags={tag}") as r:
                         data = json.loads(await r.text())
@@ -580,6 +581,7 @@ class NSFW:
                 return
 
             try:
+                tag = tag.replace(" ", "+")
                 ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0"
                 async with aiohttp.ClientSession() as cs:
                         async with cs.get(f"https://e621.net/post/index.json?limit=15&tags={tag}",headers={"User-Agent": ua}) as r:
