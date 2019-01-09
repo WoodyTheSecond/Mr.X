@@ -39,7 +39,7 @@ async def autosave_economy():
 
     while not client.is_closed:
         await asyncio.sleep(3600)
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
         c = conn.cursor()
         for file in os.listdir("eco"):
             filename = os.fsdecode(file)
@@ -63,7 +63,7 @@ async def autosave_settings():
 
     while not client.is_closed:
         await asyncio.sleep(3600)
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
         c = conn.cursor()
         for server in os.listdir("servers"):
             server_id = os.fsdecode(server)
@@ -111,7 +111,7 @@ async def autosave_settings():
         print("The settings has been saved")
 
 def save_economy():
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
     c = conn.cursor()
     for file in os.listdir("eco"):
         filename = os.fsdecode(file)
@@ -131,7 +131,7 @@ def save_economy():
     print("The economy has been saved")
 
 def save_settings():
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
     c = conn.cursor()
     for server in os.listdir("servers"):
         server_id = os.fsdecode(server)
@@ -181,7 +181,7 @@ def save_settings():
 
 def save(*args):
     try:
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
         c = conn.cursor()
         for file in os.listdir("eco"):
             filename = os.fsdecode(file)
@@ -246,10 +246,12 @@ def save(*args):
 
         sys.exit(0)
     except:
+        print("Couldn't save the settings")
+
         sys.exit(0)
 
 def create_database(settingstype, serverid):
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
     c = conn.cursor()
     if settingstype == "server":
         sql = "INSERT INTO `Server_Settings` (serverid, Join_Role, Verify_Role, Mod_Role, Admin_Role, Mute_Role, WarnMute, NSFW_role, earn_cooldown) VALUES ('{}', 'None', 'None', 'None', 'None', 'None', '0', 'None', '0')".format(serverid)
@@ -296,7 +298,7 @@ def check_setting(server, setting):
 
 def make_settings(serverid, conn = None):
     if conn == None:
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
 
     settingspath = "servers/{}/settings.json".format(serverid)
     economy_settingspath = "servers/{}/economy_settings.json".format(serverid)
@@ -438,7 +440,7 @@ async def on_ready():
         except Exception as e:
             print(e)
 
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
     for server in client.servers:
         make_settings(str(server.id), conn)
 
@@ -669,7 +671,7 @@ async def settings(ctx):
 async def seconomy(ctx):
     author = ctx.message.author
     if is_owner(author):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
         c = conn.cursor()
         for file in os.listdir("eco"):
             filename = os.fsdecode(file)
@@ -705,7 +707,7 @@ async def seconomy(ctx):
 async def ssettings(ctx):
     author = ctx.message.author
     if is_owner(author):
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
         c = conn.cursor()
         for srv in os.listdir("servers"):
             server_id = os.fsdecode(srv)
@@ -767,7 +769,7 @@ async def ssettings(ctx):
 @client.command(pass_context=True)
 async def mylevel(ctx):
     author = ctx.message.author
-    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
     c = conn.cursor()
     sql = "SELECT level from `User_Levels` WHERE userid = {}".format(str(author.id))
     c.execute(sql)
@@ -775,7 +777,7 @@ async def mylevel(ctx):
     data = c.fetchone()
     conn.close()
     if data == None:
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
         c = conn.cursor()
         sql = "INSERT INTO `User_Levels` VALUES ({}, '1', '0')".format(str(author.id))
         c.execute(sql)
@@ -1917,7 +1919,7 @@ async def banword(ctx, word: str = None):
             
             await client.say(embed=embed)
         else:
-            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
             c = conn.cursor()
             sql = "SELECT * FROM `Banned_Words` WHERE serverid = '{}'".format(server.id)
             c.execute(sql)
@@ -1978,7 +1980,7 @@ async def unbanword(ctx, word: str = None):
             
             await client.say(embed=embed)
         else:
-            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
             c = conn.cursor()
             sql = "SELECT * FROM `Banned_Words` WHERE serverid = '{}'".format(server.id)
             c.execute(sql)

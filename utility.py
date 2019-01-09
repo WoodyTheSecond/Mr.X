@@ -122,7 +122,7 @@ class Utility:
                 user_response = await self.client.wait_for_message(timeout=40, channel=channel, author=author)
                 user_response = user_response.clean_content.lower()
                 if user_response == "yes":
-                    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7268803", password="lL2exAj7JR", db="sql7268803")
+                    conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
                     c = conn.cursor()
                     sql = "SELECT * FROM `Color_Table` WHERE serverid = '{}' AND color_name = '{}'".format(str(server.id), str(color_name))
                     c.execute(sql)

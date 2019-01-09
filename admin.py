@@ -102,7 +102,7 @@ class Admin:
                 await self.client.say(embed=embed)
                 return
             #User Warn Uploaded To Database
-            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
             c = conn.cursor()
             sql = "INSERT INTO `Warn_Table` (serverid, userid, reason) VALUES ('{}', '{}', '{}')".format(str(server.id), str(user.id), reason)
             c.execute(sql)
@@ -322,7 +322,7 @@ class Admin:
         author = ctx.message.author
         server = author.server
 
-        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+        conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
         c = conn.cursor()
 
         if user == None:
@@ -404,7 +404,7 @@ class Admin:
                 await self.client.say(embed=embed)
                 return
 
-            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
             c = conn.cursor()
             sql = "DELETE FROM `Warn_Table` WHERE serverid = '{}' AND userid = '{}'".format(server.id, user.id)
             c.execute(sql)
@@ -519,7 +519,7 @@ class Admin:
                 return
 
             else:
-                conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+                conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
                 c = conn.cursor()
                 sql = "SELECT * FROM `Punishment_Table` WHERE serverid = '{}' AND warn_number = '{}'".format(str(server.id), str(warn_number))
                 c.execute(sql)
@@ -580,7 +580,7 @@ class Admin:
                 await self.client.say(embed=embed)
                 return
 
-            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7270341", password="iAKdHG7mhF", db="sql7270341")
+            conn = pymysql.connect(host="sql7.freesqldatabase.com", user="sql7273467", password="ihireg57sU", db="sql7273467")
             c = conn.cursor()
             sql = "DELETE FROM `Punishment_Table` WHERE serverid = '{}' AND warn_number = '{}'".format(server.id, number)
             c.execute(sql)
